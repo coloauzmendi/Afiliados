@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allReviews = await getCollection('reviews');
+  const sectores = [...new Set(allReviews.map((r) => r.data.sector))];
+
+  return sectores.map((sector) => ({
+    params: { sector },
+    props: {
+      reviews: allReviews.filter((r) => r.data.sector === sector),
+    },
+  }));
+}
+
+const { sector } = Astro.params;
+const { reviews } = Astro.props;
+---
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sector: {sector}</title>
+  </head>
+  <body>
+    <h1>{sector}</h1>
+    <ul>
+      {reviews.map((review) => (
+        <li>
+          <a href={`/${sector}/${review.id}`}>{review.data.title}</a>
+          <p>{review.data.resumen}</p>
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>

@@ -139,3 +139,40 @@ hr {
 	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }
+
+.contenedor {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+.contenedor h1 {
+  font-size: 1.8rem;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+.contenedor h2 {
+  font-size: 1.3rem;
+  color: #000;
+  margin-top: 2rem;
+  border-bottom: 2px solid #3483fa;
+  display: inline-block;
+  padding-bottom: 0.2rem;
+}
+
+.contenedor p {
+  line-height: 1.6;
+  font-size: 1rem;
+  color: #444;
+}
+
+.disclaimer {
+  font-size: 0.8rem;
+  color: #888;
+  font-style: italic;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1rem;
+  margin-top: 2rem;
+}

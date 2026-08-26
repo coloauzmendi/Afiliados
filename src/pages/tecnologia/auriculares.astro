@@ -1,0 +1,33 @@
+---
+import { getEntry, render } from 'astro:content';
+import FiltroProductos from '../../components/FiltroProductos.jsx';
+import '../../styles/global.css';
+
+const entry = await getEntry('reviews', 'auriculares');
+const { Content } = await render(entry);
+
+const productos = entry.data.productos.map((p) => ({
+  id: p.nombre,
+  nombre: p.nombre,
+  precio: Number(p.precioAprox.replace(/[^0-9]/g, '')),
+  badge: p.destacado,
+  link: p.link,
+}));
+---
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{entry.data.title}</title>
+  </head>
+  <body>
+    <div class="contenedor">
+      <h1>{entry.data.title}</h1>
+      <Content />
+      <h2>Comparativa de precios</h2>
+      <FiltroProductos productos={productos} client:load />
+      <p class="disclaimer">
+        Este artículo contiene links de afiliado a Mercado Libre. Si comprás a través de ellos, recibimos una comisión pequeña sin costo extra para vos.
+      </p>
+    </div>
+  </body>
+</html>
