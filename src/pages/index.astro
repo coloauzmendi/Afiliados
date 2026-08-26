@@ -3,47 +3,423 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const reviews = (await getCollection('reviews')).sort(
+	(a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
+);
+
+function precios(review: (typeof reviews)[number]) {
+	if (!review.data.productos?.length) return null;
+	return review.data.productos
+		.map((p) => ({ ...p, precioNum: Number(p.precioAprox.replace(/[^0-9]/g, '')) }))
+		.sort((a, b) => a.precioNum - b.precioNum);
+}
+
+const sectorLabel: Record<string, string> = {
+	tecnologia: 'Tecnología',
+	finanzas: 'Finanzas',
+	'saas-ia': 'SaaS & IA',
+	fisicos: 'Físicos',
+};
+
+const sectores = [
+	{
+		key: 'tecnologia',
+		label: 'Tecnología',
+		desc: 'Auriculares, teclados, monitores y demás fierros.',
+		activo: true,
+	},
+	{
+		key: 'finanzas',
+		label: 'Finanzas',
+		desc: 'Tarjetas, cuentas remuneradas e inversiones simples.',
+		activo: false,
+	},
+	{
+		key: 'saas-ia',
+		label: 'SaaS & IA',
+		desc: 'Herramientas que uso yo en el día a día.',
+		activo: false,
+	},
+	{
+		key: 'fisicos',
+		label: 'Físicos',
+		desc: 'Lo demás: hogar, indumentaria, lo que va apareciendo.',
+		activo: false,
+	},
+].map((s) => ({ ...s, cantidad: reviews.filter((r) => r.data.sector === s.key).length }));
+
+const destacada = reviews[0];
+const destacadaPrecios = destacada ? precios(destacada) : null;
+const pick = destacadaPrecios?.[0];
+
+function fecha(d: Date) {
+	return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<section class="hero">
+				<div class="hero-texto">
+					<p class="eyebrow">ofertas revisadas a mano, no scrapeadas</p>
+					<h1>Lo que realmente vale la pena comprar esta semana</h1>
+					<p class="bajada">
+						Reviso ofertas de Mercado Libre y de algún otro lado, comparo precios entre varias
+						opciones y dejo acá solo lo que compraría yo. Nada de listas armadas al voleo.
+					</p>
+					<div class="hero-cta">
+						<a class="btn" href="/tecnologia">Ver notas de tecnología</a>
+						<span class="hero-nota">Arrancamos por tecnología, después sumamos el resto.</span>
+					</div>
+				</div>
+
+				{
+					destacada && pick && (
+						<aside class="pick">
+							<p class="pick-label">Lo que estoy mirando esta semana</p>
+							<p class="pick-titulo">{pick.nombre}</p>
+							<p class="pick-precio">
+								${pick.precioNum.toLocaleString('es-AR')}
+								{pick.destacado && <span class="pick-badge">{pick.destacado}</span>}
+							</p>
+							<a
+								class="pick-link"
+								href={pick.link}
+								target="_blank"
+								rel="nofollow sponsored noopener"
+							>
+								Ver oferta
+							</a>
+							<a class="pick-nota" href={`/${destacada.data.sector}/${destacada.id}`}>
+								De la nota: {destacada.data.title}
+							</a>
+						</aside>
+					)
+				}
+			</section>
+
+			<section class="sectores">
+				<h2>Por categoría</h2>
+				<div class="sectores-grid">
+					{
+						sectores.map((s) =>
+							s.activo ? (
+								<a class="sector-card activo" href={`/${s.key}`}>
+									<span class="sector-nombre">{s.label}</span>
+									<span class="sector-desc">{s.desc}</span>
+									<span class="sector-cantidad">
+										{s.cantidad} {s.cantidad === 1 ? 'nota' : 'notas'}
+									</span>
+								</a>
+							) : (
+								<div class="sector-card">
+									<span class="sector-nombre">{s.label}</span>
+									<span class="sector-desc">{s.desc}</span>
+									<span class="sector-pronto">Pronto</span>
+								</div>
+							),
+						)
+					}
+				</div>
+			</section>
+
+			<section class="notas">
+				<h2>Lo último</h2>
+				{
+					reviews.length === 0 ? (
+						<p class="vacio">Todavía no hay notas publicadas.</p>
+					) : (
+						<div class="notas-grid">
+							{reviews.map((review) => {
+								const precioLista = precios(review);
+								const desde = precioLista?.[0]?.precioNum;
+								return (
+									<a class="nota-card" href={`/${review.data.sector}/${review.id}`}>
+										<span class="nota-sector">{sectorLabel[review.data.sector]}</span>
+										<h3>{review.data.title}</h3>
+										<p class="nota-resumen">{review.data.resumen}</p>
+										<div class="nota-footer">
+											{desde && <span class="nota-precio">Desde ${desde.toLocaleString('es-AR')}</span>}
+											<span class="nota-fecha">{fecha(review.data.fecha)}</span>
+										</div>
+									</a>
+								);
+							})}
+						</div>
+					)
+				}
+			</section>
+
+			<section class="confianza">
+				<h2>¿Por qué confiar en esto?</h2>
+				<p>
+					No pruebo todos los productos que salen: sería mentira decir que sí. Lo que hago es
+					cruzar precio, valoraciones reales de compradores y el historial de la categoría antes
+					de armar cada nota. Si algo no me convence, no lo publico.
+				</p>
+				<p>
+					Los links de este sitio son de afiliado — si comprás desde acá, me llega una comisión
+					chica que no te cuesta nada extra a vos, y es lo que permite mantener esto activo.
+				</p>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	main {
+		width: 100%;
+		max-width: 1100px;
+		padding: 0 1.5em 4em;
+	}
+
+	.hero {
+		display: grid;
+		grid-template-columns: 1.3fr 1fr;
+		gap: 3em;
+		align-items: start;
+		padding: 3.5em 0 2.5em;
+		border-bottom: 1px solid rgb(var(--gray-light));
+	}
+	.eyebrow {
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		font-size: 0.75em;
+		font-weight: 700;
+		color: var(--accent);
+		margin: 0 0 0.75em;
+	}
+	.hero h1 {
+		font-size: 2.6em;
+		line-height: 1.1;
+		margin: 0 0 0.5em;
+		max-width: 14ch;
+	}
+	.bajada {
+		font-size: 1.05em;
+		color: rgb(var(--gray-dark));
+		max-width: 46ch;
+	}
+	.hero-cta {
+		display: flex;
+		align-items: center;
+		gap: 1em;
+		flex-wrap: wrap;
+		margin-top: 1.5em;
+	}
+	.btn {
+		display: inline-block;
+		background: var(--accent);
+		color: #fff;
+		padding: 0.75em 1.4em;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: 600;
+	}
+	.btn:hover {
+		background: var(--accent-dark);
+		color: #fff;
+	}
+	.hero-nota {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+	}
+
+	.pick {
+		background: #fff;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 10px;
+		padding: 1.4em;
+		box-shadow: var(--box-shadow);
+	}
+	.pick-label {
+		font-size: 0.75em;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: rgb(var(--gray));
+		margin: 0 0 0.6em;
+	}
+	.pick-titulo {
+		font-size: 0.95em;
+		color: rgb(var(--gray-dark));
+		margin: 0 0 0.4em;
+	}
+	.pick-precio {
+		font-size: 1.6em;
+		font-weight: 700;
+		color: rgb(var(--black));
+		margin: 0 0 0.9em;
+		display: flex;
+		align-items: baseline;
+		gap: 0.6em;
+		flex-wrap: wrap;
+	}
+	.pick-badge {
+		font-size: 0.4em;
+		font-weight: 700;
+		background: #fff4e6;
+		color: var(--warm);
+		padding: 0.3em 0.6em;
+		border-radius: 4px;
+		text-transform: uppercase;
+	}
+	.pick-link {
+		display: block;
+		text-align: center;
+		background: rgb(var(--black));
+		color: #fff;
+		padding: 0.6em;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 0.9em;
+		margin-bottom: 0.8em;
+	}
+	.pick-nota {
+		display: block;
+		text-align: center;
+		font-size: 0.8em;
+		color: rgb(var(--gray));
+		text-decoration: none;
+	}
+	.pick-nota:hover {
+		color: var(--accent);
+	}
+
+	.sectores,
+	.notas,
+	.confianza {
+		padding: 3em 0;
+		border-bottom: 1px solid rgb(var(--gray-light));
+	}
+	.confianza {
+		border-bottom: none;
+	}
+	.sectores h2,
+	.notas h2,
+	.confianza h2 {
+		font-size: 1.4em;
+		margin-bottom: 1em;
+	}
+
+	.sectores-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		gap: 1em;
+	}
+	.sector-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4em;
+		padding: 1.2em;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 8px;
+		background: #fff;
+		text-decoration: none;
+		color: inherit;
+	}
+	a.sector-card.activo:hover {
+		border-color: var(--accent);
+	}
+	.sector-card:not(.activo) {
+		opacity: 0.6;
+	}
+	.sector-nombre {
+		font-weight: 700;
+		color: rgb(var(--black));
+	}
+	.sector-desc {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+	}
+	.sector-cantidad {
+		font-size: 0.8em;
+		color: var(--accent);
+		font-weight: 600;
+		margin-top: 0.3em;
+	}
+	.sector-pronto {
+		font-size: 0.75em;
+		color: rgb(var(--gray));
+		margin-top: 0.3em;
+	}
+
+	.notas-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.2em;
+	}
+	.nota-card {
+		display: flex;
+		flex-direction: column;
+		padding: 1.3em;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 8px;
+		background: #fff;
+		text-decoration: none;
+		color: inherit;
+	}
+	.nota-card:hover {
+		border-color: var(--accent);
+	}
+	.nota-sector {
+		font-size: 0.7em;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--accent);
+		font-weight: 700;
+		margin-bottom: 0.5em;
+	}
+	.nota-card h3 {
+		font-size: 1.1em;
+		margin: 0 0 0.4em;
+		color: rgb(var(--black));
+	}
+	.nota-resumen {
+		font-size: 0.9em;
+		color: rgb(var(--gray-dark));
+		flex: 1;
+	}
+	.nota-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 1em;
+		font-size: 0.8em;
+	}
+	.nota-precio {
+		font-weight: 700;
+		color: rgb(var(--black));
+	}
+	.nota-fecha {
+		color: rgb(var(--gray));
+	}
+	.vacio {
+		color: rgb(var(--gray));
+	}
+
+	.confianza p {
+		max-width: 65ch;
+		color: rgb(var(--gray-dark));
+	}
+
+	@media (max-width: 800px) {
+		.hero {
+			grid-template-columns: 1fr;
+			padding-top: 2em;
+		}
+		.hero h1 {
+			font-size: 2em;
+			max-width: none;
+		}
+	}
+</style>
