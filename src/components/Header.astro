@@ -1,13 +1,13 @@
 ---
 import HeaderLink from './HeaderLink.astro';
-import Logo from '../assets/logo.png';
-import { SITE_TITLE } from '../consts';
+import LogoIcon from '../assets/logo-icon.png';
 ---
 
 <header>
 	<nav>
 		<a href="/" class="brand">
-			<img src={Logo.src} alt={SITE_TITLE} class="logo" />
+			<img src={LogoIcon.src} alt="" class="logo" />
+			<span class="brand-ahorr">Ahorr</span><span class="brand-ando">ando</span>
 		</a>
 		<div class="internal-links">
 			<HeaderLink href="/">Inicio</HeaderLink>
@@ -37,16 +37,25 @@ import { SITE_TITLE } from '../consts';
 	.brand {
 		display: flex;
 		align-items: center;
+		gap: 0.4em;
+		font-size: 1.15em;
+		font-weight: 700;
+		letter-spacing: -0.02em;
 		text-decoration: none;
-		padding: 0.6em 0;
+		padding: 0.7em 0;
 	}
 	.logo {
 		display: block;
-		height: 44px;
+		height: 36px;
 		width: auto;
-		max-width: 220px;
 		object-fit: contain;
 		border-radius: 0;
+	}
+	.brand-ahorr {
+		color: var(--accent);
+	}
+	.brand-ando {
+		color: var(--yellow-dark);
 	}
 	.internal-links {
 		display: flex;
