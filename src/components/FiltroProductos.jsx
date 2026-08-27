@@ -1,15 +1,26 @@
 import { useState } from "react";
 
-function IconoAuricular() {
+function IconoSinImagen() {
   return (
     <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true">
+      <rect
+        x="2.5"
+        y="4.5"
+        width="19"
+        height="15"
+        rx="2"
+        fill="none"
+        stroke="#d5d5da"
+        strokeWidth="1.6"
+      />
+      <circle cx="8" cy="10" r="1.6" fill="#d5d5da" />
       <path
+        d="M4 17l5-5 3.5 3.5L16 11l4 4"
         fill="none"
         stroke="#d5d5da"
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M4 13.5V12a8 8 0 0 1 16 0v1.5M4 13.5a2 2 0 0 0-2 2V17a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1H4Zm16 0a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-1a1 1 0 0 1-1-1v-4.5a1 1 0 0 1 1-1h1Z"
       />
     </svg>
   );
@@ -48,7 +59,7 @@ export default function FiltroProductos({ productos }) {
               {p.imagen ? (
                 <img src={p.imagen} alt={p.nombre} loading="lazy" />
               ) : (
-                <IconoAuricular />
+                <IconoSinImagen />
               )}
             </div>
             <div className="producto-info">
