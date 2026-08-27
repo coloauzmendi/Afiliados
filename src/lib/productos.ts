@@ -11,10 +11,6 @@ export function sectorLabel(sector: string): string {
 	return SECTOR_LABELS[sector] ?? sector;
 }
 
-export function parsePrecio(precioAprox: string): number {
-	return Number(precioAprox.replace(/[^0-9]/g, ''));
-}
-
 export function formatPrecio(n: number): string {
 	return `$${n.toLocaleString('es-AR')}`;
 }

@@ -1,63 +1,74 @@
-# Astro Starter Kit: Blog
+# Ahorrando
 
-```sh
-npm create astro@latest -- --template blog
-```
+Sitio de afiliados hecho con [Astro](https://astro.build). Arma páginas estáticas de comparación de
+productos (Mercado Libre, por ahora) organizadas por sector/subcategoría, leyendo el contenido de una
+base de datos MySQL en el momento de compilar el sitio.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Setup local
 
-Features:
+1. Instalar dependencias:
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+   ```sh
+   npm install
+   ```
 
-## 🚀 Project Structure
+2. Copiar `.env.example` a `.env` y completar con los datos de conexión de la base MySQL (Aiven u
+   otro proveedor):
 
-Inside of your Astro project, you'll see the following folders and files:
+   ```sh
+   cp .env.example .env
+   ```
+
+3. Si es la primera vez, crear las tablas y cargar los datos iniciales corriendo `db/schema.sql` y
+   `db/seed.sql` contra esa base (por ejemplo desde MySQL Workbench).
+
+4. Levantar el server de desarrollo:
+
+   ```sh
+   npm run dev
+   ```
+
+## Cómo cargar/editar productos
+
+Los productos y las notas ("subcategorías") viven en dos tablas de MySQL:
+
+- **`subcategorias`**: una fila por nota (ej. "auriculares", "celulares"). Tiene el título, resumen,
+  sector, fecha y el cuerpo en markdown (`contenido`).
+- **`productos`**: una fila por producto, con `subcategoria_slug` apuntando a la nota a la que
+  pertenece. Campos: `nombre`, `precio` (número entero en pesos), `link` (el de afiliado), `destacado`
+  (texto corto tipo "25% OFF") e `imagen` (URL directa a la foto, opcional).
+
+Para cargar productos reales, conectate a la base con MySQL Workbench (o el cliente que uses) y hacé
+`UPDATE`/`INSERT` sobre `productos`. El sitio lee todo de nuevo cada vez que se vuelve a generar
+(`npm run build` / cada deploy) — no hace falta tocar código para sumar o editar productos.
+
+Para sumar una subcategoría nueva: un `INSERT` en `subcategorias` con un `slug` único (se usa en la URL,
+ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
+
+## Estructura
 
 ```text
+├── db/
+│   ├── schema.sql       # CREATE TABLE de subcategorias y productos
+│   └── seed.sql         # Carga inicial (correr una sola vez)
 ├── public/
 ├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
+│   ├── assets/
+│   ├── components/
+│   ├── layouts/
+│   ├── lib/
+│   │   ├── db.ts        # Conexión y consultas a MySQL
+│   │   └── productos.ts # Helpers de formato (precio, fecha, labels de sector)
+│   └── pages/
 ├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+└── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Comandos
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+| Comando           | Acción                                        |
+| :----------------- | :--------------------------------------------- |
+| `npm install`       | Instala dependencias                           |
+| `npm run dev`       | Levanta el server de desarrollo en `localhost:4321` |
+| `npm run build`     | Genera el sitio de producción en `./dist/`     |
+| `npm run preview`   | Previsualiza el build de producción            |

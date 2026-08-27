@@ -2,12 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ReviewCard from '../components/ReviewCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getCollection } from 'astro:content';
-import { formatPrecio, parsePrecio } from '../lib/productos';
+import { getSubcategoriasConDesde, getTodosLosProductos } from '../lib/db';
+import { formatPrecio } from '../lib/productos';
 
-const reviews = (await getCollection('reviews')).sort(
-	(a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
-);
+const subcategorias = await getSubcategoriasConDesde();
+const todosProductos = await getTodosLosProductos();
 
 const sectores = [
 	{
@@ -34,12 +33,14 @@ const sectores = [
 		desc: 'Lo demás: hogar, indumentaria, lo que va apareciendo.',
 		activo: false,
 	},
-].map((s) => ({ ...s, cantidad: reviews.filter((r) => r.data.sector === s.key).length }));
+].map((sec) => ({ ...sec, cantidad: subcategorias.filter((s) => s.sector === sec.key).length }));
 
-const destacada = reviews[0];
-const pick = destacada?.data.productos
-	?.map((p) => ({ ...p, precioNum: parsePrecio(p.precioAprox) }))
-	.sort((a, b) => a.precioNum - b.precioNum)[0];
+// La destacada es la más reciente que ya tiene al menos un producto cargado
+// (así los placeholders sin completar no aparecen acá).
+const destacada = subcategorias.find((s) => s.desde !== null);
+const pick = destacada
+	? todosProductos.find((p) => p.subcategoriaSlug === destacada.slug && p.precio === destacada.desde)
+	: undefined;
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} wide>
@@ -63,14 +64,14 @@ const pick = destacada?.data.productos
 					<p class="pick-label">Lo que estoy mirando esta semana</p>
 					<p class="pick-titulo">{pick.nombre}</p>
 					<p class="pick-precio">
-						{formatPrecio(pick.precioNum)}
+						{formatPrecio(pick.precio)}
 						{pick.destacado && <span class="pick-badge">{pick.destacado}</span>}
 					</p>
 					<a class="pick-link" href={pick.link} target="_blank" rel="nofollow sponsored noopener">
 						Ver oferta
 					</a>
-					<a class="pick-nota" href={`/${destacada.data.sector}/${destacada.id}`}>
-						De la nota: {destacada.data.title}
+					<a class="pick-nota" href={`/${destacada.sector}/${destacada.slug}`}>
+						De la nota: {destacada.title}
 					</a>
 				</aside>
 			)
@@ -105,12 +106,12 @@ const pick = destacada?.data.productos
 	<section class="notas">
 		<h2>Lo último</h2>
 		{
-			reviews.length === 0 ? (
+			subcategorias.length === 0 ? (
 				<p class="vacio">Todavía no hay notas publicadas.</p>
 			) : (
 				<div class="notas-grid">
-					{reviews.map((review) => (
-						<ReviewCard review={review} />
+					{subcategorias.map((sub) => (
+						<ReviewCard subcategoria={sub} />
 					))}
 				</div>
 			)

@@ -1,68 +1,61 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { marked } from 'marked';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FiltroProductos from '../../components/FiltroProductos.jsx';
-import { formatFecha, parsePrecio, sectorLabel } from '../../lib/productos';
+import { getSubcategorias, getTodosLosProductos } from '../../lib/db';
+import { formatFecha, sectorLabel } from '../../lib/productos';
 
 export async function getStaticPaths() {
-	const allReviews = await getCollection('reviews');
-	return allReviews.map((review) => ({
-		params: { sector: review.data.sector, slug: review.id },
-		props: { review },
+	const [subcategorias, todosProductos] = await Promise.all([
+		getSubcategorias(),
+		getTodosLosProductos(),
+	]);
+
+	return subcategorias.map((subcategoria) => ({
+		params: { sector: subcategoria.sector, slug: subcategoria.slug },
+		props: {
+			subcategoria,
+			productos: todosProductos.filter((p) => p.subcategoriaSlug === subcategoria.slug),
+		},
 	}));
 }
 
-const { review } = Astro.props;
-const { Content } = await render(review);
-const label = sectorLabel(review.data.sector);
+const { subcategoria, productos } = Astro.props;
+const label = sectorLabel(subcategoria.sector);
+const contenidoHtml = subcategoria.contenido ? await marked.parse(subcategoria.contenido) : '';
 
-const productos = review.data.productos?.map((p) => ({
-	id: p.nombre,
+const productosParaFiltro = productos.map((p) => ({
+	id: p.id,
 	nombre: p.nombre,
-	precio: parsePrecio(p.precioAprox),
+	precio: p.precio,
 	badge: p.destacado,
 	link: p.link,
 	imagen: p.imagen,
 }));
 ---
 
-<BaseLayout title={`${review.data.title} — Ahorrando`} description={review.data.resumen} wide>
+<BaseLayout title={`${subcategoria.title} — Ahorrando`} description={subcategoria.resumen} wide>
 	<nav class="breadcrumb">
-		<a href="/">Inicio</a> / <a href={`/${review.data.sector}`}>{label}</a> / {review.data.title}
+		<a href="/">Inicio</a> / <a href={`/${subcategoria.sector}`}>{label}</a> / {subcategoria.title}
 	</nav>
 
 	<header class="review-head">
 		<span class="sector-pill">{label}</span>
-		<h1>{review.data.title}</h1>
-		<p class="resumen">{review.data.resumen}</p>
-		<p class="fecha">Actualizado el {formatFecha(review.data.fecha)}</p>
+		<h1>{subcategoria.title}</h1>
+		<p class="resumen">{subcategoria.resumen}</p>
+		<p class="fecha">Actualizado el {formatFecha(subcategoria.fecha)}</p>
 	</header>
 
 	{
-		productos && productos.length > 0 && (
+		productosParaFiltro.length > 0 && (
 			<section class="comparativa">
-				<FiltroProductos productos={productos} client:load />
+				<FiltroProductos productos={productosParaFiltro} client:load />
 			</section>
 		)
 	}
 
-	{
-		!productos && review.data.linkAfiliado && (
-			<a
-				class="cta"
-				href={review.data.linkAfiliado}
-				target="_blank"
-				rel="nofollow sponsored noopener"
-			>
-				Ver oferta
-			</a>
-		)
-	}
-
 	<div class="review-body">
-		<div class="prose">
-			<Content />
-		</div>
+		{contenidoHtml && <div class="prose" set:html={contenidoHtml} />}
 
 		<p class="disclaimer">
 			Este artículo puede contener links de afiliado. Si comprás a través de ellos, nos llega una
@@ -121,20 +114,6 @@ const productos = review.data.productos?.map((p) => ({
 		border: 1px solid var(--yellow);
 		border-radius: 10px;
 		padding: 1.6em;
-	}
-	.cta {
-		display: inline-block;
-		margin: 0.5em 0 3em;
-		background: var(--yellow);
-		color: rgb(var(--black));
-		padding: 0.9em 1.8em;
-		border-radius: 6px;
-		text-decoration: none;
-		font-weight: 700;
-		font-size: 1.05em;
-	}
-	.cta:hover {
-		background: var(--yellow-dark);
 	}
 	.review-body {
 		max-width: 760px;

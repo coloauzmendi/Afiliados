@@ -1,25 +1,25 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReviewCard from '../../components/ReviewCard.astro';
+import { getSubcategoriasConDesde } from '../../lib/db';
 import { sectorLabel } from '../../lib/productos';
 
 export async function getStaticPaths() {
-	const allReviews = await getCollection('reviews');
-	const sectores = [...new Set(allReviews.map((r) => r.data.sector))];
+	const todas = await getSubcategoriasConDesde();
+	const sectores = [...new Set(todas.map((s) => s.sector))];
 
 	return sectores.map((sector) => ({
 		params: { sector },
 		props: {
-			reviews: allReviews.filter((r) => r.data.sector === sector),
+			subcategorias: todas.filter((s) => s.sector === sector),
 		},
 	}));
 }
 
 const { sector } = Astro.params;
-const { reviews } = Astro.props;
+const { subcategorias } = Astro.props;
 const label = sectorLabel(sector as string);
-const ordenadas = [...reviews].sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+const ordenadas = [...subcategorias].sort((a, b) => b.fecha.valueOf() - a.fecha.valueOf());
 ---
 
 <BaseLayout
@@ -38,7 +38,7 @@ const ordenadas = [...reviews].sort((a, b) => b.data.fecha.valueOf() - a.data.fe
 	</header>
 
 	<div class="grid">
-		{ordenadas.map((review) => <ReviewCard review={review} />)}
+		{ordenadas.map((sub) => <ReviewCard subcategoria={sub} />)}
 	</div>
 </BaseLayout>
 

@@ -1,24 +1,25 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import { formatFecha, formatPrecio, parsePrecio, sectorLabel } from '../lib/productos';
+import type { SubcategoriaConDesde } from '../lib/db';
+import { formatFecha, formatPrecio, sectorLabel } from '../lib/productos';
 
 interface Props {
-	review: CollectionEntry<'reviews'>;
+	subcategoria: SubcategoriaConDesde;
 }
 
-const { review } = Astro.props;
-const desde = review.data.productos?.length
-	? Math.min(...review.data.productos.map((p) => parsePrecio(p.precioAprox)))
-	: undefined;
+const { subcategoria } = Astro.props;
 ---
 
-<a class="nota-card" href={`/${review.data.sector}/${review.id}`}>
-	<span class="nota-sector">{sectorLabel(review.data.sector)}</span>
-	<h3>{review.data.title}</h3>
-	<p class="nota-resumen">{review.data.resumen}</p>
+<a class="nota-card" href={`/${subcategoria.sector}/${subcategoria.slug}`}>
+	<span class="nota-sector">{sectorLabel(subcategoria.sector)}</span>
+	<h3>{subcategoria.title}</h3>
+	<p class="nota-resumen">{subcategoria.resumen}</p>
 	<div class="nota-footer">
-		{desde !== undefined && <span class="nota-precio">desde {formatPrecio(desde)}</span>}
-		<span class="nota-fecha">{formatFecha(review.data.fecha)}</span>
+		{
+			subcategoria.desde !== null && (
+				<span class="nota-precio">desde {formatPrecio(subcategoria.desde)}</span>
+			)
+		}
+		<span class="nota-fecha">{formatFecha(subcategoria.fecha)}</span>
 	</div>
 </a>
 
