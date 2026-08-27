@@ -1,35 +1,67 @@
 ---
 import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReviewCard from '../../components/ReviewCard.astro';
+import { sectorLabel } from '../../lib/productos';
 
 export async function getStaticPaths() {
-  const allReviews = await getCollection('reviews');
-  const sectores = [...new Set(allReviews.map((r) => r.data.sector))];
+	const allReviews = await getCollection('reviews');
+	const sectores = [...new Set(allReviews.map((r) => r.data.sector))];
 
-  return sectores.map((sector) => ({
-    params: { sector },
-    props: {
-      reviews: allReviews.filter((r) => r.data.sector === sector),
-    },
-  }));
+	return sectores.map((sector) => ({
+		params: { sector },
+		props: {
+			reviews: allReviews.filter((r) => r.data.sector === sector),
+		},
+	}));
 }
 
 const { sector } = Astro.params;
 const { reviews } = Astro.props;
+const label = sectorLabel(sector as string);
+const ordenadas = [...reviews].sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
 ---
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Sector: {sector}</title>
-  </head>
-  <body>
-    <h1>{sector}</h1>
-    <ul>
-      {reviews.map((review) => (
-        <li>
-          <a href={`/${sector}/${review.id}`}>{review.data.title}</a>
-          <p>{review.data.resumen}</p>
-        </li>
-      ))}
-    </ul>
-  </body>
-</html>
+
+<BaseLayout
+	title={`${label} — Ahorrando`}
+	description={`Ofertas y comparativas de ${label.toLowerCase()} revisadas a mano.`}
+	wide
+>
+	<nav class="breadcrumb"><a href="/">Inicio</a> / {label}</nav>
+	<h1>{label}</h1>
+	<p class="intro">
+		{ordenadas.length} {ordenadas.length === 1 ? 'nota publicada' : 'notas publicadas'} en esta
+		categoría.
+	</p>
+
+	<div class="grid">
+		{ordenadas.map((review) => <ReviewCard review={review} />)}
+	</div>
+</BaseLayout>
+
+<style>
+	.breadcrumb {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin: 2em 0 1em;
+	}
+	.breadcrumb a {
+		color: rgb(var(--gray));
+	}
+	.breadcrumb a:hover {
+		color: var(--accent);
+	}
+	h1 {
+		margin-bottom: 0.2em;
+	}
+	.intro {
+		color: rgb(var(--gray));
+		margin-bottom: 2em;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.2em;
+		padding-bottom: 3em;
+	}
+</style>

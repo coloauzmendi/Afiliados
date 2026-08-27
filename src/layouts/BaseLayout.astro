@@ -1,0 +1,37 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: ImageMetadata;
+	/** Ancho completo (~1100px) para grillas de tarjetas; por defecto usa el ancho angosto de artículo. */
+	wide?: boolean;
+}
+
+const { title, description, image, wide = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+	</head>
+	<body>
+		<Header />
+		<main class:list={{ wide }}>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
+<style>
+	main.wide {
+		width: 100%;
+		max-width: 1100px;
+		padding: 0 1.5em 4em;
+	}
+</style>

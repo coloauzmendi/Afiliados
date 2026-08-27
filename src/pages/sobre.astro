@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+	title="Sobre Ahorrando"
+	description="Quién arma Ahorrando y cómo elegimos qué publicar."
+>
+	<article class="sobre">
+		<h1>Sobre Ahorrando</h1>
+
+		<p>
+			Arranqué este sitio para juntar en un solo lugar las ofertas que ya buscaba para mí mismo:
+			auriculares, teclados, y en general lo que valga la pena en Mercado Libre. La idea es sumar
+			con el tiempo otras categorías — finanzas, herramientas con IA, productos físicos en general
+			— pero prefiero ir despacio antes que llenar esto de notas apuradas.
+		</p>
+
+		<h2>¿Cómo elijo qué publicar?</h2>
+		<p>
+			Miro precio, cantidad y calidad de las reseñas de compradores reales, y si el producto tiene
+			sentido para el uso que promete. No cobro por aparecer acá: todo lo que ves en el sitio lo
+			elegí porque lo compraría yo.
+		</p>
+
+		<h2>¿De dónde sale la plata?</h2>
+		<p>
+			Los links de afiliado son la forma en la que esto se sostiene: si comprás algo desde un link
+			de Ahorrando, me llega una comisión chica de la tienda, sin que a vos te cueste nada de más.
+			Eso no cambia lo que recomiendo — si algo no me convence, directamente no lo publico.
+		</p>
+	</article>
+</BaseLayout>
+
+<style>
+	.sobre {
+		max-width: 680px;
+		padding: 2.5em 0 4em;
+	}
+	.sobre h1 {
+		margin-bottom: 0.8em;
+	}
+	.sobre h2 {
+		font-size: 1.25em;
+		margin-top: 1.8em;
+	}
+	.sobre p {
+		color: rgb(var(--gray-dark));
+	}
+</style>

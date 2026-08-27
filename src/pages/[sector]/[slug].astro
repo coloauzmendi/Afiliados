@@ -1,30 +1,147 @@
 ---
 import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FiltroProductos from '../../components/FiltroProductos.jsx';
+import { formatFecha, parsePrecio, sectorLabel } from '../../lib/productos';
 
 export async function getStaticPaths() {
-  const allReviews = await getCollection('reviews');
-  return allReviews.map((review) => ({
-    params: { sector: review.data.sector, slug: review.id },
-    props: { review },
-  }));
+	const allReviews = await getCollection('reviews');
+	return allReviews.map((review) => ({
+		params: { sector: review.data.sector, slug: review.id },
+		props: { review },
+	}));
 }
 
 const { review } = Astro.props;
 const { Content } = await render(review);
+const label = sectorLabel(review.data.sector);
+
+const productos = review.data.productos?.map((p) => ({
+	id: p.nombre,
+	nombre: p.nombre,
+	precio: parsePrecio(p.precioAprox),
+	badge: p.destacado,
+	link: p.link,
+}));
 ---
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>{review.data.title}</title>
-  </head>
-  <body>
-    <article>
-      <h1>{review.data.title}</h1>
-      <p><strong>Comisión:</strong> {review.data.comision}</p>
-      <Content />
-      <a href={review.data.linkAfiliado} target="_blank" rel="nofollow sponsored">
-        Ir a la oferta
-      </a>
-    </article>
-  </body>
-</html>
+
+<BaseLayout title={`${review.data.title} — Ahorrando`} description={review.data.resumen} wide>
+	<nav class="breadcrumb">
+		<a href="/">Inicio</a> / <a href={`/${review.data.sector}`}>{label}</a> / {review.data.title}
+	</nav>
+
+	<article class="review">
+		<span class="sector-pill">{label}</span>
+		<h1>{review.data.title}</h1>
+		<p class="resumen">{review.data.resumen}</p>
+		<p class="fecha">Actualizado el {formatFecha(review.data.fecha)}</p>
+
+		<div class="prose">
+			<Content />
+		</div>
+
+		{
+			productos && productos.length > 0 && (
+				<section class="comparativa">
+					<h2>Comparativa de precios</h2>
+					<FiltroProductos productos={productos} client:load />
+				</section>
+			)
+		}
+
+		{
+			!productos && review.data.linkAfiliado && (
+				<a
+					class="cta"
+					href={review.data.linkAfiliado}
+					target="_blank"
+					rel="nofollow sponsored noopener"
+				>
+					Ver oferta
+				</a>
+			)
+		}
+
+		<p class="disclaimer">
+			Este artículo puede contener links de afiliado. Si comprás a través de ellos, nos llega una
+			comisión chica que no te cuesta nada extra a vos.
+		</p>
+	</article>
+</BaseLayout>
+
+<style>
+	.breadcrumb {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin: 2em 0 1.5em;
+	}
+	.breadcrumb a {
+		color: rgb(var(--gray));
+	}
+	.breadcrumb a:hover {
+		color: var(--accent);
+	}
+	.review {
+		max-width: 760px;
+		padding-bottom: 4em;
+	}
+	.sector-pill {
+		display: inline-block;
+		font-size: 0.75em;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--accent);
+		font-weight: 700;
+		margin-bottom: 0.6em;
+	}
+	.review h1 {
+		margin: 0 0 0.4em;
+		line-height: 1.15;
+	}
+	.resumen {
+		font-size: 1.1em;
+		color: rgb(var(--gray-dark));
+		margin: 0 0 0.4em;
+	}
+	.fecha {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin: 0 0 1.5em;
+	}
+	.prose {
+		color: rgb(var(--gray-dark));
+	}
+	.prose :global(h2) {
+		font-size: 1.3em;
+		margin-top: 1.8em;
+	}
+	.comparativa {
+		margin-top: 2.5em;
+	}
+	.comparativa h2 {
+		font-size: 1.3em;
+		margin-bottom: 1em;
+	}
+	.cta {
+		display: inline-block;
+		margin-top: 1.5em;
+		background: var(--accent);
+		color: #fff;
+		padding: 0.8em 1.6em;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: 600;
+	}
+	.cta:hover {
+		background: var(--accent-dark);
+		color: #fff;
+	}
+	.disclaimer {
+		font-size: 0.8em;
+		color: rgb(var(--gray));
+		font-style: italic;
+		border-top: 1px solid rgb(var(--gray-light));
+		padding-top: 1.2em;
+		margin-top: 3em;
+	}
+</style>

@@ -1,27 +1,13 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReviewCard from '../components/ReviewCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { getCollection } from 'astro:content';
+import { formatPrecio, parsePrecio } from '../lib/productos';
 
 const reviews = (await getCollection('reviews')).sort(
 	(a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
 );
-
-function precios(review: (typeof reviews)[number]) {
-	if (!review.data.productos?.length) return null;
-	return review.data.productos
-		.map((p) => ({ ...p, precioNum: Number(p.precioAprox.replace(/[^0-9]/g, '')) }))
-		.sort((a, b) => a.precioNum - b.precioNum);
-}
-
-const sectorLabel: Record<string, string> = {
-	tecnologia: 'Tecnología',
-	finanzas: 'Finanzas',
-	'saas-ia': 'SaaS & IA',
-	fisicos: 'Físicos',
-};
 
 const sectores = [
 	{
@@ -51,137 +37,101 @@ const sectores = [
 ].map((s) => ({ ...s, cantidad: reviews.filter((r) => r.data.sector === s.key).length }));
 
 const destacada = reviews[0];
-const destacadaPrecios = destacada ? precios(destacada) : null;
-const pick = destacadaPrecios?.[0];
-
-function fecha(d: Date) {
-	return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
-}
+const pick = destacada?.data.productos
+	?.map((p) => ({ ...p, precioNum: parsePrecio(p.precioAprox) }))
+	.sort((a, b) => a.precioNum - b.precioNum)[0];
 ---
 
-<!doctype html>
-<html lang="es">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section class="hero">
-				<div class="hero-texto">
-					<p class="eyebrow">ofertas revisadas a mano, no scrapeadas</p>
-					<h1>Lo que realmente vale la pena comprar esta semana</h1>
-					<p class="bajada">
-						Reviso ofertas de Mercado Libre y de algún otro lado, comparo precios entre varias
-						opciones y dejo acá solo lo que compraría yo. Nada de listas armadas al voleo.
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} wide>
+	<section class="hero">
+		<div class="hero-texto">
+			<p class="eyebrow">ofertas revisadas a mano, no scrapeadas</p>
+			<h1>Lo que realmente vale la pena comprar esta semana</h1>
+			<p class="bajada">
+				Reviso ofertas de Mercado Libre y de algún otro lado, comparo precios entre varias
+				opciones y dejo acá solo lo que compraría yo. Nada de listas armadas al voleo.
+			</p>
+			<div class="hero-cta">
+				<a class="btn" href="/tecnologia">Ver notas de tecnología</a>
+				<span class="hero-nota">Arrancamos por tecnología, después sumamos el resto.</span>
+			</div>
+		</div>
+
+		{
+			destacada && pick && (
+				<aside class="pick">
+					<p class="pick-label">Lo que estoy mirando esta semana</p>
+					<p class="pick-titulo">{pick.nombre}</p>
+					<p class="pick-precio">
+						{formatPrecio(pick.precioNum)}
+						{pick.destacado && <span class="pick-badge">{pick.destacado}</span>}
 					</p>
-					<div class="hero-cta">
-						<a class="btn" href="/tecnologia">Ver notas de tecnología</a>
-						<span class="hero-nota">Arrancamos por tecnología, después sumamos el resto.</span>
-					</div>
-				</div>
+					<a class="pick-link" href={pick.link} target="_blank" rel="nofollow sponsored noopener">
+						Ver oferta
+					</a>
+					<a class="pick-nota" href={`/${destacada.data.sector}/${destacada.id}`}>
+						De la nota: {destacada.data.title}
+					</a>
+				</aside>
+			)
+		}
+	</section>
 
-				{
-					destacada && pick && (
-						<aside class="pick">
-							<p class="pick-label">Lo que estoy mirando esta semana</p>
-							<p class="pick-titulo">{pick.nombre}</p>
-							<p class="pick-precio">
-								${pick.precioNum.toLocaleString('es-AR')}
-								{pick.destacado && <span class="pick-badge">{pick.destacado}</span>}
-							</p>
-							<a
-								class="pick-link"
-								href={pick.link}
-								target="_blank"
-								rel="nofollow sponsored noopener"
-							>
-								Ver oferta
-							</a>
-							<a class="pick-nota" href={`/${destacada.data.sector}/${destacada.id}`}>
-								De la nota: {destacada.data.title}
-							</a>
-						</aside>
-					)
-				}
-			</section>
-
-			<section class="sectores">
-				<h2>Por categoría</h2>
-				<div class="sectores-grid">
-					{
-						sectores.map((s) =>
-							s.activo ? (
-								<a class="sector-card activo" href={`/${s.key}`}>
-									<span class="sector-nombre">{s.label}</span>
-									<span class="sector-desc">{s.desc}</span>
-									<span class="sector-cantidad">
-										{s.cantidad} {s.cantidad === 1 ? 'nota' : 'notas'}
-									</span>
-								</a>
-							) : (
-								<div class="sector-card">
-									<span class="sector-nombre">{s.label}</span>
-									<span class="sector-desc">{s.desc}</span>
-									<span class="sector-pronto">Pronto</span>
-								</div>
-							),
-						)
-					}
-				</div>
-			</section>
-
-			<section class="notas">
-				<h2>Lo último</h2>
-				{
-					reviews.length === 0 ? (
-						<p class="vacio">Todavía no hay notas publicadas.</p>
+	<section class="sectores">
+		<h2>Por categoría</h2>
+		<div class="sectores-grid">
+			{
+				sectores.map((s) =>
+					s.activo ? (
+						<a class="sector-card activo" href={`/${s.key}`}>
+							<span class="sector-nombre">{s.label}</span>
+							<span class="sector-desc">{s.desc}</span>
+							<span class="sector-cantidad">
+								{s.cantidad} {s.cantidad === 1 ? 'nota' : 'notas'}
+							</span>
+						</a>
 					) : (
-						<div class="notas-grid">
-							{reviews.map((review) => {
-								const precioLista = precios(review);
-								const desde = precioLista?.[0]?.precioNum;
-								return (
-									<a class="nota-card" href={`/${review.data.sector}/${review.id}`}>
-										<span class="nota-sector">{sectorLabel[review.data.sector]}</span>
-										<h3>{review.data.title}</h3>
-										<p class="nota-resumen">{review.data.resumen}</p>
-										<div class="nota-footer">
-											{desde && <span class="nota-precio">Desde ${desde.toLocaleString('es-AR')}</span>}
-											<span class="nota-fecha">{fecha(review.data.fecha)}</span>
-										</div>
-									</a>
-								);
-							})}
+						<div class="sector-card">
+							<span class="sector-nombre">{s.label}</span>
+							<span class="sector-desc">{s.desc}</span>
+							<span class="sector-pronto">Pronto</span>
 						</div>
-					)
-				}
-			</section>
+					),
+				)
+			}
+		</div>
+	</section>
 
-			<section class="confianza">
-				<h2>¿Por qué confiar en esto?</h2>
-				<p>
-					No pruebo todos los productos que salen: sería mentira decir que sí. Lo que hago es
-					cruzar precio, valoraciones reales de compradores y el historial de la categoría antes
-					de armar cada nota. Si algo no me convence, no lo publico.
-				</p>
-				<p>
-					Los links de este sitio son de afiliado — si comprás desde acá, me llega una comisión
-					chica que no te cuesta nada extra a vos, y es lo que permite mantener esto activo.
-				</p>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+	<section class="notas">
+		<h2>Lo último</h2>
+		{
+			reviews.length === 0 ? (
+				<p class="vacio">Todavía no hay notas publicadas.</p>
+			) : (
+				<div class="notas-grid">
+					{reviews.map((review) => (
+						<ReviewCard review={review} />
+					))}
+				</div>
+			)
+		}
+	</section>
+
+	<section class="confianza">
+		<h2>¿Por qué confiar en esto?</h2>
+		<p>
+			No pruebo todos los productos que salen: sería mentira decir que sí. Lo que hago es cruzar
+			precio, valoraciones reales de compradores y el historial de la categoría antes de armar
+			cada nota. Si algo no me convence, no lo publico.
+		</p>
+		<p>
+			Los links de este sitio son de afiliado — si comprás desde acá, me llega una comisión chica
+			que no te cuesta nada extra a vos, y es lo que permite mantener esto activo.
+		</p>
+	</section>
+</BaseLayout>
 
 <style>
-	main {
-		width: 100%;
-		max-width: 1100px;
-		padding: 0 1.5em 4em;
-	}
-
 	.hero {
 		display: grid;
 		grid-template-columns: 1.3fr 1fr;
@@ -357,51 +307,6 @@ function fecha(d: Date) {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 		gap: 1.2em;
-	}
-	.nota-card {
-		display: flex;
-		flex-direction: column;
-		padding: 1.3em;
-		border: 1px solid rgb(var(--gray-light));
-		border-radius: 8px;
-		background: #fff;
-		text-decoration: none;
-		color: inherit;
-	}
-	.nota-card:hover {
-		border-color: var(--accent);
-	}
-	.nota-sector {
-		font-size: 0.7em;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--accent);
-		font-weight: 700;
-		margin-bottom: 0.5em;
-	}
-	.nota-card h3 {
-		font-size: 1.1em;
-		margin: 0 0 0.4em;
-		color: rgb(var(--black));
-	}
-	.nota-resumen {
-		font-size: 0.9em;
-		color: rgb(var(--gray-dark));
-		flex: 1;
-	}
-	.nota-footer {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-top: 1em;
-		font-size: 0.8em;
-	}
-	.nota-precio {
-		font-weight: 700;
-		color: rgb(var(--black));
-	}
-	.nota-fecha {
-		color: rgb(var(--gray));
 	}
 	.vacio {
 		color: rgb(var(--gray));
