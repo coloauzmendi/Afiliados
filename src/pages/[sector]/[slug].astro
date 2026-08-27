@@ -84,7 +84,11 @@ const productos = review.data.productos?.map((p) => ({
 		color: var(--accent);
 	}
 	.review-head {
-		max-width: 760px;
+		max-width: 100%;
+		background: var(--yellow-soft);
+		border: 1px solid var(--yellow);
+		border-radius: 10px;
+		padding: 1.6em 1.8em;
 	}
 	.sector-pill {
 		display: inline-block;
@@ -98,11 +102,13 @@ const productos = review.data.productos?.map((p) => ({
 	.review-head h1 {
 		margin: 0 0 0.4em;
 		line-height: 1.15;
+		max-width: 30ch;
 	}
 	.resumen {
 		font-size: 1.1em;
 		color: rgb(var(--gray-dark));
 		margin: 0 0 0.4em;
+		max-width: 60ch;
 	}
 	.fecha {
 		font-size: 0.85em;
@@ -111,6 +117,10 @@ const productos = review.data.productos?.map((p) => ({
 	}
 	.comparativa {
 		margin: 1.5em 0 3em;
+		background: var(--yellow-soft);
+		border: 1px solid var(--yellow);
+		border-radius: 10px;
+		padding: 1.6em;
 	}
 	.cta {
 		display: inline-block;

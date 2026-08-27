@@ -1,11 +1,14 @@
 ---
-import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import LogoMark from '../assets/logo-mark.svg';
 ---
 
 <header>
 	<nav>
-		<a href="/" class="brand"><span class="mark"></span>{SITE_TITLE}</a>
+		<a href="/" class="brand">
+			<img src={LogoMark.src} width="30" height="30" alt="" class="mark" />
+			<span class="brand-ahorr">Ahorr</span><span class="brand-ando">ando</span>
+		</a>
 		<div class="internal-links">
 			<HeaderLink href="/">Inicio</HeaderLink>
 			<HeaderLink href="/tecnologia">Tecnología</HeaderLink>
@@ -43,11 +46,13 @@ import HeaderLink from './HeaderLink.astro';
 		padding: 1em 0;
 	}
 	.mark {
-		display: inline-block;
-		width: 0.7em;
-		height: 0.7em;
-		border-radius: 3px;
-		background: var(--yellow);
+		display: block;
+	}
+	.brand-ahorr {
+		color: var(--accent);
+	}
+	.brand-ando {
+		color: var(--yellow-dark);
 	}
 	.internal-links {
 		display: flex;

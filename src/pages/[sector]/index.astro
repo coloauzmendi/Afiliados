@@ -28,11 +28,14 @@ const ordenadas = [...reviews].sort((a, b) => b.data.fecha.valueOf() - a.data.fe
 	wide
 >
 	<nav class="breadcrumb"><a href="/">Inicio</a> / {label}</nav>
-	<h1>{label}</h1>
-	<p class="intro">
-		{ordenadas.length} {ordenadas.length === 1 ? 'nota publicada' : 'notas publicadas'} en esta
-		categoría.
-	</p>
+
+	<header class="cabecera">
+		<h1>{label}</h1>
+		<p class="intro">
+			{ordenadas.length} {ordenadas.length === 1 ? 'nota publicada' : 'notas publicadas'} en esta
+			categoría.
+		</p>
+	</header>
 
 	<div class="grid">
 		{ordenadas.map((review) => <ReviewCard review={review} />)}
@@ -51,12 +54,19 @@ const ordenadas = [...reviews].sort((a, b) => b.data.fecha.valueOf() - a.data.fe
 	.breadcrumb a:hover {
 		color: var(--accent);
 	}
-	h1 {
+	.cabecera {
+		background: var(--yellow-soft);
+		border: 1px solid var(--yellow);
+		border-radius: 10px;
+		padding: 1.6em 1.8em;
+		margin-bottom: 2em;
+	}
+	.cabecera h1 {
 		margin-bottom: 0.2em;
 	}
 	.intro {
-		color: rgb(var(--gray));
-		margin-bottom: 2em;
+		color: rgb(var(--gray-dark));
+		margin: 0;
 	}
 	.grid {
 		display: grid;

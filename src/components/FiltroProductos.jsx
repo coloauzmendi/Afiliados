@@ -5,7 +5,7 @@ function IconoAuricular() {
     <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true">
       <path
         fill="none"
-        stroke="#c7c7cf"
+        stroke="#9fb3d9"
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -114,7 +114,7 @@ export default function FiltroProductos({ productos }) {
           align-items: center;
           justify-content: center;
           height: 200px;
-          background: #fafafa;
+          background: #eef3fb;
           border-bottom: 1px solid rgb(var(--gray-light));
         }
         .producto-imagen img {
