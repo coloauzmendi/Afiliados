@@ -24,20 +24,6 @@ productos:
     destacado: "Llega gratis mañana"
 ---
 
-## Cómo elegimos estos auriculares
+## Cable o inalámbricos
 
-Miramos las opciones más vendidas y mejor calificadas de Mercado Libre Argentina en la categoría gaming, cruzando precio, tipo de conexión (cable vs. inalámbrico) y qué dicen las reseñas reales de compradores.
-
-## Con cable o inalámbricos: la primera decisión
-
-Con cable son más baratos a igual calidad, no tienen lag y no dependés de batería. Inalámbricos suman comodidad y libertad de movimiento, pero cuestan más. Si jugás competitivo, cable. Si priorizás comodidad, inalámbrico.
-
-## Los 5 mejores según presupuesto y uso
-
-[Acá desarrollás 1-2 párrafos por cada producto de la lista de arriba: para quién es, qué lo distingue, qué esperar del precio]
-
-## Nuestra recomendación final
-
-[Tu conclusión: cuál elegirías vos según el tipo de jugador]
-
-*Este artículo contiene links de afiliado a Mercado Libre. Si comprás a través de ellos, recibimos una comisión pequeña sin costo extra para vos.*
+Con cable son más baratos a igual calidad y no dependés de batería — la mejor opción si jugás competitivo. Los inalámbricos suman comodidad para el día a día, pero cuestan un poco más.

@@ -21,6 +21,7 @@ const reviews = defineCollection({
           precioAprox: z.string(),
           link: z.string().url(),
           destacado: z.string(), // ej: "mejor relación precio/calidad"
+          imagen: z.string().url().optional(), // foto del producto (URL directa)
         }),
       )
       .optional(),

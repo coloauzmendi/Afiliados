@@ -1,119 +1,178 @@
 import { useState } from "react";
 
+function IconoAuricular() {
+  return (
+    <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true">
+      <path
+        fill="none"
+        stroke="#c7c7cf"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4 13.5V12a8 8 0 0 1 16 0v1.5M4 13.5a2 2 0 0 0-2 2V17a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1H4Zm16 0a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-1a1 1 0 0 1-1-1v-4.5a1 1 0 0 1 1-1h1Z"
+      />
+    </svg>
+  );
+}
+
 export default function FiltroProductos({ productos }) {
   const [orden, setOrden] = useState("relevancia");
 
   const productosOrdenados = [...productos].sort((a, b) => {
     if (orden === "precio-asc") return a.precio - b.precio;
     if (orden === "precio-desc") return b.precio - a.precio;
+    if (orden === "ofertas") return (b.badge ? 1 : 0) - (a.badge ? 1 : 0);
     return 0;
   });
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif" }}>
-      <div style={{ marginBottom: "1.5rem" }}>
-        <label style={{ marginRight: "0.5rem", fontWeight: "bold" }}>
-          Ordenar por:
-        </label>
+    <div className="filtro-productos">
+      <div className="filtro-barra">
+        <label htmlFor="orden-productos">Ordenar por:</label>
         <select
+          id="orden-productos"
           value={orden}
           onChange={(e) => setOrden(e.target.value)}
-          style={{
-            padding: "0.5rem",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-          }}
         >
           <option value="relevancia">Relevancia</option>
+          <option value="ofertas">Con descuento primero</option>
           <option value="precio-asc">Precio: menor a mayor</option>
           <option value="precio-desc">Precio: mayor a menor</option>
         </select>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-          gap: "1rem",
-        }}
-      >
+      <div className="grilla-productos">
         {productosOrdenados.map((p) => (
-          <div
-            key={p.id}
-            style={{
-              border: "1px solid #e5e5e5",
-              borderRadius: "8px",
-              padding: "1rem",
-              background: "#fff",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <div>
-              {p.badge && (
-                <span
-                  style={{
-                    background: "#fff8e6",
-                    color: "#a35c00",
-                    fontSize: "0.7rem",
-                    fontWeight: "bold",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "3px",
-                    display: "inline-block",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {p.badge.toUpperCase()}
-                </span>
+          <div className="producto-card" key={p.id}>
+            <div className="producto-imagen">
+              {p.imagen ? (
+                <img src={p.imagen} alt={p.nombre} loading="lazy" />
+              ) : (
+                <IconoAuricular />
               )}
-              <h3
-                style={{
-                  fontSize: "0.95rem",
-                  fontWeight: "normal",
-                  margin: "0 0 0.5rem 0",
-                  color: "#333",
-                }}
-              >
-                {p.nombre}
-              </h3>
-              <p
-                style={{
-                  fontSize: "1.4rem",
-                  fontWeight: "600",
-                  margin: "0 0 0.3rem 0",
-                  color: "#000",
-                }}
-              >
-                ${p.precio.toLocaleString("es-AR")}
-              </p>
-              <p style={{ fontSize: "0.8rem", color: "#00a650", margin: 0 }}>
-                Envío gratis
-              </p>
+            </div>
+            <div className="producto-info">
+              {p.badge && <span className="producto-badge">{p.badge.toUpperCase()}</span>}
+              <h3 className="producto-nombre">{p.nombre}</h3>
+              <p className="producto-precio">${p.precio.toLocaleString("es-AR")}</p>
+              <p className="producto-envio">Envío gratis</p>
             </div>
             <a
+              className="producto-cta"
               href={p.link}
               target="_blank"
               rel="nofollow sponsored noopener"
-              style={{
-                marginTop: "1rem",
-                display: "block",
-                textAlign: "center",
-                background: "#3483fa",
-                color: "#fff",
-                padding: "0.7rem",
-                borderRadius: "6px",
-                textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-              }}
             >
               Ver oferta
             </a>
           </div>
         ))}
       </div>
+
+      <style>{`
+        .filtro-productos {
+          font-family: var(--font-atkinson, sans-serif);
+        }
+        .filtro-barra {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          margin-bottom: 1.5rem;
+          font-size: 0.95rem;
+        }
+        .filtro-barra label {
+          font-weight: 700;
+          color: rgb(var(--black));
+        }
+        .filtro-barra select {
+          padding: 0.5rem 0.7rem;
+          border-radius: 6px;
+          border: 1px solid rgb(var(--gray-light));
+          background: #fff;
+          font-size: 0.95rem;
+        }
+        .grilla-productos {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 1.25rem;
+        }
+        .producto-card {
+          display: flex;
+          flex-direction: column;
+          border: 1px solid rgb(var(--gray-light));
+          border-radius: 10px;
+          background: #fff;
+          overflow: hidden;
+          transition: box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+        .producto-card:hover {
+          border-color: var(--accent);
+          box-shadow: var(--box-shadow);
+        }
+        .producto-imagen {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 200px;
+          background: #fafafa;
+          border-bottom: 1px solid rgb(var(--gray-light));
+        }
+        .producto-imagen img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 1rem;
+          border-radius: 0;
+        }
+        .producto-info {
+          padding: 1.25rem 1.25rem 0.5rem;
+          flex: 1;
+        }
+        .producto-badge {
+          display: inline-block;
+          background: var(--yellow);
+          color: rgb(var(--black));
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 0.25rem 0.6rem;
+          border-radius: 4px;
+          margin-bottom: 0.6rem;
+        }
+        .producto-nombre {
+          font-size: 1rem;
+          font-weight: 400;
+          margin: 0 0 0.5rem 0;
+          color: rgb(var(--gray-dark));
+          line-height: 1.35;
+        }
+        .producto-precio {
+          font-size: 1.7rem;
+          font-weight: 700;
+          margin: 0 0 0.3rem 0;
+          color: rgb(var(--black));
+        }
+        .producto-envio {
+          font-size: 0.85rem;
+          color: var(--accent);
+          margin: 0 0 0.5rem;
+          font-weight: 600;
+        }
+        .producto-cta {
+          display: block;
+          text-align: center;
+          background: var(--yellow);
+          color: rgb(var(--black));
+          padding: 0.9rem;
+          margin: 0.75rem 1.25rem 1.25rem;
+          border-radius: 6px;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 0.95rem;
+        }
+        .producto-cta:hover {
+          background: var(--yellow-dark);
+        }
+      `}</style>
     </div>
   );
 }

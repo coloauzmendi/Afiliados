@@ -22,6 +22,7 @@ const productos = review.data.productos?.map((p) => ({
 	precio: parsePrecio(p.precioAprox),
 	badge: p.destacado,
 	link: p.link,
+	imagen: p.imagen,
 }));
 ---
 
@@ -30,43 +31,44 @@ const productos = review.data.productos?.map((p) => ({
 		<a href="/">Inicio</a> / <a href={`/${review.data.sector}`}>{label}</a> / {review.data.title}
 	</nav>
 
-	<article class="review">
+	<header class="review-head">
 		<span class="sector-pill">{label}</span>
 		<h1>{review.data.title}</h1>
 		<p class="resumen">{review.data.resumen}</p>
 		<p class="fecha">Actualizado el {formatFecha(review.data.fecha)}</p>
+	</header>
 
+	{
+		productos && productos.length > 0 && (
+			<section class="comparativa">
+				<FiltroProductos productos={productos} client:load />
+			</section>
+		)
+	}
+
+	{
+		!productos && review.data.linkAfiliado && (
+			<a
+				class="cta"
+				href={review.data.linkAfiliado}
+				target="_blank"
+				rel="nofollow sponsored noopener"
+			>
+				Ver oferta
+			</a>
+		)
+	}
+
+	<div class="review-body">
 		<div class="prose">
 			<Content />
 		</div>
-
-		{
-			productos && productos.length > 0 && (
-				<section class="comparativa">
-					<h2>Comparativa de precios</h2>
-					<FiltroProductos productos={productos} client:load />
-				</section>
-			)
-		}
-
-		{
-			!productos && review.data.linkAfiliado && (
-				<a
-					class="cta"
-					href={review.data.linkAfiliado}
-					target="_blank"
-					rel="nofollow sponsored noopener"
-				>
-					Ver oferta
-				</a>
-			)
-		}
 
 		<p class="disclaimer">
 			Este artículo puede contener links de afiliado. Si comprás a través de ellos, nos llega una
 			comisión chica que no te cuesta nada extra a vos.
 		</p>
-	</article>
+	</div>
 </BaseLayout>
 
 <style>
@@ -81,9 +83,8 @@ const productos = review.data.productos?.map((p) => ({
 	.breadcrumb a:hover {
 		color: var(--accent);
 	}
-	.review {
+	.review-head {
 		max-width: 760px;
-		padding-bottom: 4em;
 	}
 	.sector-pill {
 		display: inline-block;
@@ -94,7 +95,7 @@ const productos = review.data.productos?.map((p) => ({
 		font-weight: 700;
 		margin-bottom: 0.6em;
 	}
-	.review h1 {
+	.review-head h1 {
 		margin: 0 0 0.4em;
 		line-height: 1.15;
 	}
@@ -108,33 +109,33 @@ const productos = review.data.productos?.map((p) => ({
 		color: rgb(var(--gray));
 		margin: 0 0 1.5em;
 	}
+	.comparativa {
+		margin: 1.5em 0 3em;
+	}
+	.cta {
+		display: inline-block;
+		margin: 0.5em 0 3em;
+		background: var(--yellow);
+		color: rgb(var(--black));
+		padding: 0.9em 1.8em;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: 700;
+		font-size: 1.05em;
+	}
+	.cta:hover {
+		background: var(--yellow-dark);
+	}
+	.review-body {
+		max-width: 760px;
+		padding-bottom: 4em;
+	}
 	.prose {
 		color: rgb(var(--gray-dark));
 	}
 	.prose :global(h2) {
 		font-size: 1.3em;
-		margin-top: 1.8em;
-	}
-	.comparativa {
-		margin-top: 2.5em;
-	}
-	.comparativa h2 {
-		font-size: 1.3em;
-		margin-bottom: 1em;
-	}
-	.cta {
-		display: inline-block;
 		margin-top: 1.5em;
-		background: var(--accent);
-		color: #fff;
-		padding: 0.8em 1.6em;
-		border-radius: 6px;
-		text-decoration: none;
-		font-weight: 600;
-	}
-	.cta:hover {
-		background: var(--accent-dark);
-		color: #fff;
 	}
 	.disclaimer {
 		font-size: 0.8em;
@@ -142,6 +143,6 @@ const productos = review.data.productos?.map((p) => ({
 		font-style: italic;
 		border-top: 1px solid rgb(var(--gray-light));
 		padding-top: 1.2em;
-		margin-top: 3em;
+		margin-top: 2em;
 	}
 </style>

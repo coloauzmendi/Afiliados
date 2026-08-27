@@ -168,16 +168,16 @@ const pick = destacada?.data.productos
 	}
 	.btn {
 		display: inline-block;
-		background: var(--accent);
-		color: #fff;
+		background: var(--yellow);
+		color: rgb(var(--black));
 		padding: 0.75em 1.4em;
 		border-radius: 6px;
 		text-decoration: none;
-		font-weight: 600;
+		font-weight: 700;
 	}
 	.btn:hover {
-		background: var(--accent-dark);
-		color: #fff;
+		background: var(--yellow-dark);
+		color: rgb(var(--black));
 	}
 	.hero-nota {
 		font-size: 0.85em;
@@ -216,8 +216,8 @@ const pick = destacada?.data.productos
 	.pick-badge {
 		font-size: 0.4em;
 		font-weight: 700;
-		background: #fff4e6;
-		color: var(--warm);
+		background: var(--yellow-soft);
+		color: var(--yellow-dark);
 		padding: 0.3em 0.6em;
 		border-radius: 4px;
 		text-transform: uppercase;
@@ -225,14 +225,17 @@ const pick = destacada?.data.productos
 	.pick-link {
 		display: block;
 		text-align: center;
-		background: rgb(var(--black));
-		color: #fff;
+		background: var(--yellow);
+		color: rgb(var(--black));
 		padding: 0.6em;
 		border-radius: 6px;
 		text-decoration: none;
-		font-weight: 600;
+		font-weight: 700;
 		font-size: 0.9em;
 		margin-bottom: 0.8em;
+	}
+	.pick-link:hover {
+		background: var(--yellow-dark);
 	}
 	.pick-nota {
 		display: block;
@@ -272,13 +275,18 @@ const pick = destacada?.data.productos
 		gap: 0.4em;
 		padding: 1.2em;
 		border: 1px solid rgb(var(--gray-light));
+		border-top: 3px solid rgb(var(--gray-light));
 		border-radius: 8px;
 		background: #fff;
 		text-decoration: none;
 		color: inherit;
 	}
+	a.sector-card.activo {
+		border-top-color: var(--yellow);
+	}
 	a.sector-card.activo:hover {
 		border-color: var(--accent);
+		border-top-color: var(--yellow);
 	}
 	.sector-card:not(.activo) {
 		opacity: 0.6;

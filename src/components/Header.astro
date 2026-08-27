@@ -5,7 +5,7 @@ import HeaderLink from './HeaderLink.astro';
 
 <header>
 	<nav>
-		<a href="/" class="brand">{SITE_TITLE}</a>
+		<a href="/" class="brand"><span class="mark"></span>{SITE_TITLE}</a>
 		<div class="internal-links">
 			<HeaderLink href="/">Inicio</HeaderLink>
 			<HeaderLink href="/tecnologia">Tecnología</HeaderLink>
@@ -20,8 +20,8 @@ import HeaderLink from './HeaderLink.astro';
 	header {
 		margin: 0;
 		padding: 0 1.5em;
-		background: var(--cream);
-		border-bottom: 1px solid rgb(var(--gray-light));
+		background: #fff;
+		border-bottom: 4px solid var(--yellow);
 	}
 	nav {
 		display: flex;
@@ -32,12 +32,22 @@ import HeaderLink from './HeaderLink.astro';
 		flex-wrap: wrap;
 	}
 	.brand {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
 		font-size: 1.15em;
 		font-weight: 700;
 		letter-spacing: -0.02em;
 		color: rgb(var(--black));
 		text-decoration: none;
 		padding: 1em 0;
+	}
+	.mark {
+		display: inline-block;
+		width: 0.7em;
+		height: 0.7em;
+		border-radius: 3px;
+		background: var(--yellow);
 	}
 	.internal-links {
 		display: flex;

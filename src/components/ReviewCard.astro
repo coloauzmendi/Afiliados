@@ -17,7 +17,7 @@ const desde = review.data.productos?.length
 	<h3>{review.data.title}</h3>
 	<p class="nota-resumen">{review.data.resumen}</p>
 	<div class="nota-footer">
-		{desde !== undefined && <span class="nota-precio">Desde {formatPrecio(desde)}</span>}
+		{desde !== undefined && <span class="nota-precio">desde {formatPrecio(desde)}</span>}
 		<span class="nota-fecha">{formatFecha(review.data.fecha)}</span>
 	</div>
 </a>
@@ -28,6 +28,7 @@ const desde = review.data.productos?.length
 		flex-direction: column;
 		padding: 1.3em;
 		border: 1px solid rgb(var(--gray-light));
+		border-top: 3px solid var(--yellow);
 		border-radius: 8px;
 		background: #fff;
 		text-decoration: none;
@@ -35,6 +36,7 @@ const desde = review.data.productos?.length
 	}
 	.nota-card:hover {
 		border-color: var(--accent);
+		border-top-color: var(--yellow);
 	}
 	.nota-sector {
 		font-size: 0.7em;
@@ -64,6 +66,9 @@ const desde = review.data.productos?.length
 	.nota-precio {
 		font-weight: 700;
 		color: rgb(var(--black));
+		background: var(--yellow-soft);
+		padding: 0.2em 0.5em;
+		border-radius: 4px;
 	}
 	.nota-fecha {
 		color: rgb(var(--gray));
