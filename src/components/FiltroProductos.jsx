@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function IconoSinImagen() {
   return (
@@ -26,8 +26,63 @@ function IconoSinImagen() {
   );
 }
 
+function mensajeCompartir(p) {
+  const precio = `$${p.precio.toLocaleString("es-AR")}`;
+  const destacado = p.badge ? ` (${p.badge})` : "";
+  return `🔥 ${p.nombre} desde ${precio}${destacado} → mirá todas las ofertas en Ahorrando`;
+}
+
+function BotonesCompartir({ producto }) {
+  const [linkPagina, setLinkPagina] = useState("");
+
+  useEffect(() => {
+    setLinkPagina(window.location.href);
+  }, []);
+
+  if (!linkPagina) return null;
+
+  const texto = mensajeCompartir(producto);
+  const urlX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(linkPagina)}`;
+  const urlWhatsapp = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${texto} ${linkPagina}`)}`;
+  const urlTelegram = `https://t.me/share/url?url=${encodeURIComponent(linkPagina)}&text=${encodeURIComponent(texto)}`;
+
+  return (
+    <div className="compartir-fila">
+      <span className="compartir-label">Compartir:</span>
+      <a className="compartir-btn btn-x" href={urlX} target="_blank" rel="noopener noreferrer">
+        X
+      </a>
+      <a
+        className="compartir-btn btn-whatsapp"
+        href={urlWhatsapp}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        WhatsApp
+      </a>
+      <a
+        className="compartir-btn btn-telegram"
+        href={urlTelegram}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Telegram
+      </a>
+    </div>
+  );
+}
+
 export default function FiltroProductos({ productos }) {
   const [orden, setOrden] = useState("relevancia");
+  const [panelActivo, setPanelActivo] = useState(false);
+
+  useEffect(() => {
+    try {
+      setPanelActivo(localStorage.getItem("panelActivo") === "1");
+    } catch {
+      // localStorage no disponible (modo privado, etc.) — sin panel, no pasa nada.
+    }
+  }, []);
 
   const productosOrdenados = [...productos].sort((a, b) => {
     if (orden === "precio-asc") return a.precio - b.precio;
@@ -76,6 +131,7 @@ export default function FiltroProductos({ productos }) {
             >
               Ver oferta
             </a>
+            {panelActivo && <BotonesCompartir producto={p} />}
           </div>
         ))}
       </div>
@@ -181,6 +237,36 @@ export default function FiltroProductos({ productos }) {
         }
         .producto-cta:hover {
           background: var(--yellow-dark);
+        }
+        .compartir-fila {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0 1.25rem 1.25rem;
+          margin-top: -0.5rem;
+        }
+        .compartir-label {
+          font-size: 0.75rem;
+          color: rgb(var(--gray));
+          margin-right: 0.2rem;
+        }
+        .compartir-btn {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #fff;
+          text-decoration: none;
+          padding: 0.3rem 0.6rem;
+          border-radius: 4px;
+        }
+        .btn-x {
+          background: #000;
+        }
+        .btn-whatsapp {
+          background: #25d366;
+        }
+        .btn-telegram {
+          background: #26a5e4;
         }
       `}</style>
     </div>

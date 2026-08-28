@@ -32,9 +32,17 @@ const productosParaFiltro = productos.map((p) => ({
 	link: p.link,
 	imagen: p.imagen,
 }));
+
+// Para la vista previa al compartir el link (Open Graph / Twitter Card).
+const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 ---
 
-<BaseLayout title={`${subcategoria.title} — Ahorrando`} description={subcategoria.resumen} wide>
+<BaseLayout
+	title={`${subcategoria.title} — Ahorrando`}
+	description={subcategoria.resumen}
+	image={imagenPortada}
+	wide
+>
 	<nav class="breadcrumb">
 		<a href="/">Inicio</a> / <a href={`/${subcategoria.sector}`}>{label}</a> / {subcategoria.title}
 	</nav>
