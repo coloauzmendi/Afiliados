@@ -15,6 +15,7 @@ export interface Subcategoria {
 
 export interface SubcategoriaConDesde extends Subcategoria {
 	desde: number | null;
+	imagenPortada: string | null;
 }
 
 export interface Producto {
@@ -86,11 +87,21 @@ export async function getSubcategoriasConDesde(): Promise<SubcategoriaConDesde[]
 	const [subcategorias, productos] = await Promise.all([getSubcategorias(), getTodosLosProductos()]);
 
 	const minPorSlug = new Map<string, number>();
+	const imagenPorSlug = new Map<string, string>();
 	for (const p of productos) {
-		if (p.precio <= 0) continue; // ignora placeholders sin precio cargado
-		const actual = minPorSlug.get(p.subcategoriaSlug);
-		if (actual === undefined || p.precio < actual) minPorSlug.set(p.subcategoriaSlug, p.precio);
+		if (p.precio > 0) {
+			const actual = minPorSlug.get(p.subcategoriaSlug);
+			if (actual === undefined || p.precio < actual) minPorSlug.set(p.subcategoriaSlug, p.precio);
+		}
+		// La imagen de portada es la del primer producto (por orden) que ya tenga una cargada.
+		if (p.imagen && !imagenPorSlug.has(p.subcategoriaSlug)) {
+			imagenPorSlug.set(p.subcategoriaSlug, p.imagen);
+		}
 	}
 
-	return subcategorias.map((s) => ({ ...s, desde: minPorSlug.get(s.slug) ?? null }));
+	return subcategorias.map((s) => ({
+		...s,
+		desde: minPorSlug.get(s.slug) ?? null,
+		imagenPortada: imagenPorSlug.get(s.slug) ?? null,
+	}));
 }

@@ -18,3 +18,9 @@ export function formatPrecio(n: number): string {
 export function formatFecha(d: Date): string {
 	return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
+
+/** "cargadores-y-accesorios" -> "Cargadores y accesorios" */
+export function nombreCorto(slug: string): string {
+	const texto = slug.replace(/-/g, ' ');
+	return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
