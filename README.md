@@ -38,12 +38,20 @@ Los productos y las notas ("subcategorías") viven en dos tablas de MySQL:
   pertenece. Campos: `nombre`, `precio` (número entero en pesos), `link` (el de afiliado), `destacado`
   (texto corto tipo "25% OFF") e `imagen` (URL directa a la foto, opcional).
 
-Para cargar productos reales, conectate a la base con MySQL Workbench (o el cliente que uses) y hacé
-`UPDATE`/`INSERT` sobre `productos`. El sitio lee todo de nuevo cada vez que se vuelve a generar
+**Forma rápida (recomendada)**: `npm run agregar-producto`. Te pide el link de afiliado (el que sacás
+con "Compartir" en el panel de afiliados de Mercado Libre) y busca solo el nombre, precio e imagen del
+producto con la API pública de Mercado Libre — vos solo confirmás y elegís la subcategoría y el
+destacado. Ver `scripts/agregar-producto.js`.
+
+**Forma manual**: conectate a la base con MySQL Workbench (o el cliente que uses) y hacé `UPDATE`/`INSERT`
+sobre `productos` directamente.
+
+Cualquiera de las dos formas: el sitio lee todo de nuevo cada vez que se vuelve a generar
 (`npm run build` / cada deploy) — no hace falta tocar código para sumar o editar productos.
 
-Para sumar una subcategoría nueva: un `INSERT` en `subcategorias` con un `slug` único (se usa en la URL,
-ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
+Para sumar una subcategoría nueva (por ahora solo por SQL, no tiene forma rápida todavía): un `INSERT`
+en `subcategorias` con un `slug` único (se usa en la URL, ej. `tecnologia/mi-slug`) y sus productos
+correspondientes en `productos`.
 
 ## Estructura
 
@@ -51,6 +59,8 @@ ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
 ├── db/
 │   ├── schema.sql       # CREATE TABLE de subcategorias y productos
 │   └── seed.sql         # Carga inicial (correr una sola vez)
+├── scripts/
+│   └── agregar-producto.js  # Carga rápida de productos por consola
 ├── public/
 ├── src/
 │   ├── assets/
@@ -72,3 +82,4 @@ ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
 | `npm run dev`       | Levanta el server de desarrollo en `localhost:4321` |
 | `npm run build`     | Genera el sitio de producción en `./dist/`     |
 | `npm run preview`   | Previsualiza el build de producción            |
+| `npm run agregar-producto` | Carga un producto nuevo por consola, con autocompletado desde Mercado Libre |
