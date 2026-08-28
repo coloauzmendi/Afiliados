@@ -302,7 +302,10 @@ const subcategorias = await getSubcategoriasConDesde();
 	const tarjetas = Array.from(document.querySelectorAll<HTMLAnchorElement>('.tarjeta'));
 	const puntos = Array.from(document.querySelectorAll<HTMLButtonElement>('.punto'));
 
+	let indiceActivo = 0;
+
 	function marcarActiva(index: number) {
+		indiceActivo = index;
 		tarjetas.forEach((t, i) => t.classList.toggle('activa', i === index));
 		puntos.forEach((p, i) => p.classList.toggle('activo', i === index));
 	}
@@ -324,9 +327,9 @@ const subcategorias = await getSubcategoriasConDesde();
 		document.querySelectorAll<HTMLButtonElement>('.flecha').forEach((boton) => {
 			boton.addEventListener('click', () => {
 				const dir = Number(boton.dataset.dir);
-				const gap = parseFloat(getComputedStyle(carrusel).columnGap || '0');
-				const ancho = tarjetas[0].getBoundingClientRect().width + gap;
-				carrusel.scrollBy({ left: dir * ancho, behavior: 'smooth' });
+				// Da la vuelta: si estás en la última y avanzás, volvés a la primera (y viceversa).
+				const siguiente = (indiceActivo + dir + tarjetas.length) % tarjetas.length;
+				tarjetas[siguiente].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 			});
 		});
 
