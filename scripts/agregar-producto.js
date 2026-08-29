@@ -60,8 +60,9 @@ function extraerMeta(html, propiedad) {
 	return html.match(regex)?.[1] ?? null;
 }
 
-/** Busca un precio en los bloques JSON-LD (datos estructurados) de la página. */
+/** Busca un precio en la página: primero en datos estructurados, después a lo bruto. */
 function extraerPrecioDeHtml(html) {
+	// 1) JSON-LD (datos estructurados tipo Product/Offer).
 	const bloques = html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
 	for (const [, contenido] of bloques) {
 		try {
@@ -74,7 +75,25 @@ function extraerPrecioDeHtml(html) {
 			// Bloque de JSON-LD inválido o distinto al esperado, seguimos probando.
 		}
 	}
+	// 2) Meta tag de Open Graph para e-commerce.
+	const metaPrecio = extraerMeta(html, 'product:price:amount');
+	if (metaPrecio) return Number(metaPrecio);
+	// 3) Microdata (schema.org sin JSON-LD).
+	const microdata = html.match(/itemprop=["']price["'][^>]*content=["']([\d.]+)["']/i);
+	if (microdata) return Number(microdata[1]);
+	// 4) Última opción: buscar "price":NUMERO en cualquier bloque de JS embebido en la página.
+	const generico = html.match(/"price"\s*:\s*"?(\d+(?:\.\d+)?)"?/i);
+	if (generico) return Number(generico[1]);
 	return null;
+}
+
+/** Busca un % de descuento visible en la página, o si no, un cartel de envío gratis. */
+function extraerDestacadoDeHtml(html) {
+	const descuento = html.match(/(\d{1,3})\s*%\s*(?:off|OFF|de\s*descuento)/i);
+	if (descuento) return `${descuento[1]}% OFF`;
+	const gratis = html.match(/lleg[ae][^<]{0,25}gratis/i);
+	if (gratis) return gratis[0].trim();
+	return '';
 }
 
 /** Trae nombre, precio, % de descuento e imagen desde la API pública de Mercado Libre. */
@@ -133,7 +152,7 @@ async function buscarDatosDesdeLink(link) {
 		nombre: nombre ?? '',
 		precio: precio ? Math.round(precio) : 0,
 		imagen,
-		destacadoSugerido: '',
+		destacadoSugerido: extraerDestacadoDeHtml(html),
 	};
 }
 
@@ -155,64 +174,61 @@ async function elegirSubcategoria(pool) {
 	return slug;
 }
 
-async function cargarUnProducto(pool) {
-	const slug = await elegirSubcategoria(pool);
-	const link = await preguntar('\nLink de afiliado (meli.la/...)');
+async function pedirCamposAMano(valores) {
+	const nombre = await preguntar('Nombre del producto', valores.nombre);
+	const precioTexto = await preguntar('Precio (solo números)', String(valores.precio || ''));
+	const precio = Number(precioTexto.replace(/[^0-9]/g, '')) || 0;
+	const imagen = await preguntar('URL de la imagen (Enter para dejar sin foto)', valores.imagen);
+	const destacado = await preguntar('Destacado (ej: 25% OFF)', valores.destacado);
+	return { nombre, precio, imagen, destacado };
+}
 
-	let nombre = '';
-	let precio = 0;
-	let imagen = '';
-	let destacadoSugerido = '';
-
-	console.log('\nBuscando datos del producto...');
-	try {
-		const datos = await buscarDatosDesdeLink(link);
-		if (!datos) throw new Error('No se pudo sacar ningún dato de esa página.');
-
-		nombre = datos.nombre;
-		precio = datos.precio;
-		imagen = datos.imagen ?? '';
-		destacadoSugerido = datos.destacadoSugerido;
-
-		console.log('\nEncontrado:');
-		console.log(`  Nombre: ${nombre}`);
-		console.log(`  Precio: $${precio.toLocaleString('es-AR')}`);
-		console.log(`  Imagen: ${imagen || '(sin imagen)'}`);
-	} catch (err) {
-		console.log(`\nNo se pudo autocompletar (${err.message}). Cargalo a mano:`);
-	}
-
-	nombre = await preguntar('Nombre del producto', nombre);
-	const precioTexto = await preguntar('Precio (solo números)', String(precio || ''));
-	precio = Number(precioTexto.replace(/[^0-9]/g, '')) || 0;
-	imagen = await preguntar('URL de la imagen (Enter para dejar sin foto)', imagen);
-	const destacado = await preguntar('Destacado (ej: 25% OFF)', destacadoSugerido);
-
+async function guardarProducto(pool, { slug, link, nombre, precio, imagen, destacado }) {
 	const [[{ siguienteOrden }]] = await pool.query(
 		'SELECT COALESCE(MAX(orden), 0) + 1 AS siguienteOrden FROM productos WHERE subcategoria_slug = ?',
 		[slug],
 	);
-
-	console.log('\n--- Confirmá los datos ---');
-	console.log(`Subcategoría: ${slug}`);
-	console.log(`Nombre:       ${nombre}`);
-	console.log(`Precio:       $${precio.toLocaleString('es-AR')}`);
-	console.log(`Destacado:    ${destacado || '(sin destacado)'}`);
-	console.log(`Imagen:       ${imagen || '(sin imagen)'}`);
-	console.log(`Link:         ${link}`);
-	const confirmar = await preguntar('¿Guardar? (s/n)', 's');
-
-	if (confirmar.toLowerCase() !== 's') {
-		console.log('Descartado, no se guardó nada.');
-		return;
-	}
-
 	await pool.query(
 		`INSERT INTO productos (subcategoria_slug, nombre, precio, link, destacado, imagen, orden)
 		 VALUES (?, ?, ?, ?, ?, ?, ?)`,
 		[slug, nombre, precio, link, destacado || null, imagen || null, siguienteOrden],
 	);
 	console.log('\n✅ Producto cargado.');
+}
+
+async function cargarUnProducto(pool) {
+	const slug = await elegirSubcategoria(pool);
+	const link = await preguntar('\nLink de afiliado (meli.la/...)');
+
+	console.log('\nBuscando datos del producto...');
+	let datos = null;
+	try {
+		datos = await buscarDatosDesdeLink(link);
+	} catch (err) {
+		console.log(`  No se pudo autocompletar (${err.message}).`);
+	}
+
+	let { nombre = '', precio = 0, imagen = '', destacadoSugerido: destacado = '' } = datos ?? {};
+
+	if (nombre || precio) {
+		console.log('\nEncontrado:');
+		console.log(`  Nombre:    ${nombre || '(vacío)'}`);
+		console.log(`  Precio:    ${precio ? `$${precio.toLocaleString('es-AR')}` : '(vacío)'}`);
+		console.log(`  Destacado: ${destacado || '(vacío)'}`);
+		console.log(`  Imagen:    ${imagen || '(sin imagen)'}`);
+
+		const ok = await preguntar('\n¿Está bien así? (s = guardar / n = corregir algo)', 's');
+		if (ok.toLowerCase() === 's') {
+			await guardarProducto(pool, { slug, link, nombre, precio, imagen, destacado });
+			return;
+		}
+		console.log('\nCorregí lo que haga falta (Enter para dejar el valor actual):');
+	} else {
+		console.log('  No se pudo sacar ningún dato de esa página. Cargalo a mano:');
+	}
+
+	const corregidos = await pedirCamposAMano({ nombre, precio, imagen, destacado });
+	await guardarProducto(pool, { slug, link, ...corregidos });
 }
 
 async function main() {
