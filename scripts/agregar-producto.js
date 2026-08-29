@@ -46,19 +46,35 @@ const USER_AGENT =
 	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
 	'Chrome/131.0.0.0 Safari/537.36';
 
-/** Sigue el link de afiliado (meli.la/...) hasta la página final del producto. */
-async function resolverLinkFinal(link) {
-	// Con un User-Agent de navegador de verdad: sin esto, algunos redirectores
-	// tratan las requests de scripts distinto y no redirigen igual.
-	const resp = await fetch(link, { redirect: 'follow', headers: { 'User-Agent': USER_AGENT } });
-	return resp.url;
-}
-
-/** Saca el ID de producto (ej: MLA1234567890) de una URL de Mercado Libre. */
-function extraerItemId(url) {
-	const match = url.match(/(MLA-?\d{6,})/i);
+/** Saca el ID de producto (ej: MLA1234567890) de una URL o de cualquier texto. */
+function extraerItemId(texto) {
+	if (!texto) return null;
+	const match = texto.match(/(MLA-?\d{6,})/i);
 	if (!match) return null;
 	return match[1].replace('-', '').toUpperCase();
+}
+
+/** Lee el content de una meta tag Open Graph del HTML de una página. */
+function extraerMeta(html, propiedad) {
+	const regex = new RegExp(`<meta[^>]+property=["']${propiedad}["'][^>]+content=["']([^"']+)["']`, 'i');
+	return html.match(regex)?.[1] ?? null;
+}
+
+/** Busca un precio en los bloques JSON-LD (datos estructurados) de la página. */
+function extraerPrecioDeHtml(html) {
+	const bloques = html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
+	for (const [, contenido] of bloques) {
+		try {
+			const json = JSON.parse(contenido);
+			for (const item of Array.isArray(json) ? json : [json]) {
+				const precio = item?.offers?.price ?? item?.offers?.[0]?.price;
+				if (precio) return Number(precio);
+			}
+		} catch {
+			// Bloque de JSON-LD inválido o distinto al esperado, seguimos probando.
+		}
+	}
+	return null;
 }
 
 /** Trae nombre, precio, % de descuento e imagen desde la API pública de Mercado Libre. */
@@ -82,6 +98,42 @@ async function buscarDatosProducto(itemId) {
 		precio: Math.round(data.price),
 		imagen,
 		destacadoSugerido,
+	};
+}
+
+/**
+ * Sigue el link de afiliado y trata de sacar los datos del producto, en orden:
+ * 1) si la URL final ya tiene el ID del producto, usa la API oficial (más confiable).
+ * 2) si no, busca el ID escondido en la meta tag og:url o en cualquier parte del HTML.
+ * 3) si tampoco aparece, saca lo que se pueda directo de la página (og:title,
+ *    og:image, y el precio de los datos estructurados JSON-LD si están).
+ */
+async function buscarDatosDesdeLink(link) {
+	const resp = await fetch(link, { redirect: 'follow', headers: { 'User-Agent': USER_AGENT } });
+	const urlFinal = resp.url;
+	console.log(`  Link resuelto a: ${urlFinal}`);
+	const html = await resp.text();
+
+	const itemId =
+		extraerItemId(urlFinal) ?? extraerItemId(extraerMeta(html, 'og:url')) ?? extraerItemId(html);
+
+	if (itemId) {
+		console.log(`  ID de producto encontrado: ${itemId}`);
+		const datos = await buscarDatosProducto(itemId);
+		if (datos) return datos;
+		console.log('  La API no devolvió datos para ese ID, pruebo leyendo la página directamente...');
+	}
+
+	const nombre = extraerMeta(html, 'og:title');
+	const imagen = extraerMeta(html, 'og:image');
+	const precio = extraerPrecioDeHtml(html);
+	if (!nombre && !precio) return null;
+
+	return {
+		nombre: nombre ?? '',
+		precio: precio ? Math.round(precio) : 0,
+		imagen,
+		destacadoSugerido: '',
 	};
 }
 
@@ -114,13 +166,8 @@ async function cargarUnProducto(pool) {
 
 	console.log('\nBuscando datos del producto...');
 	try {
-		const urlFinal = await resolverLinkFinal(link);
-		console.log(`  Link resuelto a: ${urlFinal}`);
-		const itemId = extraerItemId(urlFinal);
-		if (!itemId) throw new Error('No se pudo identificar el producto en esa URL.');
-
-		const datos = await buscarDatosProducto(itemId);
-		if (!datos) throw new Error('Mercado Libre no devolvió datos para ese producto.');
+		const datos = await buscarDatosDesdeLink(link);
+		if (!datos) throw new Error('No se pudo sacar ningún dato de esa página.');
 
 		nombre = datos.nombre;
 		precio = datos.precio;
