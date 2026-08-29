@@ -42,9 +42,15 @@ function getPool() {
 	});
 }
 
+const USER_AGENT =
+	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+	'Chrome/131.0.0.0 Safari/537.36';
+
 /** Sigue el link de afiliado (meli.la/...) hasta la página final del producto. */
 async function resolverLinkFinal(link) {
-	const resp = await fetch(link, { redirect: 'follow' });
+	// Con un User-Agent de navegador de verdad: sin esto, algunos redirectores
+	// tratan las requests de scripts distinto y no redirigen igual.
+	const resp = await fetch(link, { redirect: 'follow', headers: { 'User-Agent': USER_AGENT } });
 	return resp.url;
 }
 
@@ -57,7 +63,9 @@ function extraerItemId(url) {
 
 /** Trae nombre, precio, % de descuento e imagen desde la API pública de Mercado Libre. */
 async function buscarDatosProducto(itemId) {
-	const resp = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+	const resp = await fetch(`https://api.mercadolibre.com/items/${itemId}`, {
+		headers: { 'User-Agent': USER_AGENT },
+	});
 	if (!resp.ok) return null;
 	const data = await resp.json();
 
@@ -107,6 +115,7 @@ async function cargarUnProducto(pool) {
 	console.log('\nBuscando datos del producto...');
 	try {
 		const urlFinal = await resolverLinkFinal(link);
+		console.log(`  Link resuelto a: ${urlFinal}`);
 		const itemId = extraerItemId(urlFinal);
 		if (!itemId) throw new Error('No se pudo identificar el producto en esa URL.');
 
