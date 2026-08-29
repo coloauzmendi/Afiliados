@@ -9,8 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "agregar-producto": "node --env-file=.env scripts/agregar-producto.js"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.8",
