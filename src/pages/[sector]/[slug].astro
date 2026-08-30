@@ -54,6 +54,33 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 		<p class="fecha">Actualizado el {formatFecha(subcategoria.fecha)}</p>
 	</header>
 
+	<div
+		id="compartir-articulo"
+		class="compartir-articulo"
+		data-titulo={subcategoria.title}
+		data-resumen={subcategoria.resumen}
+		hidden
+	>
+		<span class="compartir-label">Compartir esta nota:</span>
+		<a id="compartir-x" class="compartir-btn btn-x" target="_blank" rel="noopener noreferrer">X</a>
+		<a
+			id="compartir-whatsapp"
+			class="compartir-btn btn-whatsapp"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			WhatsApp
+		</a>
+		<a
+			id="compartir-telegram"
+			class="compartir-btn btn-telegram"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			Telegram
+		</a>
+	</div>
+
 	{
 		productosParaFiltro.length > 0 && (
 			<section class="comparativa">
@@ -71,6 +98,43 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 		</p>
 	</div>
 </BaseLayout>
+
+<script>
+	// Botones de "compartir esta nota" — solo se muestran para el dueño del
+	// sitio (panel activado con ?panel=... en BaseLayout), para postear en X
+	// apenas se publica un artículo nuevo, sin pagar la API de X.
+	function panelActivo() {
+		try {
+			return localStorage.getItem('panelActivo') === '1';
+		} catch {
+			return false;
+		}
+	}
+
+	const contenedor = document.getElementById('compartir-articulo');
+	if (contenedor && panelActivo()) {
+		const titulo = contenedor.dataset.titulo ?? '';
+		const resumen = contenedor.dataset.resumen ?? '';
+		const texto = `🔥 ${titulo}: ${resumen} → mirá la comparativa completa en Ahorrando`;
+		const url = window.location.href;
+
+		const botonX = document.getElementById('compartir-x');
+		const botonWhatsapp = document.getElementById('compartir-whatsapp');
+		const botonTelegram = document.getElementById('compartir-telegram');
+
+		if (botonX instanceof HTMLAnchorElement) {
+			botonX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(url)}`;
+		}
+		if (botonWhatsapp instanceof HTMLAnchorElement) {
+			botonWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${texto} ${url}`)}`;
+		}
+		if (botonTelegram instanceof HTMLAnchorElement) {
+			botonTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(texto)}`;
+		}
+
+		contenedor.hidden = false;
+	}
+</script>
 
 <style>
 	.breadcrumb {
@@ -115,6 +179,35 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 		font-size: 0.85em;
 		color: rgb(var(--gray));
 		margin: 0 0 1.5em;
+	}
+	.compartir-articulo {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5em;
+		margin: 1em 0 0;
+	}
+	.compartir-label {
+		font-size: 0.8em;
+		color: rgb(var(--gray));
+		margin-right: 0.2em;
+	}
+	.compartir-btn {
+		font-size: 0.78em;
+		font-weight: 700;
+		color: #fff;
+		text-decoration: none;
+		padding: 0.35em 0.7em;
+		border-radius: 4px;
+	}
+	.btn-x {
+		background: #000;
+	}
+	.btn-whatsapp {
+		background: #25d366;
+	}
+	.btn-telegram {
+		background: #26a5e4;
 	}
 	.comparativa {
 		margin: 1.5em 0 3em;
