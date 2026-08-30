@@ -13,7 +13,8 @@ base de datos MySQL en el momento de compilar el sitio.
    ```
 
 2. Copiar `.env.example` a `.env` y completar con los datos de conexión de la base MySQL (Aiven u
-   otro proveedor):
+   otro proveedor). `PUBLIC_GA_ID` es opcional: si se completa con el ID de medición de Google
+   Analytics (`G-XXXXXXXXXX`), el sitio carga el script de analítica; si se deja vacío, no carga nada.
 
    ```sh
    cp .env.example .env

@@ -12,7 +12,7 @@ const today = new Date();
 		</p>
 		<p class="bottom">
 			&copy; {today.getFullYear()} {SITE_TITLE}. No estamos afiliados a Mercado Libre ni a ninguna
-			de las tiendas que mencionamos.
+			de las tiendas que mencionamos. · <a href="/privacidad">Política de privacidad</a>
 		</p>
 	</div>
 </footer>
@@ -38,5 +38,11 @@ const today = new Date();
 		font-size: 0.8em;
 		margin: 0;
 		color: rgba(255, 255, 255, 0.45);
+	}
+	.bottom a {
+		color: rgba(255, 255, 255, 0.65);
+	}
+	.bottom a:hover {
+		color: var(--yellow);
 	}
 </style>
