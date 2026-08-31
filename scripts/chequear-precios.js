@@ -33,9 +33,16 @@ function idDesdeImagen(imagen) {
 // Consulta el precio actual en la API pública de Mercado Libre (gratis, sin
 // necesidad de login ni de leer HTML).
 async function precioActual(idMLA) {
-	const respuesta = await fetch(`https://api.mercadolibre.com/items/${idMLA}`);
+	const respuesta = await fetch(`https://api.mercadolibre.com/items/${idMLA}`, {
+		headers: {
+			'User-Agent':
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36',
+			Accept: 'application/json',
+		},
+	});
 	if (!respuesta.ok) {
-		console.log(`  → la API respondió ${respuesta.status} para ${idMLA}`);
+		const cuerpo = await respuesta.text();
+		console.log(`  → la API respondió ${respuesta.status} para ${idMLA}: ${cuerpo.slice(0, 200)}`);
 		return null;
 	}
 	const datos = await respuesta.json();
