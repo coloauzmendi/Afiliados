@@ -18,18 +18,25 @@ if (!DB_HOST || !DB_PORT || !DB_USER || !DB_PASSWORD || !DB_NAME) {
 	process.exit(1);
 }
 
-// Saca el ID de producto de Mercado Libre (ej. "MLA1234567890") siguiendo los
-// redirects del link guardado — el link puede ser un acortador (meli.la) o
-// un link directo, el ID final siempre queda en la URL.
+// Saca el ID de producto de Mercado Libre (ej. "MLA1234567890") a partir del
+// link guardado. Los links cortos de "meli.la" no hacen un redirect HTTP
+// normal (son una página con JavaScript que intenta abrir la app), así que
+// primero probamos con la URL final después de redirects, y si no aparece
+// ahí, buscamos el ID adentro del HTML de la página — casi siempre está en
+// alguna etiqueta de metadatos (para que WhatsApp/Twitter puedan armar la
+// vista previa), sin necesidad de ejecutar JavaScript.
 async function sacarIdMLA(link) {
 	const respuesta = await fetch(link, { redirect: 'follow' });
-	const urlFinal = respuesta.url;
-	// A veces el body ya se puede descartar, pero hay que consumirlo para no
-	// dejar la conexión colgada.
-	await respuesta.body?.cancel?.();
 
-	const match = urlFinal.match(/MLA-?(\d{6,})/i);
-	return { id: match ? `MLA${match[1]}` : null, urlFinal };
+	let match = respuesta.url.match(/MLA-?(\d{6,})/i);
+	if (match) {
+		await respuesta.body?.cancel?.();
+		return { id: `MLA${match[1]}`, urlFinal: respuesta.url };
+	}
+
+	const html = await respuesta.text();
+	match = html.match(/MLA-?(\d{6,})/i);
+	return { id: match ? `MLA${match[1]}` : null, urlFinal: respuesta.url };
 }
 
 // Consulta el precio actual en la API pública de Mercado Libre (gratis, sin
