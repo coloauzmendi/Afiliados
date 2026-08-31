@@ -71,8 +71,7 @@ const ultimaRevision =
 							{subcategorias.map((sub) => (
 								<a class="card" href={`/${sub.sector}/${sub.slug}`} style={`--tint: var(--${sub.sector})`}>
 									<div class="card-cover">
-										<p class="letter">{sectorLabel(sub.sector)}</p>
-										<p class="spine">{nombreCorto(sub.slug)}</p>
+										<p class="spine">{sectorLabel(sub.sector)}</p>
 									</div>
 									<div class="card-body">
 										<h3 class="card-title">{nombreCorto(sub.slug)}</h3>
@@ -208,8 +207,8 @@ const ultimaRevision =
 	}
 
 	.block {
-		padding: 3em 0;
-		scroll-margin-top: 92px;
+		padding: 1.6em 0 2em;
+		scroll-margin-top: 72px;
 	}
 	.block-head {
 		display: flex;
@@ -217,7 +216,7 @@ const ultimaRevision =
 		align-items: baseline;
 		gap: 1.5em;
 		flex-wrap: wrap;
-		margin-bottom: 1.6em;
+		margin-bottom: 1em;
 	}
 	.eyebrow {
 		display: flex;
@@ -248,28 +247,34 @@ const ultimaRevision =
 	}
 	.carrusel {
 		display: flex;
-		gap: 1.5em;
+		gap: 1.4em;
 		overflow-x: auto;
 		scroll-snap-type: x mandatory;
 		scroll-behavior: smooth;
 		-webkit-overflow-scrolling: touch;
-		padding: 0.5em 0.2em 1em;
+		padding: 0.3em 0.2em 0.7em;
 		scrollbar-width: none;
 	}
 	.carrusel::-webkit-scrollbar {
 		display: none;
 	}
 
+	/* Cards bien horizontales: la portada es una franja angosta a la
+	   izquierda (como el lomo de un libro), el cuerpo ocupa el resto —
+	   así la card entera (título a precio) entra en la pantalla sin
+	   scroll vertical extra. */
 	.card {
 		scroll-snap-align: center;
 		flex: 0 0 auto;
-		width: min(640px, 82vw);
+		display: grid;
+		grid-template-columns: 118px 1fr;
+		width: min(860px, 86vw);
+		height: min(300px, 42vh);
+		min-height: 200px;
 		background: var(--paper);
 		color: var(--navy-900);
 		overflow: hidden;
 		text-decoration: none;
-		display: flex;
-		flex-direction: column;
 		border: 1px solid var(--paper-dim);
 		border-radius: var(--radius-lg);
 		box-shadow: var(--box-shadow);
@@ -295,10 +300,13 @@ const ultimaRevision =
 		box-shadow: 0 20px 40px -18px rgba(16, 26, 44, 0.45);
 	}
 	.card-cover {
-		height: 210px;
 		position: relative;
+		height: 100%;
 		overflow: hidden;
 		background: var(--tint);
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 	.card-cover::before {
 		content: '';
@@ -307,55 +315,45 @@ const ultimaRevision =
 		background-image: repeating-linear-gradient(45deg, rgba(16, 26, 44, 0.09) 0 1px, transparent 1px 9px);
 	}
 	.card-cover .spine {
-		position: absolute;
-		left: -0.1em;
-		bottom: -0.32em;
+		position: relative;
 		margin: 0;
 		white-space: nowrap;
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
 		font-family: var(--font-display, Georgia, serif);
 		font-style: italic;
 		font-weight: 600;
-		font-size: 5rem;
-		color: rgba(16, 26, 44, 0.18);
-		letter-spacing: -0.01em;
-	}
-	.card-cover .letter {
-		position: relative;
-		padding: 1.3em 1.5em 0;
-		margin: 0;
-		font-family: var(--font-mono, monospace);
-		font-size: 0.78em;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		color: rgba(16, 26, 44, 0.7);
+		font-size: 1.5rem;
+		letter-spacing: 0.01em;
+		color: rgba(242, 236, 221, 0.92);
 	}
 	.card-cover::after {
 		content: '';
 		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: -6px;
-		height: 12px;
-		background-image: radial-gradient(circle at 8px 8px, var(--sky) 6px, transparent 6.5px);
-		background-size: 22px 100%;
-		background-position: -11px 0;
+		top: 0;
+		bottom: 0;
+		right: -6px;
+		width: 12px;
+		background-image: radial-gradient(circle at 6px 8px, var(--paper) 6px, transparent 6.5px);
+		background-size: 100% 22px;
+		background-position: 0 -11px;
 	}
 	.card-body {
-		padding: 1.6em 1.8em 1.9em;
+		padding: 1.2em 1.6em;
 		display: flex;
 		flex-direction: column;
-		gap: 0.6em;
-		flex: 1;
+		gap: 0.5em;
+		min-width: 0;
 	}
 	.card-title {
-		font-size: 1.6em;
+		font-size: 1.3em;
 		margin: 0;
-		line-height: 1.2;
+		line-height: 1.25;
 	}
 	.card-sample {
-		font-size: 0.95em;
+		font-size: 0.88em;
 		color: #746c58;
-		line-height: 1.5;
+		line-height: 1.45;
 		margin: 0;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -364,12 +362,12 @@ const ultimaRevision =
 	}
 	.card-foot {
 		margin-top: auto;
-		padding-top: 1em;
+		padding-top: 0.7em;
 		border-top: 1px dashed #cfc7ac;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		font-size: 1em;
+		font-size: 0.95em;
 	}
 	.card-price {
 		font-family: var(--font-mono, monospace);
@@ -459,10 +457,12 @@ const ultimaRevision =
 			display: none;
 		}
 		.card {
-			width: 88vw;
+			grid-template-columns: 84px 1fr;
+			width: 92vw;
+			height: min(260px, 50vh);
 		}
-		.card-cover {
-			height: 40vw;
+		.card-cover .spine {
+			font-size: 1.15rem;
 		}
 	}
 </style>
