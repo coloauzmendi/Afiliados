@@ -1,35 +1,41 @@
 /*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
-
+  Paleta: fondo blanco celeste, ficha de papel color crema para productos,
+  navy para header/footer/placas, dorado como acento principal, cobalto
+  como acento secundario (ligado a la categoría Software). Ver SOCIAL.md
+  o la conversación de diseño para el porqué de cada color.
+*/
 :root {
-	/* Amarillo: color de marca, para CTAs y detalles de oferta. */
-	--yellow: #ffc400;
-	--yellow-dark: #e0a800;
-	--yellow-soft: #fff6d9;
-	/* Azul: acentos chicos — links, estados activos, badges de sector. */
-	--accent: #1a4b96;
-	--accent-dark: #123a75;
-	--black: 20, 20, 23;
-	--gray: 112, 112, 122;
-	--gray-light: 227, 227, 232;
-	--gray-dark: 40, 40, 46;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 20%), 0 8px 24px rgba(var(--gray), 20%),
-		0 16px 32px rgba(var(--gray), 20%);
+	--sky: #eaf2f8;
+	--sky-line: #c9dbea;
+	--navy-950: #101a2c;
+	--navy-900: #172640;
+	--navy-700: #2c3f5c;
+	--paper: #f2ecdd;
+	--paper-dim: #e3dcc8;
+	--brass: #c9a227;
+	--brass-bright: #e6c34a;
+	--slate: #52657c;
+	--mist: #93a2b8;
+	--mist-dim: #6b7c93;
+
+	/* Un tinte por sector, usado en las portadas de las fichas de categoría. */
+	--cursos: #c9a227;
+	--plantillas: #9c6b7e;
+	--software: #2e6690;
+	--ebooks: #6a5596;
+
+	--box-shadow: 0 10px 24px -18px rgba(16, 26, 44, 0.35);
 }
 body {
-	font-family: var(--font-atkinson);
+	font-family: var(--font-body, -apple-system, sans-serif);
 	margin: 0;
 	padding: 0;
 	text-align: left;
-	background: #fff;
+	background: var(--sky);
 	word-wrap: break-word;
 	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
-	font-size: 20px;
+	color: var(--navy-900);
+	font-size: 19px;
 	line-height: 1.7;
 }
 main {
@@ -45,39 +51,42 @@ h4,
 h5,
 h6 {
 	margin: 0 0 0.5rem 0;
-	color: rgb(var(--black));
-	line-height: 1.2;
+	color: var(--navy-900);
+	font-family: var(--font-display, Georgia, serif);
+	font-weight: 600;
+	line-height: 1.15;
 }
 h1 {
-	font-size: 3.052em;
+	font-size: 2.75em;
+	letter-spacing: -0.015em;
 }
 h2 {
-	font-size: 2.441em;
+	font-size: 2em;
 }
 h3 {
-	font-size: 1.953em;
+	font-size: 1.5em;
 }
 h4 {
-	font-size: 1.563em;
+	font-size: 1.25em;
 }
 h5 {
-	font-size: 1.25em;
+	font-size: 1.1em;
 }
 strong,
 b {
 	font-weight: 700;
 }
 a {
-	color: var(--accent);
+	color: var(--software);
 }
 a:hover {
-	color: var(--accent);
+	color: var(--navy-900);
 }
 p {
 	margin-bottom: 1em;
 }
 .prose p {
-	margin-bottom: 2em;
+	margin-bottom: 1.4em;
 }
 textarea {
 	width: 100%;
@@ -92,29 +101,32 @@ table {
 img {
 	max-width: 100%;
 	height: auto;
-	border-radius: 8px;
+	border-radius: 4px;
 }
 code {
+	font-family: var(--font-mono, ui-monospace, monospace);
 	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
+	background-color: var(--paper-dim);
 	border-radius: 2px;
+	font-size: 0.9em;
 }
 pre {
 	padding: 1.5em;
-	border-radius: 8px;
+	border-radius: 4px;
 }
 pre > code {
 	all: unset;
 }
 blockquote {
-	border-left: 4px solid var(--accent);
+	border-left: 3px solid var(--brass);
 	padding: 0 0 0 20px;
 	margin: 0;
-	font-size: 1.333em;
+	font-size: 1.2em;
+	color: var(--slate);
 }
 hr {
 	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
+	border-top: 1px solid var(--sky-line);
 }
 @media (max-width: 720px) {
 	body {

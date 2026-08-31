@@ -9,7 +9,7 @@ interface Props {
 const { subcategoria } = Astro.props;
 ---
 
-<a class="nota-card" href={`/${subcategoria.sector}/${subcategoria.slug}`}>
+<a class="nota-card" href={`/${subcategoria.sector}/${subcategoria.slug}`} style={`--tint: var(--${subcategoria.sector})`}>
 	<span class="nota-sector">{sectorLabel(subcategoria.sector)}</span>
 	<h3>{subcategoria.title}</h3>
 	<p class="nota-resumen">{subcategoria.resumen}</p>
@@ -30,33 +30,38 @@ const { subcategoria } = Astro.props;
 		display: flex;
 		flex-direction: column;
 		padding: 1.3em;
-		border: 1px solid rgb(var(--gray-light));
-		border-top: 3px solid var(--yellow);
-		border-radius: 8px;
-		background: #fff;
+		border: 1px solid var(--paper-dim);
+		border-top: 3px solid var(--tint);
+		background: var(--paper);
 		text-decoration: none;
-		color: inherit;
+		color: var(--navy-900);
+		box-shadow: var(--box-shadow);
+		transition:
+			border-color 0.15s ease,
+			transform 0.15s ease;
 	}
 	.nota-card:hover {
-		border-color: var(--accent);
-		border-top-color: var(--yellow);
+		border-color: var(--brass);
+		border-top-color: var(--tint);
+		transform: translateY(-3px);
 	}
 	.nota-sector {
-		font-size: 0.7em;
+		font-family: var(--font-mono, monospace);
+		font-size: 0.68em;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--accent);
-		font-weight: 700;
-		margin-bottom: 0.5em;
+		letter-spacing: 0.06em;
+		color: color-mix(in srgb, var(--tint) 65%, #101a2c);
+		font-weight: 500;
+		margin-bottom: 0.6em;
 	}
 	.nota-card h3 {
-		font-size: 1.1em;
+		font-size: 1.15em;
 		margin: 0 0 0.4em;
-		color: rgb(var(--black));
+		color: var(--navy-900);
 	}
 	.nota-resumen {
-		font-size: 0.9em;
-		color: rgb(var(--gray-dark));
+		font-size: 0.88em;
+		color: #746c58;
 		flex: 1;
 	}
 	.nota-footer {
@@ -64,16 +69,16 @@ const { subcategoria } = Astro.props;
 		justify-content: space-between;
 		align-items: center;
 		margin-top: 1em;
-		font-size: 0.8em;
+		padding-top: 0.8em;
+		border-top: 1px dashed #cfc7ac;
+		font-size: 0.82em;
 	}
 	.nota-precio {
-		font-weight: 700;
-		color: rgb(var(--black));
-		background: var(--yellow-soft);
-		padding: 0.2em 0.5em;
-		border-radius: 4px;
+		font-family: var(--font-mono, monospace);
+		font-weight: 500;
+		color: var(--navy-900);
 	}
 	.nota-fecha {
-		color: rgb(var(--gray));
+		color: #857c63;
 	}
 </style>

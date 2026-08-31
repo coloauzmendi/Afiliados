@@ -31,6 +31,7 @@ const ordenadas = [...subcategorias].sort((a, b) => b.fecha.valueOf() - a.fecha.
 	<nav class="breadcrumb"><a href="/">Inicio</a> / {label}</nav>
 
 	<header class="cabecera">
+		<p class="eyebrow">Categoría</p>
 		<h1>{label}</h1>
 		<p class="intro">
 			{ordenadas.length} {ordenadas.length === 1 ? 'nota publicada' : 'notas publicadas'} en esta
@@ -46,27 +47,39 @@ const ordenadas = [...subcategorias].sort((a, b) => b.fecha.valueOf() - a.fecha.
 <style>
 	.breadcrumb {
 		font-size: 0.85em;
-		color: rgb(var(--gray));
+		color: var(--slate);
 		margin: 2em 0 1em;
 	}
 	.breadcrumb a {
-		color: rgb(var(--gray));
+		color: var(--slate);
 	}
 	.breadcrumb a:hover {
-		color: var(--accent);
+		color: var(--software);
 	}
 	.cabecera {
-		background: var(--yellow-soft);
-		border: 1px solid var(--yellow);
-		border-radius: 10px;
-		padding: 1.6em 1.8em;
+		border-bottom: 1px solid var(--sky-line);
+		padding-bottom: 1.6em;
 		margin-bottom: 2em;
 	}
+	.eyebrow {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		font-size: 0.85em;
+		color: var(--slate);
+		margin: 0 0 0.5em;
+	}
+	.eyebrow::before {
+		content: '';
+		width: 16px;
+		height: 1px;
+		background: var(--brass);
+	}
 	.cabecera h1 {
-		margin-bottom: 0.2em;
+		margin-bottom: 0.3em;
 	}
 	.intro {
-		color: rgb(var(--gray-dark));
+		color: var(--slate);
 		margin: 0;
 	}
 	.grid {

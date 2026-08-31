@@ -5,9 +5,7 @@ import { SITE_TITLE } from '../consts';
 
 <header>
 	<nav>
-		<a href="/" class="brand">
-			{SITE_TITLE}
-		</a>
+		<a href="/" class="brand">{SITE_TITLE}<span class="dot">.</span></a>
 		<div class="internal-links">
 			<HeaderLink href="/">Inicio</HeaderLink>
 			<HeaderLink href="/cursos">Cursos</HeaderLink>
@@ -22,8 +20,11 @@ import { SITE_TITLE } from '../consts';
 	header {
 		margin: 0;
 		padding: 0 1.5em;
-		background: #fff;
-		border-bottom: 4px solid var(--yellow);
+		background: var(--navy-900);
+		border-bottom: 1px solid var(--navy-700);
+		position: sticky;
+		top: 0;
+		z-index: 20;
 	}
 	nav {
 		display: flex;
@@ -35,29 +36,46 @@ import { SITE_TITLE } from '../consts';
 	}
 	.brand {
 		display: flex;
-		align-items: center;
+		align-items: baseline;
 		text-decoration: none;
 		padding: 1em 0;
-		font-size: 1.6em;
-		font-weight: 700;
-		color: rgb(var(--black));
-		letter-spacing: -0.02em;
+		font-family: var(--font-display, Georgia, serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: 1.5em;
+		letter-spacing: -0.01em;
+		color: var(--sky);
+	}
+	.dot {
+		color: var(--brass-bright);
+		font-style: normal;
 	}
 	.internal-links {
 		display: flex;
 		align-items: center;
-		gap: 0.25em;
+		gap: 0.15em;
 	}
 	.internal-links :global(a) {
 		padding: 1em 0.6em;
-		color: rgb(var(--gray-dark));
-		border-bottom: 3px solid transparent;
+		color: var(--mist);
 		text-decoration: none;
-		font-size: 0.95em;
+		font-size: 0.9em;
+		position: relative;
+	}
+	.internal-links :global(a:hover) {
+		color: var(--brass-bright);
 	}
 	.internal-links :global(a.active) {
 		text-decoration: none;
-		border-bottom-color: var(--accent);
-		color: rgb(var(--black));
+		color: var(--sky);
+	}
+	.internal-links :global(a.active)::after {
+		content: '';
+		position: absolute;
+		left: 0.6em;
+		right: 0.6em;
+		bottom: 0.85em;
+		height: 1px;
+		background: var(--brass);
 	}
 </style>
