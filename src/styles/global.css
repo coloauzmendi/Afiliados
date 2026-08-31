@@ -25,6 +25,15 @@
 	--ebooks: #6a5596;
 
 	--box-shadow: 0 10px 24px -18px rgba(16, 26, 44, 0.35);
+
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 10px;
+}
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
 }
 body {
 	font-family: var(--font-body, -apple-system, sans-serif);
@@ -101,18 +110,18 @@ table {
 img {
 	max-width: 100%;
 	height: auto;
-	border-radius: 4px;
+	border-radius: var(--radius-sm);
 }
 code {
 	font-family: var(--font-mono, ui-monospace, monospace);
 	padding: 2px 5px;
 	background-color: var(--paper-dim);
-	border-radius: 2px;
+	border-radius: var(--radius-sm);
 	font-size: 0.9em;
 }
 pre {
 	padding: 1.5em;
-	border-radius: 4px;
+	border-radius: var(--radius-md);
 }
 pre > code {
 	all: unset;

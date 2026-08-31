@@ -163,7 +163,7 @@ export default function FiltroProductos({ productos, siteTitle }) {
         }
         .filtro-barra select {
           padding: 0.5rem 0.7rem;
-          border-radius: 2px;
+          border-radius: var(--radius-md, 6px);
           border: 1px solid var(--paper-dim);
           background: var(--paper);
           color: var(--navy-900);
@@ -179,6 +179,7 @@ export default function FiltroProductos({ productos, siteTitle }) {
           display: flex;
           flex-direction: column;
           border: 1px solid var(--paper-dim);
+          border-radius: var(--radius-md, 6px);
           background: var(--paper);
           overflow: hidden;
           box-shadow: var(--box-shadow);
@@ -257,6 +258,7 @@ export default function FiltroProductos({ productos, siteTitle }) {
           background: var(--navy-900);
           color: var(--sky);
           padding: 0.55rem 0.95rem;
+          border-radius: var(--radius-sm, 4px);
           text-decoration: none;
           font-weight: 600;
           font-size: 0.88rem;
