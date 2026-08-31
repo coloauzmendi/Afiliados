@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReviewCard from '../../components/ReviewCard.astro';
+import { SITE_TITLE } from '../../consts';
 import { getSubcategoriasConDesde } from '../../lib/db';
 import { sectorLabel } from '../../lib/productos';
 
@@ -23,8 +24,8 @@ const ordenadas = [...subcategorias].sort((a, b) => b.fecha.valueOf() - a.fecha.
 ---
 
 <BaseLayout
-	title={`${label} — Ahorrando`}
-	description={`Ofertas y comparativas de ${label.toLowerCase()} revisadas a mano.`}
+	title={`${label} — ${SITE_TITLE}`}
+	description={`Comparativas de ${label.toLowerCase()} elegidas y revisadas a mano.`}
 	wide
 >
 	<nav class="breadcrumb"><a href="/">Inicio</a> / {label}</nav>

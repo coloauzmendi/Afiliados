@@ -1,19 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
 ---
 
 <BaseLayout
-	title="Política de privacidad — Ahorrando"
-	description="Qué datos se recogen en Ahorrando, para qué se usan y cómo funcionan los links de afiliado."
+	title={`Política de privacidad — ${SITE_TITLE}`}
+	description={`Qué datos se recogen en ${SITE_TITLE}, para qué se usan y cómo funcionan los links de afiliado.`}
 >
 	<article class="legal">
 		<h1>Política de privacidad</h1>
 
 		<h2>Links de afiliado</h2>
 		<p>
-			Ahorrando publica links de afiliado, principalmente de Mercado Libre. Si entrás a un producto
-			desde uno de esos links y comprás algo, nos puede llegar una comisión chica que no te cuesta
-			nada extra a vos. Eso no cambia el precio que pagás ni influye en qué productos recomendamos.
+			{SITE_TITLE} publica links de afiliado a plataformas de productos digitales como Hotmart,
+			Envato, Udemy y Gumroad. Si entrás a un producto desde uno de esos links y comprás algo, nos
+			puede llegar una comisión que no te cuesta nada extra a vos. Eso no cambia el precio que
+			pagás ni influye en qué productos recomendamos.
 		</p>
 
 		<h2>Cookies y analítica</h2>
@@ -26,9 +28,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 		<h2>Qué datos NO recogemos</h2>
 		<p>
-			Ahorrando no tiene registro de usuarios, no pide datos personales ni de pago, y no vende ni
-			comparte información con terceros más allá de lo que Google Analytics recoge de forma
-			estándar y anónima.
+			{SITE_TITLE} no tiene registro de usuarios, no pide datos personales ni de pago, y no vende
+			ni comparte información con terceros más allá de lo que Google Analytics recoge de forma
+			estándar y anónima. La compra en sí (pago, entrega del producto digital) la maneja siempre la
+			plataforma de afiliados (Hotmart, Envato, Udemy, Gumroad), no nosotros.
 		</p>
 
 		<h2>Contacto</h2>

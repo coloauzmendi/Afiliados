@@ -9,7 +9,7 @@ const subcategorias = await getSubcategoriasConDesde();
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} wide>
 	<section class="hero-carrusel">
-		<p class="eyebrow">ofertas revisadas a mano, no scrapeadas</p>
+		<p class="eyebrow">productos digitales elegidos a mano, no scrapeados</p>
 
 		{
 			subcategorias.length === 0 ? (
@@ -34,10 +34,12 @@ const subcategorias = await getSubcategoriasConDesde();
 										<span class="tarjeta-eyebrow">{sectorLabel(sub.sector)}</span>
 										<h2>{nombreCorto(sub.slug)}</h2>
 										{sub.desde !== null && (
-											<p class="tarjeta-precio">Desde {formatPrecio(sub.desde)}</p>
+											<p class="tarjeta-precio">
+												Desde {formatPrecio(sub.desde.valor, sub.desde.moneda)}
+											</p>
 										)}
 										<span class="tarjeta-cta">
-											Ver todas las ofertas <span class="cta-flecha">→</span>
+											Ver todos los productos <span class="cta-flecha">→</span>
 										</span>
 									</div>
 								</a>

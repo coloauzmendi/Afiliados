@@ -1,20 +1,19 @@
 ---
 import HeaderLink from './HeaderLink.astro';
-import Logo from '../assets/logo-full.png';
 import { SITE_TITLE } from '../consts';
 ---
 
 <header>
 	<nav>
 		<a href="/" class="brand">
-			<img src={Logo.src} alt={SITE_TITLE} class="logo" />
+			{SITE_TITLE}
 		</a>
 		<div class="internal-links">
 			<HeaderLink href="/">Inicio</HeaderLink>
-			<HeaderLink href="/tecnologia">Tecnología</HeaderLink>
-			<span class="soon">Finanzas <em>pronto</em></span>
-			<span class="soon">SaaS &amp; IA <em>pronto</em></span>
-			<span class="soon">Físicos <em>pronto</em></span>
+			<HeaderLink href="/cursos">Cursos</HeaderLink>
+			<HeaderLink href="/plantillas">Plantillas</HeaderLink>
+			<HeaderLink href="/software">Software</HeaderLink>
+			<HeaderLink href="/ebooks">Ebooks</HeaderLink>
 			<HeaderLink href="/sobre">Sobre</HeaderLink>
 		</div>
 	</nav>
@@ -38,14 +37,11 @@ import { SITE_TITLE } from '../consts';
 		display: flex;
 		align-items: center;
 		text-decoration: none;
-	}
-	.logo {
-		display: block;
-		height: 76px;
-		width: auto;
-		object-fit: contain;
-		border-radius: 0;
-		padding: 0.5em 0;
+		padding: 1em 0;
+		font-size: 1.6em;
+		font-weight: 700;
+		color: rgb(var(--black));
+		letter-spacing: -0.02em;
 	}
 	.internal-links {
 		display: flex;
@@ -63,24 +59,5 @@ import { SITE_TITLE } from '../consts';
 		text-decoration: none;
 		border-bottom-color: var(--accent);
 		color: rgb(var(--black));
-	}
-	.soon {
-		padding: 1em 0.6em;
-		font-size: 0.95em;
-		color: rgb(var(--gray));
-		cursor: default;
-	}
-	.soon em {
-		font-style: normal;
-		font-size: 0.7em;
-		border: 1px solid rgb(var(--gray-light));
-		border-radius: 1em;
-		padding: 0.15em 0.5em;
-		margin-left: 0.35em;
-	}
-	@media (max-width: 720px) {
-		.soon {
-			display: none;
-		}
 	}
 </style>

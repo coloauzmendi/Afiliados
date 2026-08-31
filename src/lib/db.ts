@@ -7,14 +7,18 @@ export interface Subcategoria {
 	slug: string;
 	title: string;
 	sector: string;
-	tipo: string;
 	resumen: string;
 	contenido: string | null;
 	fecha: Date;
 }
 
+export interface Precio {
+	valor: number;
+	moneda: string;
+}
+
 export interface SubcategoriaConDesde extends Subcategoria {
-	desde: number | null;
+	desde: Precio | null;
 	imagenPortada: string | null;
 }
 
@@ -23,6 +27,8 @@ export interface Producto {
 	subcategoriaSlug: string;
 	nombre: string;
 	precio: number;
+	moneda: string;
+	plataforma: string;
 	link: string;
 	destacado: string | null;
 	imagen: string | null;
@@ -60,14 +66,14 @@ function getPool(): mysql.Pool {
 
 export async function getSubcategorias(): Promise<Subcategoria[]> {
 	const [rows] = await getPool().query(
-		'SELECT slug, title, sector, tipo, resumen, contenido, fecha FROM subcategorias ORDER BY fecha DESC',
+		'SELECT slug, title, sector, resumen, contenido, fecha FROM subcategorias ORDER BY fecha DESC',
 	);
 	return rows as Subcategoria[];
 }
 
 export async function getTodosLosProductos(): Promise<Producto[]> {
 	const [rows] = await getPool().query(
-		`SELECT id, subcategoria_slug AS subcategoriaSlug, nombre, precio, link, destacado, imagen
+		`SELECT id, subcategoria_slug AS subcategoriaSlug, nombre, precio, moneda, plataforma, link, destacado, imagen
 		 FROM productos ORDER BY orden ASC, id ASC`,
 	);
 	return rows as Producto[];
@@ -75,7 +81,7 @@ export async function getTodosLosProductos(): Promise<Producto[]> {
 
 export async function getProductosPorSlug(slug: string): Promise<Producto[]> {
 	const [rows] = await getPool().query(
-		`SELECT id, subcategoria_slug AS subcategoriaSlug, nombre, precio, link, destacado, imagen
+		`SELECT id, subcategoria_slug AS subcategoriaSlug, nombre, precio, moneda, plataforma, link, destacado, imagen
 		 FROM productos WHERE subcategoria_slug = ? ORDER BY orden ASC, id ASC`,
 		[slug],
 	);
@@ -86,12 +92,14 @@ export async function getProductosPorSlug(slug: string): Promise<Producto[]> {
 export async function getSubcategoriasConDesde(): Promise<SubcategoriaConDesde[]> {
 	const [subcategorias, productos] = await Promise.all([getSubcategorias(), getTodosLosProductos()]);
 
-	const minPorSlug = new Map<string, number>();
+	const minPorSlug = new Map<string, Precio>();
 	const imagenPorSlug = new Map<string, string>();
 	for (const p of productos) {
 		if (p.precio > 0) {
 			const actual = minPorSlug.get(p.subcategoriaSlug);
-			if (actual === undefined || p.precio < actual) minPorSlug.set(p.subcategoriaSlug, p.precio);
+			if (actual === undefined || p.precio < actual.valor) {
+				minPorSlug.set(p.subcategoriaSlug, { valor: p.precio, moneda: p.moneda });
+			}
 		}
 		// La imagen de portada es la del primer producto (por orden) que ya tenga una cargada.
 		if (p.imagen && !imagenPorSlug.has(p.subcategoriaSlug)) {

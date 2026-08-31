@@ -1,33 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
 ---
 
 <BaseLayout
-	title="Sobre Ahorrando"
-	description="Quién arma Ahorrando y cómo elegimos qué publicar."
+	title={`Sobre ${SITE_TITLE}`}
+	description={`Quién arma ${SITE_TITLE} y cómo elegimos qué recomendar.`}
 >
 	<article class="sobre">
-		<h1>Sobre Ahorrando</h1>
+		<h1>Sobre {SITE_TITLE}</h1>
 
 		<p>
-			Arranqué este sitio para juntar en un solo lugar las ofertas que ya buscaba para mí mismo:
-			auriculares, teclados, y en general lo que valga la pena en Mercado Libre. La idea es sumar
-			con el tiempo otras categorías — finanzas, herramientas con IA, productos físicos en general
-			— pero prefiero ir despacio antes que llenar esto de notas apuradas.
+			Arranqué este sitio para juntar en un solo lugar los productos digitales que valen la pena:
+			cursos, plantillas, software y ebooks, comprados en plataformas como Hotmart, Envato, Udemy o
+			Gumroad. Hay tanta oferta dando vueltas que separar lo bueno de lo que es solo humo de
+			vendedor lleva tiempo — la idea es hacer ese trabajo una vez y compartirlo.
 		</p>
 
 		<h2>¿Cómo elijo qué publicar?</h2>
 		<p>
-			Miro precio, cantidad y calidad de las reseñas de compradores reales, y si el producto tiene
-			sentido para el uso que promete. No cobro por aparecer acá: todo lo que ves en el sitio lo
-			elegí porque lo compraría yo.
+			Miro la cantidad y calidad de las reseñas de compradores reales en cada plataforma, si el
+			contenido está actualizado (no algo abandonado hace años) y si el precio tiene sentido para
+			lo que ofrece. No cobro por aparecer acá: todo lo que ves en el sitio lo elegí porque lo
+			recomendaría igual sin la comisión de por medio.
 		</p>
 
 		<h2>¿De dónde sale la plata?</h2>
 		<p>
 			Los links de afiliado son la forma en la que esto se sostiene: si comprás algo desde un link
-			de Ahorrando, me llega una comisión chica de la tienda, sin que a vos te cueste nada de más.
-			Eso no cambia lo que recomiendo — si algo no me convence, directamente no lo publico.
+			de {SITE_TITLE}, me llega una comisión de la plataforma (Hotmart, Envato, Udemy, Gumroad,
+			etc.), sin que a vos te cueste nada de más. Eso no cambia lo que recomiendo — si algo no me
+			convence, directamente no lo publico.
 		</p>
 	</article>
 </BaseLayout>

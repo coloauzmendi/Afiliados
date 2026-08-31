@@ -1,12 +1,13 @@
-# Guía de redes — Ahorrando
+# Guía de redes — Digitalia
 
 Notas propias para publicar en X y Telegram. No es código, es solo referencia para copiar/pegar.
 
-## Plantilla de post de oferta (X y Telegram)
+## Plantilla de post de producto (X y Telegram)
 
 ```
 🔥 [Nombre del producto]
-💰 $[precio nuevo] (antes $[precio viejo], [X]% OFF)
+💰 $[precio] ([plataforma])
+[destacado, ej: Acceso de por vida]
 
 👉 [link de afiliado]
 ```
@@ -14,10 +15,11 @@ Notas propias para publicar en X y Telegram. No es código, es solo referencia p
 Ejemplo real:
 
 ```
-🔥 Jbl Tune 720bt - Auriculares Inalámbricos
-💰 $108.724 (antes $197.000, 45% OFF)
+🔥 Curso Completo de Marketing Digital y Ventas Online
+💰 $39.999 (Hotmart)
+Acceso de por vida
 
-👉 https://meli.la/12uXvkD
+👉 https://hotmart.com/es/marketplace/xxxxx
 ```
 
 ## Hilo semanal ("Top 5 de la semana")
@@ -25,9 +27,9 @@ Ejemplo real:
 Primer tweet del hilo (el que más se comparte, tiene que enganchar):
 
 ```
-Las 5 mejores ofertas de tecnología de esta semana en Mercado Libre 🧵👇
+Los 5 mejores cursos/plantillas/herramientas digitales de esta semana 🧵👇
 
-(Todas verificadas por mí, nada de precios inflados para después bajarlos)
+(Todos revisados por mí, nada de infoproductos abandonados hace 3 años)
 ```
 
 Después, un tweet por producto con el formato de arriba. Último tweet del hilo:
@@ -43,18 +45,18 @@ Eso fue todo por esta semana. Si te sirvió, seguime para no perderte las próxi
 Bio sugerida:
 
 ```
-Ofertas reales de Mercado Libre, verificadas todos los días 🔥
-Sin humo, sin precios inflados.
+Cursos, plantillas, software y ebooks que valen la pena 🔥
+Probados y comparados antes de recomendarlos.
 👇
 ```
 
 Pinned tweet:
 
 ```
-¿Quién soy? Busco las mejores ofertas de tecnología en Mercado Libre Argentina
-y las comparto acá, verificadas a mano.
+¿Quién soy? Busco los mejores productos digitales (cursos, plantillas, software, ebooks)
+en Hotmart, Envato, Udemy y más, y los comparo acá.
 
-🌐 Sitio: https://ahorrando.vercel.app
+🌐 Sitio: https://digitalia.vercel.app
 📲 Telegram: [tu canal, cuando lo tengas]
 
 Bienvenido/a 👋
@@ -62,7 +64,7 @@ Bienvenido/a 👋
 
 ## Hashtags (usar 2-3 por post, no más)
 
-`#OfertasArgentina` `#MercadoLibre` `#Ofertas` `#Tecnologia` `#Descuentos`
+`#ProductosDigitales` `#CursosOnline` `#Plantillas` `#Emprendimiento` `#RecursosDigitales`
 
 ## Horarios recomendados (Argentina)
 

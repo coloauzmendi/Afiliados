@@ -2,6 +2,7 @@
 import { marked } from 'marked';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FiltroProductos from '../../components/FiltroProductos.jsx';
+import { SITE_TITLE } from '../../consts';
 import { getSubcategorias, getTodosLosProductos } from '../../lib/db';
 import { formatFecha, sectorLabel } from '../../lib/productos';
 
@@ -28,6 +29,8 @@ const productosParaFiltro = productos.map((p) => ({
 	id: p.id,
 	nombre: p.nombre,
 	precio: p.precio,
+	moneda: p.moneda,
+	plataforma: p.plataforma,
 	badge: p.destacado,
 	link: p.link,
 	imagen: p.imagen,
@@ -38,7 +41,7 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 ---
 
 <BaseLayout
-	title={`${subcategoria.title} — Ahorrando`}
+	title={`${subcategoria.title} — ${SITE_TITLE}`}
 	description={subcategoria.resumen}
 	image={imagenPortada}
 	wide
@@ -57,7 +60,7 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 	{
 		productosParaFiltro.length > 0 && (
 			<section class="comparativa">
-				<FiltroProductos productos={productosParaFiltro} client:load />
+				<FiltroProductos productos={productosParaFiltro} siteTitle={SITE_TITLE} client:load />
 			</section>
 		)
 	}

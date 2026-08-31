@@ -16,7 +16,9 @@ const { subcategoria } = Astro.props;
 	<div class="nota-footer">
 		{
 			subcategoria.desde !== null && (
-				<span class="nota-precio">desde {formatPrecio(subcategoria.desde)}</span>
+				<span class="nota-precio">
+					desde {formatPrecio(subcategoria.desde.valor, subcategoria.desde.moneda)}
+				</span>
 			)
 		}
 		<span class="nota-fecha">{formatFecha(subcategoria.fecha)}</span>

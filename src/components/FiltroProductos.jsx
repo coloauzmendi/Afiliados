@@ -26,13 +26,18 @@ function IconoSinImagen() {
   );
 }
 
-function mensajeCompartir(p) {
-  const precio = `$${p.precio.toLocaleString("es-AR")}`;
-  const destacado = p.badge ? ` (${p.badge})` : "";
-  return `🔥 ${p.nombre} desde ${precio}${destacado} → mirá todas las ofertas en Ahorrando`;
+function formatearPrecio(precio, moneda) {
+  const prefijo = moneda === "USD" ? "US$" : "$";
+  return `${prefijo}${precio.toLocaleString("es-AR")}`;
 }
 
-function BotonesCompartir({ producto }) {
+function mensajeCompartir(p, siteTitle) {
+  const precio = formatearPrecio(p.precio, p.moneda);
+  const destacado = p.badge ? ` (${p.badge})` : "";
+  return `🔥 ${p.nombre} desde ${precio}${destacado} → mirá todas las opciones en ${siteTitle}`;
+}
+
+function BotonesCompartir({ producto, siteTitle }) {
   const [linkPagina, setLinkPagina] = useState("");
 
   useEffect(() => {
@@ -41,7 +46,7 @@ function BotonesCompartir({ producto }) {
 
   if (!linkPagina) return null;
 
-  const texto = mensajeCompartir(producto);
+  const texto = mensajeCompartir(producto, siteTitle);
   const urlX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(linkPagina)}`;
   const urlWhatsapp = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${texto} ${linkPagina}`)}`;
   const urlTelegram = `https://t.me/share/url?url=${encodeURIComponent(linkPagina)}&text=${encodeURIComponent(texto)}`;
@@ -72,7 +77,7 @@ function BotonesCompartir({ producto }) {
   );
 }
 
-export default function FiltroProductos({ productos }) {
+export default function FiltroProductos({ productos, siteTitle }) {
   const [orden, setOrden] = useState("relevancia");
   const [panelActivo, setPanelActivo] = useState(false);
 
@@ -118,10 +123,11 @@ export default function FiltroProductos({ productos }) {
               )}
             </div>
             <div className="producto-info">
+              {p.plataforma && <span className="producto-plataforma">{p.plataforma}</span>}
               {p.badge && <span className="producto-badge">{p.badge.toUpperCase()}</span>}
               <h3 className="producto-nombre">{p.nombre}</h3>
-              <p className="producto-precio">${p.precio.toLocaleString("es-AR")}</p>
-              <p className="producto-envio">Envío gratis</p>
+              <p className="producto-precio">{formatearPrecio(p.precio, p.moneda)}</p>
+              <p className="producto-envio">Acceso inmediato</p>
             </div>
             <a
               className="producto-cta"
@@ -129,9 +135,9 @@ export default function FiltroProductos({ productos }) {
               target="_blank"
               rel="nofollow sponsored noopener"
             >
-              Ver oferta
+              Acceder al producto
             </a>
-            {panelActivo && <BotonesCompartir producto={p} />}
+            {panelActivo && <BotonesCompartir producto={p} siteTitle={siteTitle} />}
           </div>
         ))}
       </div>
@@ -193,6 +199,15 @@ export default function FiltroProductos({ productos }) {
         .producto-info {
           padding: 1.25rem 1.25rem 0.5rem;
           flex: 1;
+        }
+        .producto-plataforma {
+          display: block;
+          font-size: 0.72rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: rgb(var(--gray));
+          margin-bottom: 0.4rem;
         }
         .producto-badge {
           display: inline-block;

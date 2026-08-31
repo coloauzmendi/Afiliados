@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
 ---
 
-<BaseLayout title="Página no encontrada — Ahorrando" description="Esta página no existe.">
+<BaseLayout title={`Página no encontrada — ${SITE_TITLE}`} description="Esta página no existe.">
 	<div class="error">
 		<p class="code">404</p>
 		<h1>Che, esta página no existe</h1>
-		<p>Puede que el link esté roto o que la oferta ya haya volado. Volvé al inicio y seguí mirando.</p>
+		<p>Puede que el link esté roto o que el producto ya no esté disponible. Volvé al inicio y seguí mirando.</p>
 		<a class="btn" href="/">Ir al inicio</a>
 	</div>
 </BaseLayout>
