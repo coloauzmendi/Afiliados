@@ -41,12 +41,23 @@ async function sacarIdMLA(link) {
 	}
 
 	const html = await respuesta.text();
-	match = html.match(/MLA-?(\d{6,})/i);
+
+	// Diagnóstico: dónde aparece realmente el ID en la página (og:url,
+	// canonical, o cualquier otro lado) — para no quedarnos con el primer
+	// "MLA..." que aparezca de casualidad (puede ser de un script de
+	// tracking, no el del producto).
+	const ogUrl = html.match(/property="og:url"\s+content="([^"]+)"/i)?.[1];
+	const canonical = html.match(/rel="canonical"\s+href="([^"]+)"/i)?.[1];
+	const todosLosMatches = [...html.matchAll(/MLA-?\d{6,}/gi)];
+	const idsUnicos = [...new Set(todosLosMatches.map((m) => m[0]))];
+
 	return {
-		id: match ? `MLA${match[1]}` : null,
+		id: null,
 		urlFinal: respuesta.url,
 		status: respuesta.status,
-		adelanto: html.slice(0, 200).replace(/\s+/g, ' '),
+		ogUrl,
+		canonical,
+		idsUnicos,
 	};
 }
 
@@ -90,10 +101,10 @@ async function main() {
 
 	for (const producto of productos) {
 		try {
-			const { id: idMLA, urlFinal, status, adelanto } = await sacarIdMLA(producto.link);
+			const { id: idMLA, status, ogUrl, canonical, idsUnicos } = await sacarIdMLA(producto.link);
 			if (!idMLA) {
 				console.log(
-					`[sin ID] "${producto.nombre}" — ${producto.link} → status ${status}, url final ${urlFinal}, arranca así: ${adelanto}`,
+					`[sin ID] "${producto.nombre}" — status ${status}, og:url=${ogUrl}, canonical=${canonical}, IDs encontrados en el HTML: ${JSON.stringify(idsUnicos)}`,
 				);
 				sinDetectar++;
 				continue;
