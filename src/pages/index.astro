@@ -21,7 +21,7 @@ const ultimaRevision =
 				<p class="kicker">Catálogo revisado a mano, no scrapeado</p>
 				<h1 class="headline">Productos digitales que <em>valen</em> lo que cuestan.</h1>
 				<p class="hero-sub">{SITE_DESCRIPTION}</p>
-				<a href="#carrusel" class="hero-cta">Ver el catálogo</a>
+				<a href="#catalogo" class="hero-cta">Ver el catálogo</a>
 			</div>
 			<div class="filecard">
 				<div class="filecard-tape"></div>
@@ -49,7 +49,7 @@ const ultimaRevision =
 		</div>
 	</section>
 
-	<section class="block">
+	<section class="block" id="catalogo">
 		<div class="block-head">
 			<div>
 				<p class="eyebrow">Explorá por categoría</p>
@@ -62,34 +62,44 @@ const ultimaRevision =
 			subcategorias.length === 0 ? (
 				<p class="vacio">Todavía no hay categorías publicadas.</p>
 			) : (
-				<div class="carrusel-viewport">
-					<button class="flecha izq" type="button" aria-label="Anterior" data-dir="-1">
-						‹
-					</button>
-					<div class="carrusel" id="carrusel">
-						{subcategorias.map((sub) => (
-							<a class="card" href={`/${sub.sector}/${sub.slug}`} style={`--tint: var(--${sub.sector})`}>
-								<div class="card-cover">
-									<p class="letter">{sectorLabel(sub.sector)}</p>
-									<p class="spine">{nombreCorto(sub.slug)}</p>
-								</div>
-								<div class="card-body">
-									<h3 class="card-title">{nombreCorto(sub.slug)}</h3>
-									<p class="card-sample">{sub.resumen}</p>
-									<div class="card-foot">
-										<span class="card-price">
-											{sub.desde !== null ? `Desde ${formatPrecio(sub.desde.valor, sub.desde.moneda)}` : 'Ver productos'}
-										</span>
-										<span class="card-go">Ver más →</span>
+				<>
+					<div class="carrusel-viewport">
+						<button class="flecha izq" type="button" aria-label="Anterior" data-dir="-1">
+							‹
+						</button>
+						<div class="carrusel" id="carrusel">
+							{subcategorias.map((sub) => (
+								<a class="card" href={`/${sub.sector}/${sub.slug}`} style={`--tint: var(--${sub.sector})`}>
+									<div class="card-cover">
+										<p class="letter">{sectorLabel(sub.sector)}</p>
+										<p class="spine">{nombreCorto(sub.slug)}</p>
 									</div>
-								</div>
-							</a>
-						))}
+									<div class="card-body">
+										<h3 class="card-title">{nombreCorto(sub.slug)}</h3>
+										<p class="card-sample">{sub.resumen}</p>
+										<div class="card-foot">
+											<span class="card-price">
+												{sub.desde !== null ? `Desde ${formatPrecio(sub.desde.valor, sub.desde.moneda)}` : 'Ver productos'}
+											</span>
+											<span class="card-go">Ver más →</span>
+										</div>
+									</div>
+								</a>
+							))}
+						</div>
+						<button class="flecha der" type="button" aria-label="Siguiente" data-dir="1">
+							›
+						</button>
 					</div>
-					<button class="flecha der" type="button" aria-label="Siguiente" data-dir="1">
-						›
-					</button>
-				</div>
+
+					{subcategorias.length > 1 && (
+						<div class="puntos" id="puntos">
+							{subcategorias.map((_, i) => (
+								<button class="punto" type="button" data-index={i} aria-label={`Ir a la categoría ${i + 1}`} />
+							))}
+						</div>
+					)}
+				</>
 			)
 		}
 	</section>
@@ -144,6 +154,7 @@ const ultimaRevision =
 		font-size: 0.95em;
 		padding: 0.8em 1.4em;
 		text-decoration: none;
+		border-radius: var(--radius-md);
 		transition: background 0.15s ease;
 	}
 	.hero-cta:hover {
@@ -169,6 +180,7 @@ const ultimaRevision =
 		font-family: var(--font-mono, monospace);
 		border: 1px solid var(--navy-700);
 		background: var(--navy-900);
+		border-radius: var(--radius-md);
 		transform: rotate(0.5deg);
 		box-shadow: 0 14px 32px -18px rgba(16, 26, 44, 0.5);
 	}
@@ -197,6 +209,7 @@ const ultimaRevision =
 
 	.block {
 		padding: 3em 0;
+		scroll-margin-top: 92px;
 	}
 	.block-head {
 		display: flex;
@@ -235,12 +248,12 @@ const ultimaRevision =
 	}
 	.carrusel {
 		display: flex;
-		gap: 1.3em;
+		gap: 1.5em;
 		overflow-x: auto;
 		scroll-snap-type: x mandatory;
 		scroll-behavior: smooth;
 		-webkit-overflow-scrolling: touch;
-		padding: 0.3em 0.2em 1em;
+		padding: 0.5em 0.2em 1em;
 		scrollbar-width: none;
 	}
 	.carrusel::-webkit-scrollbar {
@@ -248,9 +261,9 @@ const ultimaRevision =
 	}
 
 	.card {
-		scroll-snap-align: start;
+		scroll-snap-align: center;
 		flex: 0 0 auto;
-		width: min(300px, 78vw);
+		width: min(640px, 82vw);
 		background: var(--paper);
 		color: var(--navy-900);
 		overflow: hidden;
@@ -258,17 +271,31 @@ const ultimaRevision =
 		display: flex;
 		flex-direction: column;
 		border: 1px solid var(--paper-dim);
+		border-radius: var(--radius-lg);
 		box-shadow: var(--box-shadow);
+		opacity: 0.4;
+		filter: brightness(0.8) saturate(0.9);
+		transform: scale(0.92);
 		transition:
-			transform 0.2s ease,
-			border-color 0.2s ease;
+			opacity 0.35s ease,
+			filter 0.35s ease,
+			transform 0.35s ease,
+			border-color 0.2s ease,
+			box-shadow 0.25s ease;
+	}
+	.card.activa {
+		opacity: 1;
+		filter: none;
+		transform: scale(1);
 	}
 	.card:hover {
-		transform: translateY(-4px);
 		border-color: var(--brass);
 	}
+	.card.activa:hover {
+		box-shadow: 0 20px 40px -18px rgba(16, 26, 44, 0.45);
+	}
 	.card-cover {
-		height: 110px;
+		height: 210px;
 		position: relative;
 		overflow: hidden;
 		background: var(--tint);
@@ -281,23 +308,23 @@ const ultimaRevision =
 	}
 	.card-cover .spine {
 		position: absolute;
-		left: -0.15em;
-		bottom: -0.28em;
+		left: -0.1em;
+		bottom: -0.32em;
 		margin: 0;
 		white-space: nowrap;
 		font-family: var(--font-display, Georgia, serif);
 		font-style: italic;
 		font-weight: 600;
-		font-size: 2.6em;
+		font-size: 5rem;
 		color: rgba(16, 26, 44, 0.18);
 		letter-spacing: -0.01em;
 	}
 	.card-cover .letter {
 		position: relative;
-		padding: 0.85em 1em 0;
+		padding: 1.3em 1.5em 0;
 		margin: 0;
 		font-family: var(--font-mono, monospace);
-		font-size: 0.68em;
+		font-size: 0.78em;
 		letter-spacing: 0.07em;
 		text-transform: uppercase;
 		color: rgba(16, 26, 44, 0.7);
@@ -314,21 +341,21 @@ const ultimaRevision =
 		background-position: -11px 0;
 	}
 	.card-body {
-		padding: 1.1em 1.15em 1.25em;
+		padding: 1.6em 1.8em 1.9em;
 		display: flex;
 		flex-direction: column;
-		gap: 0.4em;
+		gap: 0.6em;
 		flex: 1;
 	}
 	.card-title {
-		font-size: 1.1em;
+		font-size: 1.6em;
 		margin: 0;
-		line-height: 1.25;
+		line-height: 1.2;
 	}
 	.card-sample {
-		font-size: 0.82em;
+		font-size: 0.95em;
 		color: #746c58;
-		line-height: 1.4;
+		line-height: 1.5;
 		margin: 0;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -337,12 +364,12 @@ const ultimaRevision =
 	}
 	.card-foot {
 		margin-top: auto;
-		padding-top: 0.6em;
+		padding-top: 1em;
 		border-top: 1px dashed #cfc7ac;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		font-size: 0.82em;
+		font-size: 1em;
 	}
 	.card-price {
 		font-family: var(--font-mono, monospace);
@@ -357,12 +384,12 @@ const ultimaRevision =
 		position: absolute;
 		top: 45%;
 		transform: translateY(-50%);
-		width: 42px;
-		height: 42px;
+		width: 46px;
+		height: 46px;
 		border-radius: 50%;
 		border: 1px solid var(--sky-line);
 		background: #fff;
-		font-size: 1.4em;
+		font-size: 1.5em;
 		line-height: 1;
 		cursor: pointer;
 		display: flex;
@@ -380,13 +407,36 @@ const ultimaRevision =
 		transform: translateY(-50%) scale(1.06);
 	}
 	.flecha.izq {
-		left: -18px;
+		left: 4px;
 	}
 	.flecha.der {
-		right: -18px;
+		right: 4px;
 	}
 	.vacio {
 		color: var(--slate);
+	}
+
+	.puntos {
+		display: flex;
+		justify-content: center;
+		gap: 0.5em;
+		margin-top: 0.4em;
+	}
+	.punto {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		border: none;
+		padding: 0;
+		background: var(--sky-line);
+		cursor: pointer;
+		transition:
+			background 0.2s ease,
+			transform 0.2s ease;
+	}
+	.punto.activo {
+		background: var(--brass);
+		transform: scale(1.3);
 	}
 
 	.mas-info {
@@ -408,18 +458,53 @@ const ultimaRevision =
 		.flecha {
 			display: none;
 		}
+		.card {
+			width: 88vw;
+		}
+		.card-cover {
+			height: 40vw;
+		}
 	}
 </style>
 
 <script>
 	const carrusel = document.getElementById('carrusel');
-	if (carrusel) {
+	const tarjetas = Array.from(document.querySelectorAll<HTMLAnchorElement>('.card'));
+	const puntos = Array.from(document.querySelectorAll<HTMLButtonElement>('.punto'));
+
+	let indiceActivo = 0;
+
+	function marcarActiva(index: number) {
+		indiceActivo = index;
+		tarjetas.forEach((t, i) => t.classList.toggle('activa', i === index));
+		puntos.forEach((p, i) => p.classList.toggle('activo', i === index));
+	}
+
+	if (carrusel && tarjetas.length) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+						marcarActiva(tarjetas.indexOf(entry.target as HTMLAnchorElement));
+					}
+				});
+			},
+			{ root: carrusel, threshold: [0.6] },
+		);
+		tarjetas.forEach((t) => observer.observe(t));
+		marcarActiva(0);
+
 		document.querySelectorAll<HTMLButtonElement>('.flecha').forEach((boton) => {
 			boton.addEventListener('click', () => {
 				const dir = Number(boton.dataset.dir);
-				const tarjeta = carrusel.querySelector<HTMLElement>('.card');
-				const paso = tarjeta ? tarjeta.getBoundingClientRect().width + 21 : 300;
-				carrusel.scrollBy({ left: dir * paso, behavior: 'smooth' });
+				const siguiente = (indiceActivo + dir + tarjetas.length) % tarjetas.length;
+				tarjetas[siguiente].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+			});
+		});
+
+		puntos.forEach((p, i) => {
+			p.addEventListener('click', () => {
+				tarjetas[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 			});
 		});
 	}
