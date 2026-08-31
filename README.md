@@ -49,10 +49,16 @@ ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
 ## Chequeo automático de precios
 
 Los precios de Mercado Libre cambian seguido, así que `scripts/chequear-precios.js` los revisa solo
-todos los días (vía GitHub Actions, ver `.github/workflows/chequear-precios.yml`): busca el ID de cada
-producto siguiendo su link, consulta el precio actual en la API pública de Mercado Libre
-(`api.mercadolibre.com`), y si cambió, actualiza la fila en la base. Si actualizó algo, además dispara
-un redeploy en Vercel para que el precio nuevo salga publicado sin que nadie tenga que tocar nada.
+todos los días (vía GitHub Actions, ver `.github/workflows/chequear-precios.yml`): saca el ID de
+Mercado Libre de la URL de la **imagen** de cada producto (el link de afiliado no sirve para esto,
+apunta a una página que solo se resuelve con JavaScript), consulta el precio actual en la API pública
+de Mercado Libre (`api.mercadolibre.com`), y si cambió, actualiza la fila en la base. Si actualizó
+algo, además dispara un redeploy en Vercel para que el precio nuevo salga publicado sin que nadie
+tenga que tocar nada.
+
+Para que un producto se pueda chequear, su columna `imagen` tiene que ser una URL de
+`http2.mlstatic.com` (la que ya se usa normalmente) — de ahí se saca el ID. Productos sin imagen no se
+chequean (quedan igual que siempre, solo que no se actualizan solos).
 
 Para que funcione hay que cargar, en el repo de GitHub → **Settings → Secrets and variables →
 Actions**, estos secrets:
