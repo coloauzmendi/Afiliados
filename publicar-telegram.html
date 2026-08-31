@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Publicar en Telegram — Ahorrando</title>
+<style>
+	* { box-sizing: border-box; }
+	body {
+		font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+		background: #f4f4f6;
+		margin: 0;
+		padding: 2em 1em;
+		color: #1a1a1a;
+	}
+	.tarjeta {
+		max-width: 480px;
+		margin: 0 auto;
+		background: #fff;
+		border-radius: 12px;
+		padding: 1.8em;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+	}
+	h1 {
+		font-size: 1.3em;
+		margin: 0 0 1em;
+	}
+	label {
+		display: block;
+		font-size: 0.85em;
+		font-weight: 600;
+		margin: 1em 0 0.3em;
+	}
+	input {
+		width: 100%;
+		padding: 0.6em 0.7em;
+		border: 1px solid #ddd;
+		border-radius: 6px;
+		font-size: 1em;
+	}
+	button {
+		width: 100%;
+		margin-top: 1.4em;
+		padding: 0.8em;
+		background: #26a5e4;
+		color: #fff;
+		border: none;
+		border-radius: 6px;
+		font-size: 1em;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	button:hover {
+		background: #1e8dc4;
+	}
+	button:disabled {
+		background: #aaa;
+		cursor: default;
+	}
+	#resultado {
+		margin-top: 1em;
+		padding: 0.8em;
+		border-radius: 6px;
+		font-size: 0.9em;
+		display: none;
+	}
+	#resultado.ok {
+		display: block;
+		background: #e6f7ea;
+		color: #1a7a34;
+	}
+	#resultado.error {
+		display: block;
+		background: #fde8e8;
+		color: #b3261e;
+	}
+	details {
+		margin-top: 1.6em;
+		font-size: 0.85em;
+		color: #666;
+	}
+	details input {
+		margin-top: 0.4em;
+	}
+	.ayuda {
+		font-size: 0.78em;
+		color: #888;
+		margin-top: 0.2em;
+	}
+</style>
+</head>
+<body>
+	<div class="tarjeta">
+		<h1>📣 Publicar oferta en Telegram</h1>
+
+		<label for="nombre">Nombre del producto</label>
+		<input id="nombre" type="text" placeholder="Jbl Tune 720bt" />
+
+		<label for="precio">Precio</label>
+		<input id="precio" type="number" placeholder="108724" />
+
+		<label for="destacado">Destacado (opcional)</label>
+		<input id="destacado" type="text" placeholder="45% OFF" />
+
+		<label for="link">Link de afiliado</label>
+		<input id="link" type="text" placeholder="https://meli.la/12uXvkD" />
+
+		<label for="imagen">URL de imagen (opcional)</label>
+		<input id="imagen" type="text" placeholder="https://http2.mlstatic.com/..." />
+
+		<button id="btnPublicar">Publicar en el canal</button>
+
+		<div id="resultado"></div>
+
+		<details>
+			<summary>⚙️ Configuración (una sola vez)</summary>
+			<label for="token">Token del bot</label>
+			<input id="token" type="text" placeholder="123456:ABC-DEF..." />
+			<label for="chatId">Chat ID del canal</label>
+			<input id="chatId" type="text" placeholder="-1001234567890" />
+			<p class="ayuda">
+				Se guarda solo en este navegador, en esta computadora — no se manda a ningún lado más
+				que a Telegram.
+			</p>
+		</details>
+	</div>
+
+	<script>
+		const $ = (id) => document.getElementById(id);
+
+		// Cargar configuración guardada.
+		$('token').value = localStorage.getItem('tgToken') || '';
+		$('chatId').value = localStorage.getItem('tgChatId') || '';
+
+		function mostrarResultado(texto, esError) {
+			const el = $('resultado');
+			el.textContent = texto;
+			el.className = esError ? 'error' : 'ok';
+		}
+
+		$('btnPublicar').addEventListener('click', async () => {
+			const token = $('token').value.trim();
+			const chatId = $('chatId').value.trim();
+			const nombre = $('nombre').value.trim();
+			const precio = $('precio').value.trim();
+			const destacado = $('destacado').value.trim();
+			const link = $('link').value.trim();
+			const imagen = $('imagen').value.trim();
+
+			if (!token || !chatId) {
+				mostrarResultado('Completá el token y el chat ID en "Configuración" (una sola vez).', true);
+				return;
+			}
+			if (!nombre || !precio || !link) {
+				mostrarResultado('Nombre, precio y link son obligatorios.', true);
+				return;
+			}
+
+			localStorage.setItem('tgToken', token);
+			localStorage.setItem('tgChatId', chatId);
+
+			const precioFormateado = Number(precio).toLocaleString('es-AR');
+			const lineaDestacado = destacado ? `\n${destacado}` : '';
+			const mensaje = `🔥 ${nombre}\n💰 $${precioFormateado}${lineaDestacado}\n\n👉 ${link}`;
+
+			const boton = $('btnPublicar');
+			boton.disabled = true;
+			boton.textContent = 'Publicando...';
+
+			try {
+				const url = imagen
+					? `https://api.telegram.org/bot${token}/sendPhoto`
+					: `https://api.telegram.org/bot${token}/sendMessage`;
+				const cuerpo = imagen
+					? { chat_id: chatId, photo: imagen, caption: mensaje }
+					: { chat_id: chatId, text: mensaje };
+
+				const respuesta = await fetch(url, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(cuerpo),
+				});
+				const datos = await respuesta.json();
+
+				if (datos.ok) {
+					mostrarResultado('✅ Publicado en el canal.', false);
+					['nombre', 'precio', 'destacado', 'link', 'imagen'].forEach((id) => ($(id).value = ''));
+				} else {
+					mostrarResultado(`❌ Telegram devolvió un error: ${datos.description || JSON.stringify(datos)}`, true);
+				}
+			} catch (error) {
+				mostrarResultado(`❌ Error de conexión: ${error.message}`, true);
+			} finally {
+				boton.disabled = false;
+				boton.textContent = 'Publicar en el canal';
+			}
+		});
+	</script>
+</body>
+</html>
