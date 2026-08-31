@@ -63,7 +63,8 @@ async function main() {
 	});
 
 	const [productos] = await conexion.execute(
-		'SELECT id, nombre, precio, link FROM productos WHERE link NOT LIKE "%PEGAR-LINK%"',
+		'SELECT id, nombre, precio, link FROM productos WHERE link NOT LIKE ?',
+		['%PEGAR-LINK%'],
 	);
 
 	let cambiados = 0;
