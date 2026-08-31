@@ -46,46 +46,13 @@ Para cargar productos reales, conectate a la base con MySQL Workbench (o el clie
 Para sumar una subcategoría nueva: un `INSERT` en `subcategorias` con un `slug` único (se usa en la URL,
 ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
 
-## Chequeo automático de precios
-
-Los precios de Mercado Libre cambian seguido, así que `scripts/chequear-precios.js` los revisa solo
-todos los días (vía GitHub Actions, ver `.github/workflows/chequear-precios.yml`): saca el ID de
-Mercado Libre de la URL de la **imagen** de cada producto (el link de afiliado no sirve para esto,
-apunta a una página que solo se resuelve con JavaScript), consulta el precio actual en la API pública
-de Mercado Libre (`api.mercadolibre.com`), y si cambió, actualiza la fila en la base. Si actualizó
-algo, además dispara un redeploy en Vercel para que el precio nuevo salga publicado sin que nadie
-tenga que tocar nada.
-
-Para que un producto se pueda chequear, su columna `imagen` tiene que ser una URL de
-`http2.mlstatic.com` (la que ya se usa normalmente) — de ahí se saca el ID. Productos sin imagen no se
-chequean (quedan igual que siempre, solo que no se actualizan solos).
-
-Para que funcione hay que cargar, en el repo de GitHub → **Settings → Secrets and variables →
-Actions**, estos secrets:
-
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` — los mismos datos que en tu `.env`.
-- `VERCEL_DEPLOY_HOOK_URL` — un Deploy Hook de Vercel (Project Settings → Git → Deploy Hooks, creá uno
-  para la rama de producción y copiá la URL que te da).
-
-Se puede probar a mano en cualquier momento desde la pestaña **Actions** del repo → "Chequear precios"
-→ **Run workflow**. En local, corre con:
-
-```sh
-node --env-file=.env scripts/chequear-precios.js
-```
-
 ## Estructura
 
 ```text
-├── .github/
-│   └── workflows/
-│       └── chequear-precios.yml  # Corre el chequeo de precios todos los días
 ├── db/
 │   ├── schema.sql       # CREATE TABLE de subcategorias y productos
 │   └── seed.sql         # Carga inicial (correr una sola vez)
 ├── public/
-├── scripts/
-│   └── chequear-precios.js  # Revisa precios en Mercado Libre y actualiza la base
 ├── src/
 │   ├── assets/
 │   ├── components/
@@ -106,4 +73,3 @@ node --env-file=.env scripts/chequear-precios.js
 | `npm run dev`       | Levanta el server de desarrollo en `localhost:4321` |
 | `npm run build`     | Genera el sitio de producción en `./dist/`     |
 | `npm run preview`   | Previsualiza el build de producción            |
-| `npm run chequear-precios` | Corre a mano el chequeo de precios (necesita `.env`) |
