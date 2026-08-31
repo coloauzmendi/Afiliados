@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<BaseLayout
+	title={`Política de privacidad — ${SITE_TITLE}`}
+	description={`Qué datos se recogen en ${SITE_TITLE}, para qué se usan y cómo funcionan los links de afiliado.`}
+>
+	<article class="legal">
+		<h1>Política de privacidad</h1>
+
+		<h2>Links de afiliado</h2>
+		<p>
+			{SITE_TITLE} publica links de afiliado a plataformas de productos digitales como Hotmart,
+			Envato, Udemy y Gumroad. Si entrás a un producto desde uno de esos links y comprás algo, nos
+			puede llegar una comisión que no te cuesta nada extra a vos. Eso no cambia el precio que
+			pagás ni influye en qué productos recomendamos.
+		</p>
+
+		<h2>Cookies y analítica</h2>
+		<p>
+			Usamos Google Analytics para saber cuánta gente visita el sitio y qué secciones les
+			interesan más. Para eso, Google Analytics guarda una cookie en tu navegador que identifica tu
+			visita de forma anónima (no sabemos quién sos vos individualmente). Podés bloquear estas
+			cookies desde la configuración de tu navegador sin que el sitio deje de funcionar.
+		</p>
+
+		<h2>Qué datos NO recogemos</h2>
+		<p>
+			{SITE_TITLE} no tiene registro de usuarios, no pide datos personales ni de pago, y no vende
+			ni comparte información con terceros más allá de lo que Google Analytics recoge de forma
+			estándar y anónima. La compra en sí (pago, entrega del producto digital) la maneja siempre la
+			plataforma de afiliados (Hotmart, Envato, Udemy, Gumroad), no nosotros.
+		</p>
+
+		<h2>Contacto</h2>
+		<p>
+			Si tenés alguna duda sobre esta política, podés escribirnos desde la página <a href="/sobre"
+				>Sobre</a
+			>.
+		</p>
+	</article>
+</BaseLayout>
+
+<style>
+	.legal {
+		max-width: 680px;
+		padding: 2.5em 0 4em;
+	}
+	.legal h1 {
+		margin-bottom: 0.8em;
+	}
+	.legal h2 {
+		font-size: 1.25em;
+		margin-top: 1.8em;
+	}
+	.legal p {
+		color: rgb(var(--gray-dark));
+	}
+	.legal a {
+		color: var(--accent);
+	}
+</style>

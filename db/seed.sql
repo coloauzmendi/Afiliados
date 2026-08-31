@@ -1,0 +1,126 @@
+-- Carga inicial de Digitalia: catálogo de ejemplo (productos placeholder,
+-- realistas pero no reales) para tener el sitio funcionando desde el día uno.
+-- Reemplazá nombre/precio/link/imagen de cada producto por el real cuando
+-- tengas tu cuenta de afiliados aprobada en cada plataforma.
+-- Correr después de schema.sql, una sola vez.
+
+INSERT INTO subcategorias (slug, title, sector, resumen, contenido, fecha) VALUES
+('marketing-digital',
+ 'Los mejores cursos de marketing digital y ventas online',
+ 'cursos',
+ 'Comparamos los cursos de marketing digital y ventas online mejor valorados, para arrancar a vender sin perder tiempo en teoría de más.',
+ '## Qué mirar antes de comprar\n\n- **Acceso de por vida o por tiempo limitado**: en Hotmart la mayoría es de por vida, pero conviene chequearlo en la página de venta antes de pagar.\n- **Certificado**: si te sirve para tu CV o LinkedIn, fijate que lo incluya sin costo extra.\n- **Actualizaciones**: marketing digital cambia rápido — un curso de 2022 sin actualizar puede tener herramientas que ya no existen.',
+ '2026-08-20'),
+
+('programacion-y-tech',
+ 'Los mejores cursos de programación y tecnología',
+ 'cursos',
+ 'Comparamos los cursos de programación y tecnología mejor valorados en plataformas como Udemy y Hotmart, para todos los niveles.',
+ '## Qué mirar antes de comprar\n\n- **Nivel real**: leé la descripción completa, no solo el título — "desde cero" a veces asume que ya sabés programar.\n- **Proyectos prácticos**: un curso con proyectos reales para armar portfolio vale mucho más que uno solo teórico.\n- **Idioma y subtítulos**: en Udemy conviene revisar si el audio o los subtítulos están en español.',
+ '2026-08-22'),
+
+('notion-y-productividad',
+ 'Las mejores plantillas de Notion para organizarte',
+ 'plantillas',
+ 'Comparamos las plantillas de Notion más vendidas para organizar tu vida, tus proyectos o tu negocio sin armar todo desde cero.',
+ '## Qué mirar antes de comprar\n\n- **Compatibilidad**: algunas plantillas están pensadas para Notion gratis y otras necesitan el plan pago — fijate antes de comprar.\n- **Tutorial incluido**: una plantilla compleja sin video explicativo te puede llevar horas entender.\n- **Actualizaciones**: buscá vendedores que sigan actualizando la plantilla, no algo abandonado hace dos años.',
+ '2026-08-18'),
+
+('presentaciones-y-canva',
+ 'Las mejores plantillas de presentaciones y Canva',
+ 'plantillas',
+ 'Comparamos los packs de plantillas de presentaciones y Canva más vendidos, para armar algo profesional sin depender de un diseñador.',
+ '## Qué mirar antes de comprar\n\n- **Formato**: chequeá si es editable en Canva, PowerPoint, Google Slides o los tres — no todos los packs sirven en todas las herramientas.\n- **Licencia de uso**: para uso comercial (venderle a un cliente) algunas plantillas piden una licencia extendida.\n- **Cantidad real de slides únicos**: "100 slides" a veces son variaciones de los mismos 10 diseños.',
+ '2026-08-15'),
+
+('ia-y-automatizacion',
+ 'Las mejores herramientas de IA y automatización',
+ 'software',
+ 'Comparamos kits, plantillas y licencias de herramientas de IA y automatización para ahorrar horas de trabajo repetitivo.',
+ '## Qué mirar antes de comprar\n\n- **Necesitás una cuenta de otra plataforma**: muchos kits de IA funcionan sobre ChatGPT, Make o Zapier — confirmá que ya tenés (o vas a pagar) esa cuenta.\n- **Licencia de por vida vs. suscripción**: algunas herramientas cobran una vez, otras mensual — leé bien qué estás pagando.\n- **Soporte de instalación**: si no sos técnico, priorizá los que incluyen guía o setup asistido.',
+ '2026-08-24'),
+
+('plugins-wordpress',
+ 'Los mejores plugins y temas para WordPress',
+ 'software',
+ 'Comparamos los plugins y temas premium de WordPress más vendidos en Envato y CodeCanyon, para no reinventar la rueda en cada proyecto.',
+ '## Qué mirar antes de comprar\n\n- **Compatibilidad de versión**: fijate la última fecha de actualización del plugin contra la versión de WordPress que usás.\n- **Meses de soporte incluidos**: en Envato suele venir con 6 meses de soporte — después es opcional y pago.\n- **Reseñas de compradores reales**: en CodeCanyon y Envato las calificaciones y comentarios son bastante confiables para detectar plugins con bugs.',
+ '2026-08-19'),
+
+('finanzas-personales',
+ 'Los mejores ebooks de finanzas personales e inversión',
+ 'ebooks',
+ 'Comparamos los ebooks de finanzas personales e inversión mejor valorados, pensados para el contexto argentino.',
+ '## Qué mirar antes de comprar\n\n- **Actualizado a la economía actual**: un ebook de inversión de hace unos años puede tener datos de inflación o tipo de cambio desactualizados.\n- **Incluye planillas o solo texto**: los mejores suman una planilla de cálculo lista para usar, no solo teoría.\n- **Quién lo escribe**: buscá que el autor tenga trayectoria real en finanzas, no solo un curso de "cómo vender un ebook".',
+ '2026-08-21'),
+
+('desarrollo-personal',
+ 'Los mejores ebooks de hábitos y desarrollo personal',
+ 'ebooks',
+ 'Comparamos los ebooks de hábitos y desarrollo personal más vendidos, con sistemas prácticos en vez de solo motivación.',
+ '## Qué mirar antes de comprar\n\n- **Sistema concreto, no solo frases motivadoras**: buscá que tenga ejercicios o pasos aplicables, no solo inspiración.\n- **Extensión razonable**: los mejores de este rubro son cortos y accionables — desconfiá de los "manuales" de 300 páginas.\n- **Formato de entrega**: PDF descargable siempre funciona; si depende de una app propia, confirmá que sea compatible con tu celular.',
+ CURDATE());
+
+-- Cursos: marketing digital
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('marketing-digital', 'Curso Completo de Marketing Digital y Ventas Online', 39999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-1', 'Acceso de por vida', 1),
+('marketing-digital', 'Método de Ads para Vender Todos los Días', 54999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-2', 'Certificado incluido', 2),
+('marketing-digital', 'Copywriting para Redes Sociales: De Cero a Vendedor', 27999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-3', '35% OFF', 3),
+('marketing-digital', 'Email Marketing Automatizado para Emprendedores', 32999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-4', 'Acceso de por vida', 4),
+('marketing-digital', 'Formación en Marketing de Afiliados desde Cero', 44999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-5', 'Bono: plantillas incluidas', 5);
+
+-- Cursos: programación y tech
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('programacion-y-tech', 'Curso de Desarrollo Web Full Stack con React y Node', 19, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-1', 'Oferta de lanzamiento', 1),
+('programacion-y-tech', 'Python para Data Science y Automatización', 17, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-2', 'Certificado de finalización', 2),
+('programacion-y-tech', 'Curso de Programación en Español desde Cero', 15, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-3', 'Acceso de por vida', 3),
+('programacion-y-tech', 'DevOps y Cloud: AWS para Principiantes', 21, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-4', '40% OFF', 4),
+('programacion-y-tech', 'Bootcamp de Programación: Del Cero al Primer Empleo', 89, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-5', 'Certificado + acceso de por vida', 5);
+
+-- Plantillas: Notion y productividad
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('notion-y-productividad', 'Sistema Notion para Organizar tu Vida y tu Negocio', 15, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-1', 'Plantilla + video tutorial', 1),
+('notion-y-productividad', 'Notion para Freelancers: Clientes, Facturas y Proyectos', 12, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-2', 'Acceso de por vida', 2),
+('notion-y-productividad', 'Planner Digital 2026 para Notion', 8, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-3', '20% OFF', 3),
+('notion-y-productividad', 'Dashboard de Finanzas Personales para Notion', 10, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-4', 'Incluye tutorial en video', 4),
+('notion-y-productividad', 'Segundo Cerebro: Sistema de Notas en Notion', 18, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-5', 'Bestseller', 5);
+
+-- Plantillas: presentaciones y Canva
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('presentaciones-y-canva', 'Pack de Plantillas de Presentaciones para Pitch Deck', 24, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-1', '50 slides editables', 1),
+('presentaciones-y-canva', 'Plantillas de Canva para Redes Sociales (Pack x100)', 19, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-2', 'Edición 100% online', 2),
+('presentaciones-y-canva', 'Kit de Presentación Corporativa Minimalista', 16, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-3', 'Compatible con PowerPoint', 3),
+('presentaciones-y-canva', 'Plantillas de Historias y Posts para Instagram', 14, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-4', 'Actualización mensual', 4),
+('presentaciones-y-canva', 'Pack Premium de Infografías Editables', 21, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-5', '30% OFF', 5);
+
+-- Software: IA y automatización
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('ia-y-automatizacion', 'Kit de Prompts de IA para Negocios y Marketing', 29, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-6', 'Más de 500 prompts', 1),
+('ia-y-automatizacion', 'Plantilla de Automatización con IA para Atención al Cliente', 39, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-7', 'Incluye guía de instalación', 2),
+('ia-y-automatizacion', 'Generador de Contenido con IA: Licencia Anual', 59, 'USD', 'AppSumo', 'https://appsumo.com/products/PEGAR-LINK-1', 'Oferta de por vida', 3),
+('ia-y-automatizacion', 'Bot de WhatsApp con IA para Reservas y Consultas', 45, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-8', 'Setup incluido', 4),
+('ia-y-automatizacion', 'Curso + Plantillas de Automatización sin Código', 34999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-6', 'Acceso de por vida', 5);
+
+-- Software: plugins y temas de WordPress
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('plugins-wordpress', 'Plugin de WordPress para Landing Pages de Afiliados', 39, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-6', 'Actualizaciones incluidas', 1),
+('plugins-wordpress', 'Tema Premium de WordPress para Tiendas Online', 59, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-7', 'Soporte 6 meses', 2),
+('plugins-wordpress', 'Plugin de Reservas y Turnos para WordPress', 45, 'USD', 'CodeCanyon', 'https://codecanyon.net/item/PEGAR-LINK-1', 'Compatible con WooCommerce', 3),
+('plugins-wordpress', 'Constructor de Landing Pages Drag & Drop', 49, 'USD', 'CodeCanyon', 'https://codecanyon.net/item/PEGAR-LINK-2', 'Licencia de por vida', 4),
+('plugins-wordpress', 'Plugin de SEO y Velocidad para WordPress', 29, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-8', '20% OFF', 5);
+
+-- Ebooks: finanzas personales
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('finanzas-personales', 'Guía Definitiva de Finanzas Personales para Argentina', 12999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-7', 'Actualizado 2026', 1),
+('finanzas-personales', 'Ebook: Cómo Invertir tus Primeros Ahorros', 9999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-8', 'Incluye planillas de cálculo', 2),
+('finanzas-personales', 'Del Sueldo a la Libertad Financiera', 14999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-9', 'Bestseller', 3),
+('finanzas-personales', 'Guía Práctica de Dolarización para Principiantes', 10999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-10', '25% OFF', 4),
+('finanzas-personales', 'Presupuesto Personal Simplificado: Ebook + Planillas', 8999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-11', 'Acceso inmediato', 5);
+
+-- Ebooks: desarrollo personal
+INSERT INTO productos (subcategoria_slug, nombre, precio, moneda, plataforma, link, destacado, orden) VALUES
+('desarrollo-personal', 'Hábitos Atómicos para tu Día a Día: Guía Práctica', 7999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-12', 'Bestseller', 1),
+('desarrollo-personal', 'Ebook: Productividad sin Estrés', 8999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-13', 'Incluye planner', 2),
+('desarrollo-personal', 'Guía de Autoconocimiento y Metas 2026', 9999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-14', 'Acceso de por vida', 3),
+('desarrollo-personal', 'Del Caos a la Rutina: Sistema de Hábitos', 6999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-15', '30% OFF', 4),
+('desarrollo-personal', 'Ebook: Mentalidad de Crecimiento para Emprendedores', 10999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-16', 'Certificado incluido', 5);

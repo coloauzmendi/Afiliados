@@ -1,0 +1,148 @@
+---
+import { marked } from 'marked';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FiltroProductos from '../../components/FiltroProductos.jsx';
+import { SITE_TITLE } from '../../consts';
+import { getSubcategorias, getTodosLosProductos } from '../../lib/db';
+import { formatFecha, sectorLabel } from '../../lib/productos';
+
+export async function getStaticPaths() {
+	const [subcategorias, todosProductos] = await Promise.all([
+		getSubcategorias(),
+		getTodosLosProductos(),
+	]);
+
+	return subcategorias.map((subcategoria) => ({
+		params: { sector: subcategoria.sector, slug: subcategoria.slug },
+		props: {
+			subcategoria,
+			productos: todosProductos.filter((p) => p.subcategoriaSlug === subcategoria.slug),
+		},
+	}));
+}
+
+const { subcategoria, productos } = Astro.props;
+const label = sectorLabel(subcategoria.sector);
+const contenidoHtml = subcategoria.contenido ? await marked.parse(subcategoria.contenido) : '';
+
+const productosParaFiltro = productos.map((p) => ({
+	id: p.id,
+	nombre: p.nombre,
+	precio: p.precio,
+	moneda: p.moneda,
+	plataforma: p.plataforma,
+	badge: p.destacado,
+	link: p.link,
+	imagen: p.imagen,
+}));
+
+// Para la vista previa al compartir el link (Open Graph / Twitter Card).
+const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
+---
+
+<BaseLayout
+	title={`${subcategoria.title} — ${SITE_TITLE}`}
+	description={subcategoria.resumen}
+	image={imagenPortada}
+	wide
+>
+	<nav class="breadcrumb">
+		<a href="/">Inicio</a> / <a href={`/${subcategoria.sector}`}>{label}</a> / {subcategoria.title}
+	</nav>
+
+	<header class="review-head">
+		<span class="sector-pill">{label}</span>
+		<h1>{subcategoria.title}</h1>
+		<p class="resumen">{subcategoria.resumen}</p>
+		<p class="fecha">Actualizado el {formatFecha(subcategoria.fecha)}</p>
+	</header>
+
+	{
+		productosParaFiltro.length > 0 && (
+			<section class="comparativa">
+				<FiltroProductos productos={productosParaFiltro} siteTitle={SITE_TITLE} client:load />
+			</section>
+		)
+	}
+
+	<div class="review-body">
+		{contenidoHtml && <div class="prose" set:html={contenidoHtml} />}
+
+		<p class="disclaimer">
+			Este artículo puede contener links de afiliado. Si comprás a través de ellos, nos llega una
+			comisión chica que no te cuesta nada extra a vos.
+		</p>
+	</div>
+</BaseLayout>
+
+<style>
+	.breadcrumb {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin: 2em 0 1.5em;
+	}
+	.breadcrumb a {
+		color: rgb(var(--gray));
+	}
+	.breadcrumb a:hover {
+		color: var(--accent);
+	}
+	.review-head {
+		max-width: 100%;
+		background: var(--yellow-soft);
+		border: 1px solid var(--yellow);
+		border-radius: 10px;
+		padding: 1.6em 1.8em;
+	}
+	.sector-pill {
+		display: inline-block;
+		font-size: 0.75em;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--accent);
+		font-weight: 700;
+		margin-bottom: 0.6em;
+	}
+	.review-head h1 {
+		margin: 0 0 0.4em;
+		line-height: 1.15;
+		max-width: 30ch;
+	}
+	.resumen {
+		font-size: 1.1em;
+		color: rgb(var(--gray-dark));
+		margin: 0 0 0.4em;
+		max-width: 60ch;
+	}
+	.fecha {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin: 0 0 1.5em;
+	}
+	.comparativa {
+		margin: 1.5em 0 3em;
+		background: var(--yellow-soft);
+		border: 1px solid var(--yellow);
+		border-radius: 10px;
+		padding: 1.6em;
+	}
+	.review-body {
+		max-width: 760px;
+		padding-bottom: 4em;
+	}
+	.prose {
+		color: rgb(var(--gray-dark));
+	}
+	.prose :global(h2) {
+		font-size: 1.3em;
+		margin-top: 1.5em;
+	}
+	.disclaimer {
+		font-size: 0.8em;
+		color: rgb(var(--gray));
+		font-style: italic;
+		border-top: 1px solid rgb(var(--gray-light));
+		padding-top: 1.2em;
+		margin-top: 2em;
+	}
+</style>

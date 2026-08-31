@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<BaseLayout title={`Página no encontrada — ${SITE_TITLE}`} description="Esta página no existe.">
+	<div class="error">
+		<p class="code">404</p>
+		<h1>Che, esta página no existe</h1>
+		<p>Puede que el link esté roto o que el producto ya no esté disponible. Volvé al inicio y seguí mirando.</p>
+		<a class="btn" href="/">Ir al inicio</a>
+	</div>
+</BaseLayout>
+
+<style>
+	.error {
+		text-align: center;
+		padding: 5em 1em;
+	}
+	.code {
+		font-size: 3.5em;
+		font-weight: 700;
+		color: rgb(var(--gray-light));
+		margin: 0;
+	}
+	.error h1 {
+		margin: 0.2em 0 0.5em;
+	}
+	.error p {
+		color: rgb(var(--gray-dark));
+	}
+	.btn {
+		display: inline-block;
+		margin-top: 1.5em;
+		background: var(--accent);
+		color: #fff;
+		padding: 0.75em 1.4em;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: 600;
+	}
+	.btn:hover {
+		background: var(--accent-dark);
+		color: #fff;
+	}
+</style>

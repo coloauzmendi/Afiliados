@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReviewCard from '../../components/ReviewCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { getSubcategoriasConDesde } from '../../lib/db';
+import { sectorLabel } from '../../lib/productos';
+
+export async function getStaticPaths() {
+	const todas = await getSubcategoriasConDesde();
+	const sectores = [...new Set(todas.map((s) => s.sector))];
+
+	return sectores.map((sector) => ({
+		params: { sector },
+		props: {
+			subcategorias: todas.filter((s) => s.sector === sector),
+		},
+	}));
+}
+
+const { sector } = Astro.params;
+const { subcategorias } = Astro.props;
+const label = sectorLabel(sector as string);
+const ordenadas = [...subcategorias].sort((a, b) => b.fecha.valueOf() - a.fecha.valueOf());
+---
+
+<BaseLayout
+	title={`${label} — ${SITE_TITLE}`}
+	description={`Comparativas de ${label.toLowerCase()} elegidas y revisadas a mano.`}
+	wide
+>
+	<nav class="breadcrumb"><a href="/">Inicio</a> / {label}</nav>
+
+	<header class="cabecera">
+		<h1>{label}</h1>
+		<p class="intro">
+			{ordenadas.length} {ordenadas.length === 1 ? 'nota publicada' : 'notas publicadas'} en esta
+			categoría.
+		</p>
+	</header>
+
+	<div class="grid">
+		{ordenadas.map((sub) => <ReviewCard subcategoria={sub} />)}
+	</div>
+</BaseLayout>
+
+<style>
+	.breadcrumb {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin: 2em 0 1em;
+	}
+	.breadcrumb a {
+		color: rgb(var(--gray));
+	}
+	.breadcrumb a:hover {
+		color: var(--accent);
+	}
+	.cabecera {
+		background: var(--yellow-soft);
+		border: 1px solid var(--yellow);
+		border-radius: 10px;
+		padding: 1.6em 1.8em;
+		margin-bottom: 2em;
+	}
+	.cabecera h1 {
+		margin-bottom: 0.2em;
+	}
+	.intro {
+		color: rgb(var(--gray-dark));
+		margin: 0;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.2em;
+		padding-bottom: 3em;
+	}
+</style>

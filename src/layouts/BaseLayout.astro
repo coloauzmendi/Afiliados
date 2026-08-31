@@ -1,0 +1,55 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: ImageMetadata | string;
+	/** Ancho completo (~1100px) para grillas de tarjetas; por defecto usa el ancho angosto de artículo. */
+	wide?: boolean;
+}
+
+const { title, description, image, wide = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+	</head>
+	<body>
+		<Header />
+		<main class:list={{ wide }}>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
+<style>
+	main.wide {
+		width: 100%;
+		max-width: 1100px;
+		padding: 0 1.5em 4em;
+	}
+</style>
+
+<script>
+	// Activa el panel de "compartir" (solo para el dueño del sitio) al visitar
+	// cualquier página con ?panel=ahorrandocagando en la URL. Queda guardado
+	// en este navegador y se limpia la URL para que no quede a la vista.
+	const parametros = new URLSearchParams(location.search);
+	if (parametros.get('panel') === 'ahorrandocagando') {
+		try {
+			localStorage.setItem('panelActivo', '1');
+		} catch {
+			// localStorage no disponible, no pasa nada.
+		}
+		parametros.delete('panel');
+		const resto = parametros.toString();
+		const nuevaUrl = location.pathname + (resto ? `?${resto}` : '') + location.hash;
+		history.replaceState({}, '', nuevaUrl);
+	}
+</script>

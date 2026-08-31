@@ -1,0 +1,344 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getSubcategoriasConDesde } from '../lib/db';
+import { formatPrecio, nombreCorto, sectorLabel } from '../lib/productos';
+
+const subcategorias = await getSubcategoriasConDesde();
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} wide>
+	<section class="hero-carrusel">
+		<p class="eyebrow">productos digitales elegidos a mano, no scrapeados</p>
+
+		{
+			subcategorias.length === 0 ? (
+				<p class="vacio">Todavía no hay categorías publicadas.</p>
+			) : (
+				<>
+					<div class="carrusel-viewport">
+						<button class="flecha izq" type="button" aria-label="Anterior" data-dir="-1">
+							‹
+						</button>
+						<div class="carrusel" id="carrusel">
+							{subcategorias.map((sub) => (
+								<a class="tarjeta" href={`/${sub.sector}/${sub.slug}`}>
+									<div class="tarjeta-img">
+										{sub.imagenPortada ? (
+											<img src={sub.imagenPortada} alt={nombreCorto(sub.slug)} loading="lazy" />
+										) : (
+											<span class="sin-imagen">Próximamente</span>
+										)}
+									</div>
+									<div class="tarjeta-info">
+										<span class="tarjeta-eyebrow">{sectorLabel(sub.sector)}</span>
+										<h2>{nombreCorto(sub.slug)}</h2>
+										{sub.desde !== null && (
+											<p class="tarjeta-precio">
+												Desde {formatPrecio(sub.desde.valor, sub.desde.moneda)}
+											</p>
+										)}
+										<span class="tarjeta-cta">
+											Ver todos los productos <span class="cta-flecha">→</span>
+										</span>
+									</div>
+								</a>
+							))}
+						</div>
+						<button class="flecha der" type="button" aria-label="Siguiente" data-dir="1">
+							›
+						</button>
+					</div>
+
+					{subcategorias.length > 1 && (
+						<div class="puntos" id="puntos">
+							{subcategorias.map((_, i) => (
+								<button
+									class="punto"
+									type="button"
+									data-index={i}
+									aria-label={`Ir a la categoría ${i + 1}`}
+								/>
+							))}
+						</div>
+					)}
+				</>
+			)
+		}
+	</section>
+
+	<p class="mas-info"><a href="/sobre">¿Por qué confiar en esto?</a></p>
+</BaseLayout>
+
+<style>
+	.hero-carrusel {
+		padding: 1.4em 0 0.5em;
+	}
+	.eyebrow {
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		font-size: 0.75em;
+		font-weight: 700;
+		color: var(--accent);
+		margin: 0 0 0.8em;
+	}
+
+	.carrusel-viewport {
+		position: relative;
+	}
+	.carrusel {
+		display: flex;
+		gap: 1.5em;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scroll-behavior: smooth;
+		-webkit-overflow-scrolling: touch;
+		padding: 0.5em 0.2em 0.8em;
+		scrollbar-width: none;
+	}
+	.carrusel::-webkit-scrollbar {
+		display: none;
+	}
+
+	.tarjeta {
+		flex: 0 0 auto;
+		width: min(84vw, 900px);
+		height: min(56vh, 460px);
+		min-height: 320px;
+		scroll-snap-align: center;
+		display: grid;
+		grid-template-columns: 1.05fr 1fr;
+		border-radius: 18px;
+		overflow: hidden;
+		background: #fff;
+		text-decoration: none;
+		color: inherit;
+		box-shadow: 0 6px 24px rgba(20, 20, 23, 0.08);
+		opacity: 0.45;
+		filter: brightness(0.6) saturate(0.85);
+		transform: scale(0.94);
+		transition:
+			opacity 0.35s ease,
+			filter 0.35s ease,
+			transform 0.35s ease,
+			box-shadow 0.25s ease;
+	}
+	.tarjeta.activa {
+		opacity: 1;
+		filter: none;
+		transform: scale(1);
+	}
+	.tarjeta:hover {
+		box-shadow: 0 14px 36px rgba(20, 20, 23, 0.16);
+	}
+	.tarjeta.activa:hover {
+		transform: translateY(-6px) scale(1.012);
+	}
+
+	.tarjeta-img {
+		position: relative;
+		overflow: hidden;
+		background: #fafafa;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.tarjeta-img img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		padding: 2.5em;
+		transition: transform 0.5s ease;
+	}
+	.tarjeta:hover .tarjeta-img img {
+		transform: scale(1.07);
+	}
+	.sin-imagen {
+		font-size: 0.9em;
+		color: rgb(var(--gray));
+	}
+
+	.tarjeta-info {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.5em;
+		padding: 2em 2.4em;
+		background: linear-gradient(135deg, #fff 55%, var(--yellow-soft));
+	}
+	.tarjeta-eyebrow {
+		text-transform: uppercase;
+		font-size: 0.7em;
+		letter-spacing: 0.08em;
+		color: var(--accent);
+		font-weight: 700;
+	}
+	.tarjeta-info h2 {
+		font-size: clamp(1.5em, 2.6vw, 2.1em);
+		line-height: 1.1;
+		margin: 0;
+	}
+	.tarjeta-precio {
+		font-size: 1.1em;
+		font-weight: 700;
+		color: rgb(var(--black));
+		margin: 0;
+	}
+	.tarjeta-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5em;
+		background: var(--yellow);
+		color: rgb(var(--black));
+		font-weight: 700;
+		padding: 0.8em 1.4em;
+		border-radius: 8px;
+		width: fit-content;
+		margin-top: 0.6em;
+		transition:
+			background 0.2s ease,
+			gap 0.2s ease;
+	}
+	.cta-flecha {
+		transition: transform 0.2s ease;
+	}
+	.tarjeta:hover .tarjeta-cta {
+		background: var(--yellow-dark);
+	}
+	.tarjeta:hover .cta-flecha {
+		transform: translateX(4px);
+	}
+
+	.flecha {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		border: 1px solid rgb(var(--gray-light));
+		background: #fff;
+		font-size: 1.5em;
+		line-height: 1;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: var(--box-shadow);
+		z-index: 2;
+		transition:
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+	.flecha:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+		transform: translateY(-50%) scale(1.08);
+	}
+	.flecha.izq {
+		left: 4px;
+	}
+	.flecha.der {
+		right: 4px;
+	}
+	.vacio {
+		color: rgb(var(--gray));
+	}
+
+	.puntos {
+		display: flex;
+		justify-content: center;
+		gap: 0.5em;
+		margin-top: 0.6em;
+	}
+	.punto {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		border: none;
+		padding: 0;
+		background: rgb(var(--gray-light));
+		cursor: pointer;
+		transition:
+			background 0.2s ease,
+			transform 0.2s ease;
+	}
+	.punto.activo {
+		background: var(--yellow-dark);
+		transform: scale(1.3);
+	}
+
+	.mas-info {
+		padding: 1.5em 0 3em;
+	}
+	.mas-info a {
+		color: rgb(var(--gray));
+		font-size: 0.9em;
+	}
+	.mas-info a:hover {
+		color: var(--accent);
+	}
+
+	@media (max-width: 720px) {
+		.flecha {
+			display: none;
+		}
+		.tarjeta {
+			width: 88vw;
+			height: auto;
+			min-height: 0;
+			grid-template-columns: 1fr;
+		}
+		.tarjeta-img {
+			height: 44vw;
+		}
+		.tarjeta-info {
+			padding: 1.4em 1.6em;
+			background: #fff;
+		}
+	}
+</style>
+
+<script>
+	const carrusel = document.getElementById('carrusel');
+	const tarjetas = Array.from(document.querySelectorAll<HTMLAnchorElement>('.tarjeta'));
+	const puntos = Array.from(document.querySelectorAll<HTMLButtonElement>('.punto'));
+
+	let indiceActivo = 0;
+
+	function marcarActiva(index: number) {
+		indiceActivo = index;
+		tarjetas.forEach((t, i) => t.classList.toggle('activa', i === index));
+		puntos.forEach((p, i) => p.classList.toggle('activo', i === index));
+	}
+
+	if (carrusel && tarjetas.length) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+						marcarActiva(tarjetas.indexOf(entry.target as HTMLAnchorElement));
+					}
+				});
+			},
+			{ root: carrusel, threshold: [0.6] },
+		);
+		tarjetas.forEach((t) => observer.observe(t));
+		marcarActiva(0);
+
+		document.querySelectorAll<HTMLButtonElement>('.flecha').forEach((boton) => {
+			boton.addEventListener('click', () => {
+				const dir = Number(boton.dataset.dir);
+				// Da la vuelta: si estás en la última y avanzás, volvés a la primera (y viceversa).
+				const siguiente = (indiceActivo + dir + tarjetas.length) % tarjetas.length;
+				tarjetas[siguiente].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+			});
+		});
+
+		puntos.forEach((p, i) => {
+			p.addEventListener('click', () => {
+				tarjetas[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+			});
+		});
+	}
+</script>

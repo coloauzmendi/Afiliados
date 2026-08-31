@@ -1,0 +1,79 @@
+---
+import type { SubcategoriaConDesde } from '../lib/db';
+import { formatFecha, formatPrecio, sectorLabel } from '../lib/productos';
+
+interface Props {
+	subcategoria: SubcategoriaConDesde;
+}
+
+const { subcategoria } = Astro.props;
+---
+
+<a class="nota-card" href={`/${subcategoria.sector}/${subcategoria.slug}`}>
+	<span class="nota-sector">{sectorLabel(subcategoria.sector)}</span>
+	<h3>{subcategoria.title}</h3>
+	<p class="nota-resumen">{subcategoria.resumen}</p>
+	<div class="nota-footer">
+		{
+			subcategoria.desde !== null && (
+				<span class="nota-precio">
+					desde {formatPrecio(subcategoria.desde.valor, subcategoria.desde.moneda)}
+				</span>
+			)
+		}
+		<span class="nota-fecha">{formatFecha(subcategoria.fecha)}</span>
+	</div>
+</a>
+
+<style>
+	.nota-card {
+		display: flex;
+		flex-direction: column;
+		padding: 1.3em;
+		border: 1px solid rgb(var(--gray-light));
+		border-top: 3px solid var(--yellow);
+		border-radius: 8px;
+		background: #fff;
+		text-decoration: none;
+		color: inherit;
+	}
+	.nota-card:hover {
+		border-color: var(--accent);
+		border-top-color: var(--yellow);
+	}
+	.nota-sector {
+		font-size: 0.7em;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--accent);
+		font-weight: 700;
+		margin-bottom: 0.5em;
+	}
+	.nota-card h3 {
+		font-size: 1.1em;
+		margin: 0 0 0.4em;
+		color: rgb(var(--black));
+	}
+	.nota-resumen {
+		font-size: 0.9em;
+		color: rgb(var(--gray-dark));
+		flex: 1;
+	}
+	.nota-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 1em;
+		font-size: 0.8em;
+	}
+	.nota-precio {
+		font-weight: 700;
+		color: rgb(var(--black));
+		background: var(--yellow-soft);
+		padding: 0.2em 0.5em;
+		border-radius: 4px;
+	}
+	.nota-fecha {
+		color: rgb(var(--gray));
+	}
+</style>

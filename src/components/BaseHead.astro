@@ -1,0 +1,79 @@
+---
+// Import the global.css file here so that it is included on
+// all pages through the use of the <BaseHead /> component.
+import '../styles/global.css';
+import type { ImageMetadata } from 'astro';
+import FallbackImage from '../assets/og-image.jpg';
+import { SITE_TITLE } from '../consts';
+import { Font } from 'astro:assets';
+
+interface Props {
+	title: string;
+	description: string;
+	/** Imagen local (importada) o una URL directa (ej. la foto de un producto). */
+	image?: ImageMetadata | string;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const { title, description, image = FallbackImage } = Astro.props;
+const imageSrc = typeof image === 'string' ? image : image.src;
+const imageURL = new URL(imageSrc, Astro.url);
+
+// Google Analytics: solo se carga si está configurado el ID (PUBLIC_GA_ID en
+// las variables de entorno). Sin esa variable, no se agrega ningún script.
+const gaId = import.meta.env.PUBLIC_GA_ID;
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" href="/favicon.ico" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link
+	rel="alternate"
+	type="application/rss+xml"
+	title={SITE_TITLE}
+	href={new URL('rss.xml', Astro.site)}
+/>
+<meta name="generator" content={Astro.generator} />
+<meta name="google-site-verification" content="wSUkeu8vEJCmA8mSmfoj-VxTFJlszRX4_E3fc8Ir32A" />
+
+<Font cssVariable="--font-atkinson" preload />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+<!-- Google Analytics -->
+{
+	gaId && (
+		<>
+			<script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+			<script define:vars={{ gaId }}>
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					dataLayer.push(arguments);
+				}
+				gtag('js', new Date());
+				gtag('config', gaId);
+			</script>
+		</>
+	)
+}
