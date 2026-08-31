@@ -29,7 +29,7 @@ async function sacarIdMLA(link) {
 	await respuesta.body?.cancel?.();
 
 	const match = urlFinal.match(/MLA-?(\d{6,})/i);
-	return match ? `MLA${match[1]}` : null;
+	return { id: match ? `MLA${match[1]}` : null, urlFinal };
 }
 
 // Consulta el precio actual en la API pública de Mercado Libre (gratis, sin
@@ -72,9 +72,11 @@ async function main() {
 
 	for (const producto of productos) {
 		try {
-			const idMLA = await sacarIdMLA(producto.link);
+			const { id: idMLA, urlFinal } = await sacarIdMLA(producto.link);
 			if (!idMLA) {
-				console.log(`[sin ID] "${producto.nombre}" — no se pudo identificar el producto en ${producto.link}`);
+				console.log(
+					`[sin ID] "${producto.nombre}" — ${producto.link} redirigió a ${urlFinal}, no encontré el ID ahí`,
+				);
 				sinDetectar++;
 				continue;
 			}
