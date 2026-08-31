@@ -50,7 +50,7 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 		<a href="/">Inicio</a> / <a href={`/${subcategoria.sector}`}>{label}</a> / {subcategoria.title}
 	</nav>
 
-	<header class="review-head">
+	<header class="review-head" style={`--tint: var(--${subcategoria.sector})`}>
 		<span class="sector-pill">{label}</span>
 		<h1>{subcategoria.title}</h1>
 		<p class="resumen">{subcategoria.resumen}</p>
@@ -78,29 +78,28 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 <style>
 	.breadcrumb {
 		font-size: 0.85em;
-		color: rgb(var(--gray));
+		color: var(--slate);
 		margin: 2em 0 1.5em;
 	}
 	.breadcrumb a {
-		color: rgb(var(--gray));
+		color: var(--slate);
 	}
 	.breadcrumb a:hover {
-		color: var(--accent);
+		color: var(--software);
 	}
 	.review-head {
 		max-width: 100%;
-		background: var(--yellow-soft);
-		border: 1px solid var(--yellow);
-		border-radius: 10px;
-		padding: 1.6em 1.8em;
+		border-bottom: 3px solid var(--tint);
+		padding-bottom: 1.6em;
 	}
 	.sector-pill {
 		display: inline-block;
-		font-size: 0.75em;
+		font-family: var(--font-mono, monospace);
+		font-size: 0.72em;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--accent);
-		font-weight: 700;
+		letter-spacing: 0.06em;
+		color: color-mix(in srgb, var(--tint) 65%, #101a2c);
+		font-weight: 500;
 		margin-bottom: 0.6em;
 	}
 	.review-head h1 {
@@ -110,20 +109,19 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 	}
 	.resumen {
 		font-size: 1.1em;
-		color: rgb(var(--gray-dark));
+		color: var(--slate);
 		margin: 0 0 0.4em;
 		max-width: 60ch;
 	}
 	.fecha {
 		font-size: 0.85em;
-		color: rgb(var(--gray));
-		margin: 0 0 1.5em;
+		color: var(--slate);
+		margin: 0;
 	}
 	.comparativa {
-		margin: 1.5em 0 3em;
-		background: var(--yellow-soft);
-		border: 1px solid var(--yellow);
-		border-radius: 10px;
+		margin: 2em 0 3em;
+		background: var(--sky);
+		border: 1px solid var(--sky-line);
 		padding: 1.6em;
 	}
 	.review-body {
@@ -131,7 +129,7 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 		padding-bottom: 4em;
 	}
 	.prose {
-		color: rgb(var(--gray-dark));
+		color: var(--slate);
 	}
 	.prose :global(h2) {
 		font-size: 1.3em;
@@ -139,9 +137,9 @@ const imagenPortada = productos.find((p) => p.imagen)?.imagen ?? undefined;
 	}
 	.disclaimer {
 		font-size: 0.8em;
-		color: rgb(var(--gray));
+		color: var(--slate);
 		font-style: italic;
-		border-top: 1px solid rgb(var(--gray-light));
+		border-top: 1px solid var(--sky-line);
 		padding-top: 1.2em;
 		margin-top: 2em;
 	}

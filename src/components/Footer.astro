@@ -1,50 +1,110 @@
 ---
 import { SITE_TITLE } from '../consts';
+import { SECTOR_LABELS } from '../lib/productos';
 const today = new Date();
+const sectores = Object.entries(SECTOR_LABELS);
 ---
 
 <footer>
 	<div class="footer-inner">
-		<p class="disclosure">
-			Los links a productos son de afiliado, principalmente a plataformas como Hotmart, Envato,
-			Udemy y Gumroad: si comprás desde acá, nos llega una comisión chica que no te cuesta nada
-			extra. Los precios y las condiciones los pone cada plataforma y pueden cambiar sin aviso —
-			fijate el valor final antes de pagar.
-		</p>
+		<div class="foot-grid">
+			<div>
+				<p class="foot-brand">{SITE_TITLE}</p>
+				<p class="disclosure">
+					Los links a productos son de afiliado, principalmente a plataformas como Hotmart, Envato,
+					Udemy y Gumroad: si comprás desde acá, nos llega una comisión chica que no te cuesta nada
+					extra. Los precios y las condiciones los pone cada plataforma y pueden cambiar sin aviso.
+				</p>
+			</div>
+			<div>
+				<p class="foot-title">Categorías</p>
+				<ul class="foot-links">
+					{
+						sectores.map(([slug, label]) => (
+							<li>
+								<a href={`/${slug}`}>{label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div>
+				<p class="foot-title">Sitio</p>
+				<ul class="foot-links">
+					<li><a href="/sobre">Sobre {SITE_TITLE}</a></li>
+					<li><a href="/privacidad">Política de privacidad</a></li>
+				</ul>
+			</div>
+		</div>
 		<p class="bottom">
-			&copy; {today.getFullYear()} {SITE_TITLE}. No estamos afiliados a Hotmart, Envato, Udemy,
-			Gumroad ni a ninguna de las plataformas que mencionamos. ·
-			<a href="/privacidad">Política de privacidad</a>
+			&copy; {today.getFullYear()} {SITE_TITLE}. No estamos afiliados a Hotmart, Envato, Udemy ni
+			Gumroad.
 		</p>
 	</div>
 </footer>
 <style>
 	footer {
-		padding: 2.5em 1.5em 4em 1.5em;
-		background: rgb(var(--black));
-		border-top: 4px solid var(--yellow);
-		color: rgba(255, 255, 255, 0.75);
+		padding: 3em 1.5em 4em;
+		background: var(--navy-950);
+		color: var(--mist);
 	}
 	.footer-inner {
 		max-width: 1100px;
 		margin: 0 auto;
 	}
+	.foot-grid {
+		display: grid;
+		grid-template-columns: 1.6fr 1fr 1fr;
+		gap: 2.5em;
+		margin-bottom: 2.5em;
+	}
+	.foot-brand {
+		font-family: var(--font-display, Georgia, serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: 1.3em;
+		margin: 0 0 0.7em;
+		color: var(--sky);
+	}
 	.disclosure {
 		font-size: 0.85em;
 		line-height: 1.6;
-		max-width: 640px;
-		margin: 0 0 1.25em 0;
-		color: rgba(255, 255, 255, 0.65);
+		max-width: 42ch;
+		margin: 0;
+		color: var(--mist);
+	}
+	.foot-title {
+		font-size: 0.82em;
+		margin: 0 0 0.8em;
+		color: var(--mist-dim);
+	}
+	.foot-links {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.55em;
+	}
+	.foot-links a {
+		text-decoration: none;
+		color: var(--mist);
+		font-size: 0.9em;
+	}
+	.foot-links a:hover {
+		color: var(--brass-bright);
 	}
 	.bottom {
 		font-size: 0.8em;
 		margin: 0;
-		color: rgba(255, 255, 255, 0.45);
+		padding-top: 1.6em;
+		border-top: 1px solid var(--navy-700);
+		color: var(--mist-dim);
 	}
-	.bottom a {
-		color: rgba(255, 255, 255, 0.65);
-	}
-	.bottom a:hover {
-		color: var(--yellow);
+	@media (max-width: 720px) {
+		.foot-grid {
+			grid-template-columns: 1fr;
+			gap: 1.8em;
+		}
 	}
 </style>

@@ -1,68 +1,95 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getSubcategoriasConDesde } from '../lib/db';
-import { formatPrecio, nombreCorto, sectorLabel } from '../lib/productos';
+import { getSubcategoriasConDesde, getTodosLosProductos } from '../lib/db';
+import { formatFecha, formatPrecio, nombreCorto, sectorLabel, SECTOR_LABELS } from '../lib/productos';
 
-const subcategorias = await getSubcategoriasConDesde();
+const [subcategorias, productos] = await Promise.all([getSubcategoriasConDesde(), getTodosLosProductos()]);
+
+const totalCategorias = Object.keys(SECTOR_LABELS).length;
+const plataformas = [...new Set(productos.map((p) => p.plataforma))].sort();
+const ultimaRevision =
+	subcategorias.length > 0
+		? formatFecha(subcategorias.reduce((max, s) => (s.fecha > max ? s.fecha : max), subcategorias[0].fecha))
+		: null;
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} wide>
-	<section class="hero-carrusel">
-		<p class="eyebrow">productos digitales elegidos a mano, no scrapeados</p>
+	<section class="hero">
+		<div class="hero-grid">
+			<div>
+				<p class="kicker">Catálogo revisado a mano, no scrapeado</p>
+				<h1 class="headline">Productos digitales que <em>valen</em> lo que cuestan.</h1>
+				<p class="hero-sub">{SITE_DESCRIPTION}</p>
+				<a href="#carrusel" class="hero-cta">Ver el catálogo</a>
+			</div>
+			<div class="filecard">
+				<div class="filecard-tape"></div>
+				<div class="ledger">
+					<div class="ledger-row"><span class="label">Categorías</span><span class="val">{totalCategorias}</span></div>
+					<div class="ledger-row"><span class="label">Productos revisados</span><span class="val brass">{productos.length}</span></div>
+					{
+						plataformas.length > 0 && (
+							<div class="ledger-row">
+								<span class="label">Plataformas</span>
+								<span class="val">{plataformas.join(', ')}</span>
+							</div>
+						)
+					}
+					{
+						ultimaRevision && (
+							<div class="ledger-row">
+								<span class="label">Última revisión</span>
+								<span class="val">{ultimaRevision}</span>
+							</div>
+						)
+					}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="block">
+		<div class="block-head">
+			<div>
+				<p class="eyebrow">Explorá por categoría</p>
+				<h2 class="block-title">Los estantes del catálogo</h2>
+			</div>
+			<p class="block-note">Cada categoría tiene su propio criterio de selección — deslizá para verlas.</p>
+		</div>
 
 		{
 			subcategorias.length === 0 ? (
 				<p class="vacio">Todavía no hay categorías publicadas.</p>
 			) : (
-				<>
-					<div class="carrusel-viewport">
-						<button class="flecha izq" type="button" aria-label="Anterior" data-dir="-1">
-							‹
-						</button>
-						<div class="carrusel" id="carrusel">
-							{subcategorias.map((sub) => (
-								<a class="tarjeta" href={`/${sub.sector}/${sub.slug}`}>
-									<div class="tarjeta-img">
-										{sub.imagenPortada ? (
-											<img src={sub.imagenPortada} alt={nombreCorto(sub.slug)} loading="lazy" />
-										) : (
-											<span class="sin-imagen">Próximamente</span>
-										)}
-									</div>
-									<div class="tarjeta-info">
-										<span class="tarjeta-eyebrow">{sectorLabel(sub.sector)}</span>
-										<h2>{nombreCorto(sub.slug)}</h2>
-										{sub.desde !== null && (
-											<p class="tarjeta-precio">
-												Desde {formatPrecio(sub.desde.valor, sub.desde.moneda)}
-											</p>
-										)}
-										<span class="tarjeta-cta">
-											Ver todos los productos <span class="cta-flecha">→</span>
+				<div class="carrusel-viewport">
+					<button class="flecha izq" type="button" aria-label="Anterior" data-dir="-1">
+						‹
+					</button>
+					<div class="carrusel" id="carrusel">
+						{subcategorias.map((sub) => (
+							<a class="card" href={`/${sub.sector}/${sub.slug}`} style={`--tint: var(--${sub.sector})`}>
+								<div class="card-cover">
+									<p class="letter">{sectorLabel(sub.sector)}</p>
+									<p class="spine">{nombreCorto(sub.slug)}</p>
+								</div>
+								<div class="card-body">
+									<h3 class="card-title">{nombreCorto(sub.slug)}</h3>
+									<p class="card-sample">{sub.resumen}</p>
+									<div class="card-foot">
+										<span class="card-price">
+											{sub.desde !== null ? `Desde ${formatPrecio(sub.desde.valor, sub.desde.moneda)}` : 'Ver productos'}
 										</span>
+										<span class="card-go">Ver más →</span>
 									</div>
-								</a>
-							))}
-						</div>
-						<button class="flecha der" type="button" aria-label="Siguiente" data-dir="1">
-							›
-						</button>
+								</div>
+							</a>
+						))}
 					</div>
-
-					{subcategorias.length > 1 && (
-						<div class="puntos" id="puntos">
-							{subcategorias.map((_, i) => (
-								<button
-									class="punto"
-									type="button"
-									data-index={i}
-									aria-label={`Ir a la categoría ${i + 1}`}
-								/>
-							))}
-						</div>
-					)}
-				</>
+					<button class="flecha der" type="button" aria-label="Siguiente" data-dir="1">
+						›
+					</button>
+				</div>
 			)
 		}
 	</section>
@@ -71,16 +98,136 @@ const subcategorias = await getSubcategoriasConDesde();
 </BaseLayout>
 
 <style>
-	.hero-carrusel {
-		padding: 1.4em 0 0.5em;
+	.hero {
+		padding: 3.2em 0 2.5em;
+		border-bottom: 1px solid var(--sky-line);
+	}
+	.hero-grid {
+		display: grid;
+		grid-template-columns: 1.3fr 1fr;
+		gap: 3em;
+		align-items: end;
+	}
+	.kicker {
+		display: flex;
+		align-items: center;
+		font-size: 0.85em;
+		color: var(--slate);
+		border-left: 2px solid var(--brass);
+		padding-left: 0.75em;
+		margin: 0 0 1.4em;
+	}
+	.headline {
+		font-size: clamp(2em, 4.2vw, 3.1em);
+		line-height: 1.08;
+		margin: 0 0 0.5em;
+		text-wrap: balance;
+	}
+	.headline em {
+		font-style: italic;
+		color: var(--software);
+		font-weight: 500;
+	}
+	.hero-sub {
+		font-size: 1.05em;
+		line-height: 1.6;
+		color: var(--slate);
+		max-width: 46ch;
+		margin: 0 0 1.4em;
+	}
+	.hero-cta {
+		display: inline-flex;
+		align-items: center;
+		background: var(--brass);
+		color: var(--sky);
+		font-weight: 600;
+		font-size: 0.95em;
+		padding: 0.8em 1.4em;
+		text-decoration: none;
+		transition: background 0.15s ease;
+	}
+	.hero-cta:hover {
+		background: var(--navy-900);
+		color: var(--sky);
+	}
+
+	.filecard {
+		position: relative;
+	}
+	.filecard-tape {
+		position: absolute;
+		top: -10px;
+		left: 34px;
+		width: 60px;
+		height: 20px;
+		background: rgba(230, 195, 74, 0.28);
+		border: 1px solid rgba(230, 195, 74, 0.4);
+		transform: rotate(-3deg);
+		z-index: 2;
+	}
+	.ledger {
+		font-family: var(--font-mono, monospace);
+		border: 1px solid var(--navy-700);
+		background: var(--navy-900);
+		transform: rotate(0.5deg);
+		box-shadow: 0 14px 32px -18px rgba(16, 26, 44, 0.5);
+	}
+	.ledger-row {
+		display: flex;
+		justify-content: space-between;
+		gap: 1em;
+		padding: 0.8em 1.1em;
+		font-size: 0.8em;
+		border-bottom: 1px solid var(--navy-700);
+	}
+	.ledger-row:last-child {
+		border-bottom: none;
+	}
+	.ledger-row .label {
+		color: var(--mist-dim);
+		white-space: nowrap;
+	}
+	.ledger-row .val {
+		color: var(--sky);
+		text-align: right;
+	}
+	.ledger-row .val.brass {
+		color: var(--brass-bright);
+	}
+
+	.block {
+		padding: 3em 0;
+	}
+	.block-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1.5em;
+		flex-wrap: wrap;
+		margin-bottom: 1.6em;
 	}
 	.eyebrow {
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		font-size: 0.75em;
-		font-weight: 700;
-		color: var(--accent);
-		margin: 0 0 0.8em;
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		font-size: 0.85em;
+		color: var(--slate);
+		margin: 0 0 0.5em;
+	}
+	.eyebrow::before {
+		content: '';
+		width: 16px;
+		height: 1px;
+		background: var(--brass);
+	}
+	.block-title {
+		margin: 0;
+	}
+	.block-note {
+		font-size: 0.9em;
+		color: var(--slate);
+		max-width: 32ch;
+		margin: 0;
 	}
 
 	.carrusel-viewport {
@@ -88,137 +235,134 @@ const subcategorias = await getSubcategoriasConDesde();
 	}
 	.carrusel {
 		display: flex;
-		gap: 1.5em;
+		gap: 1.3em;
 		overflow-x: auto;
 		scroll-snap-type: x mandatory;
 		scroll-behavior: smooth;
 		-webkit-overflow-scrolling: touch;
-		padding: 0.5em 0.2em 0.8em;
+		padding: 0.3em 0.2em 1em;
 		scrollbar-width: none;
 	}
 	.carrusel::-webkit-scrollbar {
 		display: none;
 	}
 
-	.tarjeta {
+	.card {
+		scroll-snap-align: start;
 		flex: 0 0 auto;
-		width: min(84vw, 900px);
-		height: min(56vh, 460px);
-		min-height: 320px;
-		scroll-snap-align: center;
-		display: grid;
-		grid-template-columns: 1.05fr 1fr;
-		border-radius: 18px;
+		width: min(300px, 78vw);
+		background: var(--paper);
+		color: var(--navy-900);
 		overflow: hidden;
-		background: #fff;
 		text-decoration: none;
-		color: inherit;
-		box-shadow: 0 6px 24px rgba(20, 20, 23, 0.08);
-		opacity: 0.45;
-		filter: brightness(0.6) saturate(0.85);
-		transform: scale(0.94);
-		transition:
-			opacity 0.35s ease,
-			filter 0.35s ease,
-			transform 0.35s ease,
-			box-shadow 0.25s ease;
-	}
-	.tarjeta.activa {
-		opacity: 1;
-		filter: none;
-		transform: scale(1);
-	}
-	.tarjeta:hover {
-		box-shadow: 0 14px 36px rgba(20, 20, 23, 0.16);
-	}
-	.tarjeta.activa:hover {
-		transform: translateY(-6px) scale(1.012);
-	}
-
-	.tarjeta-img {
-		position: relative;
-		overflow: hidden;
-		background: #fafafa;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.tarjeta-img img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-		padding: 2.5em;
-		transition: transform 0.5s ease;
-	}
-	.tarjeta:hover .tarjeta-img img {
-		transform: scale(1.07);
-	}
-	.sin-imagen {
-		font-size: 0.9em;
-		color: rgb(var(--gray));
-	}
-
-	.tarjeta-info {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		gap: 0.5em;
-		padding: 2em 2.4em;
-		background: linear-gradient(135deg, #fff 55%, var(--yellow-soft));
-	}
-	.tarjeta-eyebrow {
-		text-transform: uppercase;
-		font-size: 0.7em;
-		letter-spacing: 0.08em;
-		color: var(--accent);
-		font-weight: 700;
-	}
-	.tarjeta-info h2 {
-		font-size: clamp(1.5em, 2.6vw, 2.1em);
-		line-height: 1.1;
-		margin: 0;
-	}
-	.tarjeta-precio {
-		font-size: 1.1em;
-		font-weight: 700;
-		color: rgb(var(--black));
-		margin: 0;
-	}
-	.tarjeta-cta {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5em;
-		background: var(--yellow);
-		color: rgb(var(--black));
-		font-weight: 700;
-		padding: 0.8em 1.4em;
-		border-radius: 8px;
-		width: fit-content;
-		margin-top: 0.6em;
+		border: 1px solid var(--paper-dim);
+		box-shadow: var(--box-shadow);
 		transition:
-			background 0.2s ease,
-			gap 0.2s ease;
+			transform 0.2s ease,
+			border-color 0.2s ease;
 	}
-	.cta-flecha {
-		transition: transform 0.2s ease;
+	.card:hover {
+		transform: translateY(-4px);
+		border-color: var(--brass);
 	}
-	.tarjeta:hover .tarjeta-cta {
-		background: var(--yellow-dark);
+	.card-cover {
+		height: 110px;
+		position: relative;
+		overflow: hidden;
+		background: var(--tint);
 	}
-	.tarjeta:hover .cta-flecha {
-		transform: translateX(4px);
+	.card-cover::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image: repeating-linear-gradient(45deg, rgba(16, 26, 44, 0.09) 0 1px, transparent 1px 9px);
+	}
+	.card-cover .spine {
+		position: absolute;
+		left: -0.15em;
+		bottom: -0.28em;
+		margin: 0;
+		white-space: nowrap;
+		font-family: var(--font-display, Georgia, serif);
+		font-style: italic;
+		font-weight: 600;
+		font-size: 2.6em;
+		color: rgba(16, 26, 44, 0.18);
+		letter-spacing: -0.01em;
+	}
+	.card-cover .letter {
+		position: relative;
+		padding: 0.85em 1em 0;
+		margin: 0;
+		font-family: var(--font-mono, monospace);
+		font-size: 0.68em;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		color: rgba(16, 26, 44, 0.7);
+	}
+	.card-cover::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -6px;
+		height: 12px;
+		background-image: radial-gradient(circle at 8px 8px, var(--sky) 6px, transparent 6.5px);
+		background-size: 22px 100%;
+		background-position: -11px 0;
+	}
+	.card-body {
+		padding: 1.1em 1.15em 1.25em;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4em;
+		flex: 1;
+	}
+	.card-title {
+		font-size: 1.1em;
+		margin: 0;
+		line-height: 1.25;
+	}
+	.card-sample {
+		font-size: 0.82em;
+		color: #746c58;
+		line-height: 1.4;
+		margin: 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.card-foot {
+		margin-top: auto;
+		padding-top: 0.6em;
+		border-top: 1px dashed #cfc7ac;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 0.82em;
+	}
+	.card-price {
+		font-family: var(--font-mono, monospace);
+		font-weight: 500;
+	}
+	.card-go {
+		color: color-mix(in srgb, var(--tint) 60%, #101a2c);
+		font-weight: 500;
 	}
 
 	.flecha {
 		position: absolute;
-		top: 50%;
+		top: 45%;
 		transform: translateY(-50%);
-		width: 46px;
-		height: 46px;
+		width: 42px;
+		height: 42px;
 		border-radius: 50%;
-		border: 1px solid rgb(var(--gray-light));
+		border: 1px solid var(--sky-line);
 		background: #fff;
-		font-size: 1.5em;
+		font-size: 1.4em;
 		line-height: 1;
 		cursor: pointer;
 		display: flex;
@@ -226,118 +370,56 @@ const subcategorias = await getSubcategoriasConDesde();
 		justify-content: center;
 		box-shadow: var(--box-shadow);
 		z-index: 2;
+		color: var(--navy-900);
 		transition:
 			border-color 0.2s ease,
 			transform 0.2s ease;
 	}
 	.flecha:hover {
-		border-color: var(--accent);
-		color: var(--accent);
-		transform: translateY(-50%) scale(1.08);
+		border-color: var(--brass);
+		transform: translateY(-50%) scale(1.06);
 	}
 	.flecha.izq {
-		left: 4px;
+		left: -18px;
 	}
 	.flecha.der {
-		right: 4px;
+		right: -18px;
 	}
 	.vacio {
-		color: rgb(var(--gray));
-	}
-
-	.puntos {
-		display: flex;
-		justify-content: center;
-		gap: 0.5em;
-		margin-top: 0.6em;
-	}
-	.punto {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		border: none;
-		padding: 0;
-		background: rgb(var(--gray-light));
-		cursor: pointer;
-		transition:
-			background 0.2s ease,
-			transform 0.2s ease;
-	}
-	.punto.activo {
-		background: var(--yellow-dark);
-		transform: scale(1.3);
+		color: var(--slate);
 	}
 
 	.mas-info {
-		padding: 1.5em 0 3em;
+		padding: 0 0 3em;
 	}
 	.mas-info a {
-		color: rgb(var(--gray));
+		color: var(--slate);
 		font-size: 0.9em;
 	}
 	.mas-info a:hover {
-		color: var(--accent);
+		color: var(--software);
 	}
 
-	@media (max-width: 720px) {
+	@media (max-width: 800px) {
+		.hero-grid {
+			grid-template-columns: 1fr;
+			gap: 2em;
+		}
 		.flecha {
 			display: none;
-		}
-		.tarjeta {
-			width: 88vw;
-			height: auto;
-			min-height: 0;
-			grid-template-columns: 1fr;
-		}
-		.tarjeta-img {
-			height: 44vw;
-		}
-		.tarjeta-info {
-			padding: 1.4em 1.6em;
-			background: #fff;
 		}
 	}
 </style>
 
 <script>
 	const carrusel = document.getElementById('carrusel');
-	const tarjetas = Array.from(document.querySelectorAll<HTMLAnchorElement>('.tarjeta'));
-	const puntos = Array.from(document.querySelectorAll<HTMLButtonElement>('.punto'));
-
-	let indiceActivo = 0;
-
-	function marcarActiva(index: number) {
-		indiceActivo = index;
-		tarjetas.forEach((t, i) => t.classList.toggle('activa', i === index));
-		puntos.forEach((p, i) => p.classList.toggle('activo', i === index));
-	}
-
-	if (carrusel && tarjetas.length) {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-						marcarActiva(tarjetas.indexOf(entry.target as HTMLAnchorElement));
-					}
-				});
-			},
-			{ root: carrusel, threshold: [0.6] },
-		);
-		tarjetas.forEach((t) => observer.observe(t));
-		marcarActiva(0);
-
+	if (carrusel) {
 		document.querySelectorAll<HTMLButtonElement>('.flecha').forEach((boton) => {
 			boton.addEventListener('click', () => {
 				const dir = Number(boton.dataset.dir);
-				// Da la vuelta: si estás en la última y avanzás, volvés a la primera (y viceversa).
-				const siguiente = (indiceActivo + dir + tarjetas.length) % tarjetas.length;
-				tarjetas[siguiente].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-			});
-		});
-
-		puntos.forEach((p, i) => {
-			p.addEventListener('click', () => {
-				tarjetas[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+				const tarjeta = carrusel.querySelector<HTMLElement>('.card');
+				const paso = tarjeta ? tarjeta.getBoundingClientRect().width + 21 : 300;
+				carrusel.scrollBy({ left: dir * paso, behavior: 'smooth' });
 			});
 		});
 	}

@@ -11,26 +11,26 @@ export default defineConfig({
     integrations: [sitemap(), react()],
     fonts: [
         {
-            provider: fontProviders.local(),
-            name: 'Atkinson',
-            cssVariable: '--font-atkinson',
-            fallbacks: ['sans-serif'],
-            options: {
-                variants: [
-                    {
-                        src: ['./src/assets/fonts/atkinson-regular.woff'],
-                        weight: 400,
-                        style: 'normal',
-                        display: 'swap',
-                    },
-                    {
-                        src: ['./src/assets/fonts/atkinson-bold.woff'],
-                        weight: 700,
-                        style: 'normal',
-                        display: 'swap',
-                    },
-                ],
-            },
+            provider: fontProviders.google(),
+            name: 'Fraunces',
+            cssVariable: '--font-display',
+            weights: [500, 600, 700],
+            styles: ['normal', 'italic'],
+            fallbacks: ['Georgia', 'Times New Roman', 'serif'],
+        },
+        {
+            provider: fontProviders.google(),
+            name: 'Work Sans',
+            cssVariable: '--font-body',
+            weights: [400, 500, 600],
+            fallbacks: ['-apple-system', 'Segoe UI', 'sans-serif'],
+        },
+        {
+            provider: fontProviders.google(),
+            name: 'IBM Plex Mono',
+            cssVariable: '--font-mono',
+            weights: [400, 500],
+            fallbacks: ['ui-monospace', 'SF Mono', 'monospace'],
         },
     ],
 });

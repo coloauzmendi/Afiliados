@@ -10,14 +10,14 @@ function IconoSinImagen() {
         height="15"
         rx="2"
         fill="none"
-        stroke="#d5d5da"
+        stroke="#cfc7ac"
         strokeWidth="1.6"
       />
-      <circle cx="8" cy="10" r="1.6" fill="#d5d5da" />
+      <circle cx="8" cy="10" r="1.6" fill="#cfc7ac" />
       <path
         d="M4 17l5-5 3.5 3.5L16 11l4 4"
         fill="none"
-        stroke="#d5d5da"
+        stroke="#cfc7ac"
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -123,20 +123,24 @@ export default function FiltroProductos({ productos, siteTitle }) {
               )}
             </div>
             <div className="producto-info">
-              {p.plataforma && <span className="producto-plataforma">{p.plataforma}</span>}
-              {p.badge && <span className="producto-badge">{p.badge.toUpperCase()}</span>}
+              <div className="producto-top">
+                {p.plataforma && <span className="producto-plataforma">{p.plataforma}</span>}
+                {p.badge && <span className="producto-badge">{p.badge}</span>}
+              </div>
               <h3 className="producto-nombre">{p.nombre}</h3>
-              <p className="producto-precio">{formatearPrecio(p.precio, p.moneda)}</p>
               <p className="producto-envio">Acceso inmediato</p>
             </div>
-            <a
-              className="producto-cta"
-              href={p.link}
-              target="_blank"
-              rel="nofollow sponsored noopener"
-            >
-              Acceder al producto
-            </a>
+            <div className="producto-pie">
+              <span className="producto-precio">{formatearPrecio(p.precio, p.moneda)}</span>
+              <a
+                className="producto-cta"
+                href={p.link}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+              >
+                Acceder
+              </a>
+            </div>
             {panelActivo && <BotonesCompartir producto={p} siteTitle={siteTitle} />}
           </div>
         ))}
@@ -144,126 +148,134 @@ export default function FiltroProductos({ productos, siteTitle }) {
 
       <style>{`
         .filtro-productos {
-          font-family: var(--font-atkinson, sans-serif);
+          font-family: var(--font-body, sans-serif);
         }
         .filtro-barra {
           display: flex;
           align-items: center;
           gap: 0.6rem;
           margin-bottom: 1.5rem;
-          font-size: 0.95rem;
+          font-size: 0.92rem;
         }
         .filtro-barra label {
-          font-weight: 700;
-          color: rgb(var(--black));
+          font-weight: 600;
+          color: var(--navy-900);
         }
         .filtro-barra select {
           padding: 0.5rem 0.7rem;
-          border-radius: 6px;
-          border: 1px solid rgb(var(--gray-light));
-          background: #fff;
-          font-size: 0.95rem;
+          border-radius: 2px;
+          border: 1px solid var(--paper-dim);
+          background: var(--paper);
+          color: var(--navy-900);
+          font-family: inherit;
+          font-size: 0.92rem;
         }
         .grilla-productos {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 1.25rem;
+          grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+          gap: 1.15rem;
         }
         .producto-card {
           display: flex;
           flex-direction: column;
-          border: 1px solid rgb(var(--gray-light));
-          border-radius: 10px;
-          background: #fff;
+          border: 1px solid var(--paper-dim);
+          background: var(--paper);
           overflow: hidden;
-          transition: box-shadow 0.15s ease, border-color 0.15s ease;
+          box-shadow: var(--box-shadow);
+          transition: border-color 0.15s ease, transform 0.15s ease;
         }
         .producto-card:hover {
-          border-color: var(--accent);
-          box-shadow: var(--box-shadow);
+          border-color: var(--brass);
+          transform: translateY(-3px);
         }
         .producto-imagen {
           display: flex;
           align-items: center;
           justify-content: center;
-          height: 200px;
+          height: 190px;
           background: #fff;
+          border-bottom: 1px solid var(--paper-dim);
         }
         .producto-imagen img {
           width: 100%;
           height: 100%;
           object-fit: contain;
           padding: 1rem;
-          border-radius: 0;
         }
         .producto-info {
-          padding: 1.25rem 1.25rem 0.5rem;
+          padding: 1.1rem 1.15rem 0.4rem;
           flex: 1;
         }
+        .producto-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.5rem;
+          margin-bottom: 0.55rem;
+        }
         .producto-plataforma {
-          display: block;
-          font-size: 0.72rem;
-          font-weight: 700;
+          font-family: var(--font-mono, monospace);
+          font-size: 0.68rem;
           text-transform: uppercase;
-          letter-spacing: 0.04em;
-          color: rgb(var(--gray));
-          margin-bottom: 0.4rem;
+          letter-spacing: 0.05em;
+          color: #857c63;
         }
         .producto-badge {
-          display: inline-block;
-          background: var(--yellow);
-          color: rgb(var(--black));
-          font-size: 0.75rem;
-          font-weight: 700;
-          padding: 0.25rem 0.6rem;
-          border-radius: 4px;
-          margin-bottom: 0.6rem;
+          font-family: var(--font-mono, monospace);
+          font-size: 0.7rem;
+          color: var(--brass);
         }
         .producto-nombre {
-          font-size: 1rem;
-          font-weight: 400;
+          font-size: 0.98rem;
+          font-weight: 500;
           margin: 0 0 0.5rem 0;
-          color: rgb(var(--gray-dark));
+          color: var(--navy-900);
           line-height: 1.35;
         }
-        .producto-precio {
-          font-size: 1.7rem;
-          font-weight: 700;
-          margin: 0 0 0.3rem 0;
-          color: rgb(var(--black));
-        }
         .producto-envio {
-          font-size: 0.85rem;
-          color: var(--accent);
-          margin: 0 0 0.5rem;
+          font-size: 0.8rem;
+          color: var(--software);
+          margin: 0;
           font-weight: 600;
         }
+        .producto-pie {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.75rem 1.15rem 1.1rem;
+          margin-top: auto;
+          border-top: 1px dashed #cfc7ac;
+        }
+        .producto-precio {
+          font-family: var(--font-mono, monospace);
+          font-size: 1.3rem;
+          font-weight: 500;
+          color: var(--navy-900);
+        }
         .producto-cta {
-          display: block;
-          text-align: center;
-          background: var(--yellow);
-          color: rgb(var(--black));
-          padding: 0.9rem;
-          margin: 0.75rem 1.25rem 1.25rem;
-          border-radius: 6px;
+          display: inline-block;
+          background: var(--navy-900);
+          color: var(--sky);
+          padding: 0.55rem 0.95rem;
           text-decoration: none;
-          font-weight: 700;
-          font-size: 0.95rem;
+          font-weight: 600;
+          font-size: 0.88rem;
+          transition: background 0.15s ease;
         }
         .producto-cta:hover {
-          background: var(--yellow-dark);
+          background: var(--brass);
+          color: var(--navy-900);
         }
         .compartir-fila {
           display: flex;
           flex-wrap: wrap;
           align-items: center;
           gap: 0.4rem;
-          padding: 0 1.25rem 1.25rem;
-          margin-top: -0.5rem;
+          padding: 0 1.15rem 1.1rem;
         }
         .compartir-label {
           font-size: 0.75rem;
-          color: rgb(var(--gray));
+          color: #857c63;
           margin-right: 0.2rem;
         }
         .compartir-btn {
