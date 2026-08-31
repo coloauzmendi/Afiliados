@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "publicar-telegram": "node --env-file=.env scripts/publicar-telegram.js"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",
