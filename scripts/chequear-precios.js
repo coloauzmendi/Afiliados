@@ -26,17 +26,28 @@ if (!DB_HOST || !DB_PORT || !DB_USER || !DB_PASSWORD || !DB_NAME) {
 // alguna etiqueta de metadatos (para que WhatsApp/Twitter puedan armar la
 // vista previa), sin necesidad de ejecutar JavaScript.
 async function sacarIdMLA(link) {
-	const respuesta = await fetch(link, { redirect: 'follow' });
+	const respuesta = await fetch(link, {
+		redirect: 'follow',
+		headers: {
+			'User-Agent':
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36',
+		},
+	});
 
 	let match = respuesta.url.match(/MLA-?(\d{6,})/i);
 	if (match) {
 		await respuesta.body?.cancel?.();
-		return { id: `MLA${match[1]}`, urlFinal: respuesta.url };
+		return { id: `MLA${match[1]}`, urlFinal: respuesta.url, status: respuesta.status };
 	}
 
 	const html = await respuesta.text();
 	match = html.match(/MLA-?(\d{6,})/i);
-	return { id: match ? `MLA${match[1]}` : null, urlFinal: respuesta.url };
+	return {
+		id: match ? `MLA${match[1]}` : null,
+		urlFinal: respuesta.url,
+		status: respuesta.status,
+		adelanto: html.slice(0, 200).replace(/\s+/g, ' '),
+	};
 }
 
 // Consulta el precio actual en la API pública de Mercado Libre (gratis, sin
@@ -79,10 +90,10 @@ async function main() {
 
 	for (const producto of productos) {
 		try {
-			const { id: idMLA, urlFinal } = await sacarIdMLA(producto.link);
+			const { id: idMLA, urlFinal, status, adelanto } = await sacarIdMLA(producto.link);
 			if (!idMLA) {
 				console.log(
-					`[sin ID] "${producto.nombre}" — ${producto.link} redirigió a ${urlFinal}, no encontré el ID ahí`,
+					`[sin ID] "${producto.nombre}" — ${producto.link} → status ${status}, url final ${urlFinal}, arranca así: ${adelanto}`,
 				);
 				sinDetectar++;
 				continue;
