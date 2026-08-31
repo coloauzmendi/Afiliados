@@ -46,13 +46,40 @@ Para cargar productos reales, conectate a la base con MySQL Workbench (o el clie
 Para sumar una subcategoría nueva: un `INSERT` en `subcategorias` con un `slug` único (se usa en la URL,
 ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
 
+## Chequeo automático de precios
+
+Los precios de Mercado Libre cambian seguido, así que `scripts/chequear-precios.js` los revisa solo
+todos los días (vía GitHub Actions, ver `.github/workflows/chequear-precios.yml`): busca el ID de cada
+producto siguiendo su link, consulta el precio actual en la API pública de Mercado Libre
+(`api.mercadolibre.com`), y si cambió, actualiza la fila en la base. Si actualizó algo, además dispara
+un redeploy en Vercel para que el precio nuevo salga publicado sin que nadie tenga que tocar nada.
+
+Para que funcione hay que cargar, en el repo de GitHub → **Settings → Secrets and variables →
+Actions**, estos secrets:
+
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` — los mismos datos que en tu `.env`.
+- `VERCEL_DEPLOY_HOOK_URL` — un Deploy Hook de Vercel (Project Settings → Git → Deploy Hooks, creá uno
+  para la rama de producción y copiá la URL que te da).
+
+Se puede probar a mano en cualquier momento desde la pestaña **Actions** del repo → "Chequear precios"
+→ **Run workflow**. En local, corre con:
+
+```sh
+node --env-file=.env scripts/chequear-precios.js
+```
+
 ## Estructura
 
 ```text
+├── .github/
+│   └── workflows/
+│       └── chequear-precios.yml  # Corre el chequeo de precios todos los días
 ├── db/
 │   ├── schema.sql       # CREATE TABLE de subcategorias y productos
 │   └── seed.sql         # Carga inicial (correr una sola vez)
 ├── public/
+├── scripts/
+│   └── chequear-precios.js  # Revisa precios en Mercado Libre y actualiza la base
 ├── src/
 │   ├── assets/
 │   ├── components/
@@ -73,3 +100,4 @@ ej. `tecnologia/mi-slug`) y sus productos correspondientes en `productos`.
 | `npm run dev`       | Levanta el server de desarrollo en `localhost:4321` |
 | `npm run build`     | Genera el sitio de producción en `./dist/`     |
 | `npm run preview`   | Previsualiza el build de producción            |
+| `npm run chequear-precios` | Corre a mano el chequeo de precios (necesita `.env`) |
