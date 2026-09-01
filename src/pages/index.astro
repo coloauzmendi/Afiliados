@@ -17,7 +17,7 @@ const ultimaRevision =
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} wide>
 	<section class="hero">
 		<div class="hero-grid">
-			<div>
+			<div class="hero-copy">
 				<p class="kicker">Catálogo revisado a mano, no scrapeado</p>
 				<h1 class="headline">Productos digitales que <em>valen</em> lo que cuestan.</h1>
 				<p class="hero-sub">{SITE_DESCRIPTION}</p>
@@ -118,6 +118,9 @@ const ultimaRevision =
 		gap: 3em;
 		align-items: end;
 	}
+	.hero-copy {
+		position: relative;
+	}
 	@keyframes entrada {
 		from {
 			opacity: 0;
@@ -195,7 +198,10 @@ const ultimaRevision =
 
 	.scroll-hint {
 		display: block;
-		margin: 0.9em 0 0;
+		position: absolute;
+		left: 0;
+		top: 100%;
+		margin-top: 0.7em;
 		color: var(--slate);
 		font-size: 1.15em;
 		opacity: 0;
@@ -224,13 +230,20 @@ const ultimaRevision =
 		}
 	}
 	@keyframes pega-cinta {
-		from {
+		0% {
 			opacity: 0;
-			transform: rotate(-3deg) scale(0.6);
+			transform: rotate(-3deg) scale(0.35) translateY(-16px);
 		}
-		to {
+		55% {
 			opacity: 1;
-			transform: rotate(-3deg) scale(1);
+			transform: rotate(-3deg) scale(1.22) translateY(2px);
+		}
+		78% {
+			transform: rotate(-3deg) scale(0.94) translateY(0);
+		}
+		100% {
+			opacity: 1;
+			transform: rotate(-3deg) scale(1) translateY(0);
 		}
 	}
 	.filecard {
@@ -246,7 +259,7 @@ const ultimaRevision =
 		border: 1px solid rgba(230, 195, 74, 0.4);
 		transform: rotate(-3deg);
 		z-index: 2;
-		animation: pega-cinta 0.4s ease 0.85s both;
+		animation: pega-cinta 0.55s ease-out 1.05s both;
 	}
 	.ledger {
 		font-family: var(--font-mono, monospace);
@@ -412,7 +425,7 @@ const ultimaRevision =
 		font-family: var(--font-display, Georgia, serif);
 		font-style: italic;
 		font-weight: 600;
-		font-size: 1.5rem;
+		font-size: 1.2rem;
 		letter-spacing: 0.01em;
 		color: rgba(242, 236, 221, 0.92);
 	}
@@ -551,7 +564,7 @@ const ultimaRevision =
 			height: min(260px, 50vh);
 		}
 		.card-cover .spine {
-			font-size: 1.15rem;
+			font-size: 0.95rem;
 		}
 	}
 </style>
