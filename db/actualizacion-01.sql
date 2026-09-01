@@ -9,6 +9,12 @@
 -- con guiones de más en vez de la vocal sin tilde.
 SET NAMES utf8mb4;
 
+-- MySQL Workbench trae activado por defecto el "modo seguro" (Safe Updates),
+-- que bloquea cualquier UPDATE/DELETE que no filtre por clave primaria — y el
+-- UPDATE de más abajo filtra por `slug IS NULL`, no por id. Esto lo
+-- desactiva para esta sesión (no toca la configuración del servidor).
+SET SQL_SAFE_UPDATES = 0;
+
 ALTER TABLE productos
   ADD COLUMN slug   VARCHAR(150) NULL AFTER nombre,
   ADD COLUMN resena TEXT         NULL AFTER destacado;
