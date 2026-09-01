@@ -8,7 +8,7 @@ import { SITE_TITLE } from '../consts';
 	description={`Quién arma ${SITE_TITLE} y cómo elegimos qué recomendar.`}
 >
 	<article class="sobre">
-		<h1>Sobre {SITE_TITLE}</h1>
+		<h1>Sobre <span class="wordmark-inline">{SITE_TITLE}<span class="dot">.</span></span></h1>
 
 		<p>
 			Arranqué este sitio para juntar en un solo lugar los productos digitales que valen la pena:
@@ -42,6 +42,13 @@ import { SITE_TITLE } from '../consts';
 	}
 	.sobre h1 {
 		margin-bottom: 0.8em;
+	}
+	.wordmark-inline {
+		font-style: italic;
+	}
+	.wordmark-inline .dot {
+		color: var(--brass);
+		font-style: normal;
 	}
 	.sobre h2 {
 		font-size: 1.25em;
