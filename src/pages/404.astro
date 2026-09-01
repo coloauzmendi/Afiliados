@@ -39,9 +39,15 @@ import { SITE_TITLE } from '../consts';
 		border-radius: var(--radius-md);
 		text-decoration: none;
 		font-weight: 600;
+		transition:
+			background 0.15s ease,
+			transform 0.1s ease;
 	}
 	.btn:hover {
 		background: var(--navy-900);
 		color: var(--sky);
+	}
+	.btn:active {
+		transform: scale(0.95);
 	}
 </style>

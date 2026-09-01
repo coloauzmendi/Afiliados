@@ -262,11 +262,14 @@ export default function FiltroProductos({ productos, siteTitle }) {
           text-decoration: none;
           font-weight: 600;
           font-size: 0.88rem;
-          transition: background 0.15s ease;
+          transition: background 0.15s ease, transform 0.1s ease;
         }
         .producto-cta:hover {
           background: var(--brass);
           color: var(--navy-900);
+        }
+        .producto-cta:active {
+          transform: scale(0.95);
         }
         .compartir-fila {
           display: flex;

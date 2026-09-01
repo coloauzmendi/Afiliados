@@ -69,13 +69,23 @@ import { SITE_TITLE } from '../consts';
 		text-decoration: none;
 		color: var(--sky);
 	}
-	.internal-links :global(a.active)::after {
+	.internal-links :global(a)::after {
 		content: '';
 		position: absolute;
 		left: 0.6em;
 		right: 0.6em;
 		bottom: 0.6em;
 		height: 1px;
+		background: var(--brass-bright);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.25s ease;
+	}
+	.internal-links :global(a:hover)::after {
+		transform: scaleX(1);
+	}
+	.internal-links :global(a.active)::after {
 		background: var(--brass);
+		transform: scaleX(1);
 	}
 </style>
