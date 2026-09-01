@@ -104,7 +104,7 @@ const ultimaRevision =
 		}
 	</section>
 
-	<p class="mas-info"><a href="/sobre">Sobre {SITE_TITLE} — ¿por qué confiar en esto?</a></p>
+	<p class="mas-info"><a href="/sobre">¿Por qué confiar en esto?</a></p>
 </BaseLayout>
 
 <style>
@@ -235,7 +235,7 @@ const ultimaRevision =
 	@keyframes pega-cinta {
 		0% {
 			opacity: 0;
-			transform: translateX(-50%) rotate(-3deg) scale(2.6);
+			transform: translateX(-50%) rotate(-7deg) scale(2.6);
 			filter: blur(2px);
 		}
 		45% {
@@ -243,14 +243,14 @@ const ultimaRevision =
 			filter: blur(0);
 		}
 		58% {
-			transform: translateX(-50%) rotate(-3deg) scale(0.85);
+			transform: translateX(-50%) rotate(-7deg) scale(0.85);
 		}
 		76% {
-			transform: translateX(-50%) rotate(-3deg) scale(1.1);
+			transform: translateX(-50%) rotate(-7deg) scale(1.1);
 		}
 		100% {
 			opacity: 1;
-			transform: translateX(-50%) rotate(-3deg) scale(1);
+			transform: translateX(-50%) rotate(-7deg) scale(1);
 			filter: blur(0);
 		}
 	}
@@ -261,11 +261,11 @@ const ultimaRevision =
 		position: absolute;
 		top: -10px;
 		left: 50%;
-		width: 64px;
-		height: 20px;
+		width: 76px;
+		height: 24px;
 		background: rgba(230, 195, 74, 0.28);
 		border: 1px solid rgba(230, 195, 74, 0.4);
-		transform: translateX(-50%) rotate(-3deg);
+		transform: translateX(-50%) rotate(-7deg);
 		z-index: 2;
 		animation: pega-cinta 0.6s ease-out 1.05s both;
 	}
@@ -628,7 +628,7 @@ const ultimaRevision =
 			el.textContent = meta.toLocaleString('es-AR');
 			return;
 		}
-		const duracion = 900;
+		const duracion = 2000;
 		const inicio = performance.now() + 400; // sincronizado con la animación de "pinchado" de la ficha
 		function paso(ahora: number) {
 			const progreso = Math.min(Math.max((ahora - inicio) / duracion, 0), 1);
