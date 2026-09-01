@@ -7,7 +7,7 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://ahorrando.vercel.app',
+    site: 'https://somosdigitalia.vercel.app',
     integrations: [sitemap(), react()],
     fonts: [
         {
