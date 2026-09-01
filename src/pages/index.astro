@@ -22,12 +22,13 @@ const ultimaRevision =
 				<h1 class="headline">Productos digitales que <em>valen</em> lo que cuestan.</h1>
 				<p class="hero-sub">{SITE_DESCRIPTION}</p>
 				<a href="#catalogo" class="hero-cta">Ver el catálogo</a>
+				<span class="scroll-hint" aria-hidden="true">↓</span>
 			</div>
 			<div class="filecard">
 				<div class="filecard-tape"></div>
 				<div class="ledger">
-					<div class="ledger-row"><span class="label">Categorías</span><span class="val">{totalCategorias}</span></div>
-					<div class="ledger-row"><span class="label">Productos revisados</span><span class="val brass">{productos.length}</span></div>
+					<div class="ledger-row"><span class="label">Categorías</span><span class="val count-up" data-count={totalCategorias}>0</span></div>
+					<div class="ledger-row"><span class="label">Productos revisados</span><span class="val brass count-up" data-count={productos.length}>0</span></div>
 					{
 						plataformas.length > 0 && (
 							<div class="ledger-row">
@@ -50,7 +51,7 @@ const ultimaRevision =
 	</section>
 
 	<section class="block" id="catalogo">
-		<div class="block-head">
+		<div class="block-head reveal">
 			<div>
 				<p class="eyebrow">Explorá por categoría</p>
 				<h2 class="block-title">Los estantes del catálogo</h2>
@@ -63,7 +64,7 @@ const ultimaRevision =
 				<p class="vacio">Todavía no hay categorías publicadas.</p>
 			) : (
 				<>
-					<div class="carrusel-viewport">
+					<div class="carrusel-viewport reveal" style="transition-delay: 0.12s">
 						<button class="flecha izq" type="button" aria-label="Anterior" data-dir="-1">
 							‹
 						</button>
@@ -117,6 +118,32 @@ const ultimaRevision =
 		gap: 3em;
 		align-items: end;
 	}
+	@keyframes entrada {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	.kicker,
+	.headline,
+	.hero-sub,
+	.hero-cta {
+		animation: entrada 0.6s ease both;
+	}
+	.headline {
+		animation-delay: 0.08s;
+	}
+	.hero-sub {
+		animation-delay: 0.16s;
+	}
+	.hero-cta {
+		animation-delay: 0.24s;
+	}
+
 	.kicker {
 		display: flex;
 		align-items: center;
@@ -154,13 +181,58 @@ const ultimaRevision =
 		padding: 0.8em 1.4em;
 		text-decoration: none;
 		border-radius: var(--radius-md);
-		transition: background 0.15s ease;
+		transition:
+			background 0.15s ease,
+			transform 0.1s ease;
 	}
 	.hero-cta:hover {
 		background: var(--navy-900);
 		color: var(--sky);
 	}
+	.hero-cta:active {
+		transform: scale(0.95);
+	}
 
+	.scroll-hint {
+		display: block;
+		margin: 0.9em 0 0;
+		color: var(--slate);
+		font-size: 1.15em;
+		opacity: 0;
+		animation:
+			entrada 0.6s ease 0.3s both,
+			rebote 1.8s ease-in-out 0.9s infinite;
+	}
+	@keyframes rebote {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(6px);
+		}
+	}
+
+	@keyframes clava {
+		from {
+			opacity: 0;
+			transform: rotate(-6deg) scale(0.92) translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: rotate(0.5deg) scale(1) translateY(0);
+		}
+	}
+	@keyframes pega-cinta {
+		from {
+			opacity: 0;
+			transform: rotate(-3deg) scale(0.6);
+		}
+		to {
+			opacity: 1;
+			transform: rotate(-3deg) scale(1);
+		}
+	}
 	.filecard {
 		position: relative;
 	}
@@ -174,6 +246,7 @@ const ultimaRevision =
 		border: 1px solid rgba(230, 195, 74, 0.4);
 		transform: rotate(-3deg);
 		z-index: 2;
+		animation: pega-cinta 0.4s ease 0.85s both;
 	}
 	.ledger {
 		font-family: var(--font-mono, monospace);
@@ -182,6 +255,7 @@ const ultimaRevision =
 		border-radius: var(--radius-md);
 		transform: rotate(0.5deg);
 		box-shadow: 0 14px 32px -18px rgba(16, 26, 44, 0.5);
+		animation: clava 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
 	}
 	.ledger-row {
 		display: flex;
@@ -209,6 +283,17 @@ const ultimaRevision =
 	.block {
 		padding: 1.6em 0 2em;
 		scroll-margin-top: 72px;
+	}
+	.reveal {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 0.6s ease,
+			transform 0.6s ease;
+	}
+	.reveal.in-view {
+		opacity: 1;
+		transform: none;
 	}
 	.block-head {
 		display: flex;
@@ -307,6 +392,10 @@ const ultimaRevision =
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		transition: transform 0.25s ease;
+	}
+	.card:hover .card-cover {
+		transform: scale(1.05);
 	}
 	.card-cover::before {
 		content: '';
@@ -507,5 +596,42 @@ const ultimaRevision =
 				tarjetas[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 			});
 		});
+	}
+
+	// Los números de la ficha del hero cuentan desde 0 hasta el valor real.
+	const prefiereMenosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	document.querySelectorAll<HTMLElement>('.count-up').forEach((el) => {
+		const meta = Number(el.dataset.count);
+		if (!meta) return;
+		if (prefiereMenosMovimiento) {
+			el.textContent = meta.toLocaleString('es-AR');
+			return;
+		}
+		const duracion = 900;
+		const inicio = performance.now() + 400; // sincronizado con la animación de "pinchado" de la ficha
+		function paso(ahora: number) {
+			const progreso = Math.min(Math.max((ahora - inicio) / duracion, 0), 1);
+			const suavizado = 1 - Math.pow(1 - progreso, 3);
+			el.textContent = Math.round(meta * suavizado).toLocaleString('es-AR');
+			if (progreso < 1) requestAnimationFrame(paso);
+		}
+		requestAnimationFrame(paso);
+	});
+
+	// Título del bloque y carrusel aparecen con un fade+slide al entrar en pantalla.
+	const elementosReveal = document.querySelectorAll<HTMLElement>('.reveal');
+	if (elementosReveal.length) {
+		const revealObserver = new IntersectionObserver(
+			(entries, obs) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('in-view');
+						obs.unobserve(entry.target);
+					}
+				});
+			},
+			{ threshold: 0.15 },
+		);
+		elementosReveal.forEach((el) => revealObserver.observe(el));
 	}
 </script>
