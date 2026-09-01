@@ -32,7 +32,10 @@ const productosParaFiltro = productos.map((p) => ({
 	moneda: p.moneda,
 	plataforma: p.plataforma,
 	badge: p.destacado,
-	link: p.link,
+	// El CTA de la card ya no manda directo al link de afiliado: lleva a la
+	// ficha propia del producto (foto + precio + reseña + comentarios), que
+	// es la que tiene el botón "Acceder" al link real.
+	href: `/${subcategoria.sector}/${subcategoria.slug}/${p.slug}`,
 	imagen: p.imagen,
 }));
 

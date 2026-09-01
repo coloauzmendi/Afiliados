@@ -132,13 +132,8 @@ export default function FiltroProductos({ productos, siteTitle }) {
             </div>
             <div className="producto-pie">
               <span className="producto-precio">{formatearPrecio(p.precio, p.moneda)}</span>
-              <a
-                className="producto-cta"
-                href={p.link}
-                target="_blank"
-                rel="nofollow sponsored noopener"
-              >
-                Acceder
+              <a className="producto-cta" href={p.href}>
+                Ver reseña
               </a>
             </div>
             {panelActivo && <BotonesCompartir producto={p} siteTitle={siteTitle} />}
