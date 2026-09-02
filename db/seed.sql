@@ -1,9 +1,12 @@
 -- Carga inicial de Digitalia: catálogo de ejemplo (productos placeholder,
 -- realistas pero no reales) para tener el sitio funcionando desde el día uno.
+-- Todo el catálogo usa Hotmart y Envato Elements, que son las plataformas de
+-- afiliados en las que ya está aprobada la cuenta real (Udemy y Gumroad
+-- quedan afuera por ahora — se suman cuando se aprueben esas cuentas).
 -- Reemplazá nombre/precio/link/imagen de cada producto por el real cuando
--- tengas tu cuenta de afiliados aprobada en cada plataforma. La columna
--- `resena` queda vacía a propósito: es el texto que vos vas a escribir para
--- la ficha de cada producto (se muestra en /{sector}/{subcategoria}/{slug}).
+-- tengas los links de afiliado. La columna `resena` queda vacía a propósito:
+-- es el texto que vos vas a escribir para la ficha de cada producto (se
+-- muestra en /{sector}/{subcategoria}/{slug}).
 -- Correr después de schema.sql, una sola vez.
 
 INSERT INTO subcategorias (slug, title, sector, resumen, contenido, fecha) VALUES
@@ -17,8 +20,8 @@ INSERT INTO subcategorias (slug, title, sector, resumen, contenido, fecha) VALUE
 ('programacion-y-tech',
  'Los mejores cursos de programación y tecnología',
  'cursos',
- 'Comparamos los cursos de programación y tecnología mejor valorados en plataformas como Udemy y Hotmart, para todos los niveles.',
- '## Qué mirar antes de comprar\n\n- **Nivel real**: leé la descripción completa, no solo el título — "desde cero" a veces asume que ya sabés programar.\n- **Proyectos prácticos**: un curso con proyectos reales para armar portfolio vale mucho más que uno solo teórico.\n- **Idioma y subtítulos**: en Udemy conviene revisar si el audio o los subtítulos están en español.',
+ 'Comparamos los cursos de programación y tecnología mejor valorados en Hotmart, para todos los niveles.',
+ '## Qué mirar antes de comprar\n\n- **Nivel real**: leé la descripción completa, no solo el título — "desde cero" a veces asume que ya sabés programar.\n- **Proyectos prácticos**: un curso con proyectos reales para armar portfolio vale mucho más que uno solo teórico.\n- **Actualizado a versiones actuales**: un curso de hace 3 años puede enseñar una versión de lenguaje o framework que ya cambió — fijate la fecha de la última actualización.',
  '2026-08-22'),
 
 ('notion-y-productividad',
@@ -45,8 +48,8 @@ INSERT INTO subcategorias (slug, title, sector, resumen, contenido, fecha) VALUE
 ('plugins-wordpress',
  'Los mejores plugins y temas para WordPress',
  'software',
- 'Comparamos los plugins y temas premium de WordPress más vendidos en Envato y CodeCanyon, para no reinventar la rueda en cada proyecto.',
- '## Qué mirar antes de comprar\n\n- **Compatibilidad de versión**: fijate la última fecha de actualización del plugin contra la versión de WordPress que usás.\n- **Meses de soporte incluidos**: en Envato suele venir con 6 meses de soporte — después es opcional y pago.\n- **Reseñas de compradores reales**: en CodeCanyon y Envato las calificaciones y comentarios son bastante confiables para detectar plugins con bugs.',
+ 'Comparamos los plugins y temas premium de WordPress más vendidos en Envato, para no reinventar la rueda en cada proyecto.',
+ '## Qué mirar antes de comprar\n\n- **Compatibilidad de versión**: fijate la última fecha de actualización del plugin contra la versión de WordPress que usás.\n- **Meses de soporte incluidos**: en Envato suele venir con 6 meses de soporte — después es opcional y pago.\n- **Reseñas de compradores reales**: en Envato las calificaciones y comentarios son bastante confiables para detectar plugins con bugs.',
  '2026-08-19'),
 
 ('finanzas-personales',
@@ -73,19 +76,19 @@ INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, platafor
 
 -- Cursos: programación y tech
 INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, plataforma, link, destacado, orden) VALUES
-('programacion-y-tech', 'Curso de Desarrollo Web Full Stack con React y Node', 'desarrollo-web-full-stack-react-node', 19, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-1', 'Oferta de lanzamiento', 1),
-('programacion-y-tech', 'Python para Data Science y Automatización', 'python-data-science-automatizacion', 17, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-2', 'Certificado de finalización', 2),
-('programacion-y-tech', 'Curso de Programación en Español desde Cero', 'programacion-en-espanol-desde-cero', 15, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-3', 'Acceso de por vida', 3),
-('programacion-y-tech', 'DevOps y Cloud: AWS para Principiantes', 'devops-cloud-aws-principiantes', 21, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-4', '40% OFF', 4),
-('programacion-y-tech', 'Bootcamp de Programación: Del Cero al Primer Empleo', 'bootcamp-programacion-primer-empleo', 89, 'USD', 'Udemy', 'https://udemy.com/course/PEGAR-LINK-5', 'Certificado + acceso de por vida', 5);
+('programacion-y-tech', 'Curso de Desarrollo Web Full Stack con React y Node', 'desarrollo-web-full-stack-react-node', 44999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-17', 'Acceso de por vida', 1),
+('programacion-y-tech', 'Python para Data Science y Automatización', 'python-data-science-automatizacion', 39999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-18', 'Certificado incluido', 2),
+('programacion-y-tech', 'Curso de Programación en Español desde Cero', 'programacion-en-espanol-desde-cero', 24999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-19', 'Ideal para empezar', 3),
+('programacion-y-tech', 'DevOps y Cloud: AWS para Principiantes', 'devops-cloud-aws-principiantes', 49999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-20', '35% OFF', 4),
+('programacion-y-tech', 'Bootcamp de Programación: Del Cero al Primer Empleo', 'bootcamp-programacion-primer-empleo', 69999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-21', 'Certificado + acceso de por vida', 5);
 
 -- Plantillas: Notion y productividad
 INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, plataforma, link, destacado, orden) VALUES
-('notion-y-productividad', 'Sistema Notion para Organizar tu Vida y tu Negocio', 'sistema-notion-vida-y-negocio', 15, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-1', 'Plantilla + video tutorial', 1),
-('notion-y-productividad', 'Notion para Freelancers: Clientes, Facturas y Proyectos', 'notion-para-freelancers', 12, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-2', 'Acceso de por vida', 2),
-('notion-y-productividad', 'Planner Digital 2026 para Notion', 'planner-digital-2026-notion', 8, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-3', '20% OFF', 3),
-('notion-y-productividad', 'Dashboard de Finanzas Personales para Notion', 'dashboard-finanzas-personales-notion', 10, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-4', 'Incluye tutorial en video', 4),
-('notion-y-productividad', 'Segundo Cerebro: Sistema de Notas en Notion', 'segundo-cerebro-notion', 18, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-5', 'Bestseller', 5);
+('notion-y-productividad', 'Sistema Notion para Organizar tu Vida y tu Negocio', 'sistema-notion-vida-y-negocio', 22999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-22', 'Incluye video tutorial', 1),
+('notion-y-productividad', 'Notion para Freelancers: Clientes, Facturas y Proyectos', 'notion-para-freelancers', 18999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-23', 'Acceso de por vida', 2),
+('notion-y-productividad', 'Planner Digital 2026 para Notion', 'planner-digital-2026-notion', 12999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-24', '20% OFF', 3),
+('notion-y-productividad', 'Dashboard de Finanzas Personales para Notion', 'dashboard-finanzas-personales-notion', 15999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-25', 'Incluye tutorial en video', 4),
+('notion-y-productividad', 'Segundo Cerebro: Sistema de Notas en Notion', 'segundo-cerebro-notion', 26999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-26', 'Bestseller', 5);
 
 -- Plantillas: presentaciones y Canva
 INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, plataforma, link, destacado, orden) VALUES
@@ -97,18 +100,18 @@ INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, platafor
 
 -- Software: IA y automatización
 INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, plataforma, link, destacado, orden) VALUES
-('ia-y-automatizacion', 'Kit de Prompts de IA para Negocios y Marketing', 'kit-prompts-ia-negocios-marketing', 29, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-6', 'Más de 500 prompts', 1),
-('ia-y-automatizacion', 'Plantilla de Automatización con IA para Atención al Cliente', 'automatizacion-ia-atencion-al-cliente', 39, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-7', 'Incluye guía de instalación', 2),
-('ia-y-automatizacion', 'Generador de Contenido con IA: Licencia Anual', 'generador-contenido-ia-licencia-anual', 59, 'USD', 'AppSumo', 'https://appsumo.com/products/PEGAR-LINK-1', 'Oferta de por vida', 3),
-('ia-y-automatizacion', 'Bot de WhatsApp con IA para Reservas y Consultas', 'bot-whatsapp-ia-reservas-consultas', 45, 'USD', 'Gumroad', 'https://gumroad.com/l/PEGAR-LINK-8', 'Setup incluido', 4),
+('ia-y-automatizacion', 'Kit de Prompts de IA para Negocios y Marketing', 'kit-prompts-ia-negocios-marketing', 19999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-27', 'Más de 500 prompts', 1),
+('ia-y-automatizacion', 'Plantilla de Automatización con IA para Atención al Cliente', 'automatizacion-ia-atencion-al-cliente', 27999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-28', 'Incluye guía de instalación', 2),
+('ia-y-automatizacion', 'Generador de Contenido con IA: Licencia Anual', 'generador-contenido-ia-licencia-anual', 44999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-29', 'Incluye actualizaciones', 3),
+('ia-y-automatizacion', 'Bot de WhatsApp con IA para Reservas y Consultas', 'bot-whatsapp-ia-reservas-consultas', 32999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-30', 'Setup incluido', 4),
 ('ia-y-automatizacion', 'Curso + Plantillas de Automatización sin Código', 'curso-automatizacion-sin-codigo', 34999, 'ARS', 'Hotmart', 'https://hotmart.com/es/marketplace/PEGAR-LINK-6', 'Acceso de por vida', 5);
 
 -- Software: plugins y temas de WordPress
 INSERT INTO productos (subcategoria_slug, nombre, slug, precio, moneda, plataforma, link, destacado, orden) VALUES
 ('plugins-wordpress', 'Plugin de WordPress para Landing Pages de Afiliados', 'plugin-landing-pages-afiliados', 39, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-6', 'Actualizaciones incluidas', 1),
 ('plugins-wordpress', 'Tema Premium de WordPress para Tiendas Online', 'tema-wordpress-tiendas-online', 59, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-7', 'Soporte 6 meses', 2),
-('plugins-wordpress', 'Plugin de Reservas y Turnos para WordPress', 'plugin-reservas-turnos-wordpress', 45, 'USD', 'CodeCanyon', 'https://codecanyon.net/item/PEGAR-LINK-1', 'Compatible con WooCommerce', 3),
-('plugins-wordpress', 'Constructor de Landing Pages Drag & Drop', 'constructor-landing-pages-drag-drop', 49, 'USD', 'CodeCanyon', 'https://codecanyon.net/item/PEGAR-LINK-2', 'Licencia de por vida', 4),
+('plugins-wordpress', 'Plugin de Reservas y Turnos para WordPress', 'plugin-reservas-turnos-wordpress', 45, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-9', 'Compatible con WooCommerce', 3),
+('plugins-wordpress', 'Constructor de Landing Pages Drag & Drop', 'constructor-landing-pages-drag-drop', 49, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-10', 'Licencia de por vida', 4),
 ('plugins-wordpress', 'Plugin de SEO y Velocidad para WordPress', 'plugin-seo-velocidad-wordpress', 29, 'USD', 'Envato Elements', 'https://elements.envato.com/PEGAR-LINK-8', '20% OFF', 5);
 
 -- Ebooks: finanzas personales
