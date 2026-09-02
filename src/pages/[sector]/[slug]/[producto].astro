@@ -229,7 +229,14 @@ const resenaHtml = producto.resena ? await marked.parse(producto.resena) : '';
 
 	@media (max-width: 640px) {
 		.producto-head {
-			grid-template-columns: 1fr;
+			/* minmax(0, 1fr), no 1fr solo: sin el 0 el track no se achica más
+			   allá del contenido (precio + botón "Acceder" sin wrap), y eso
+			   empuja todo el layout más ancho que la pantalla. */
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.producto-precio-fila {
+			flex-wrap: wrap;
+			row-gap: 0.6em;
 		}
 	}
 </style>

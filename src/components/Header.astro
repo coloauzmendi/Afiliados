@@ -6,7 +6,17 @@ import { SITE_TITLE } from '../consts';
 <header>
 	<nav>
 		<a href="/" class="brand">{SITE_TITLE}<span class="dot">.</span></a>
-		<div class="internal-links">
+		<button
+			class="menu-toggle"
+			type="button"
+			aria-expanded="false"
+			aria-controls="menu-principal"
+			aria-label="Abrir menú"
+			id="menu-toggle"
+		>
+			<span></span><span></span><span></span>
+		</button>
+		<div class="internal-links" id="menu-principal">
 			<HeaderLink href="/">Inicio</HeaderLink>
 			<HeaderLink href="/cursos">Cursos</HeaderLink>
 			<HeaderLink href="/plantillas">Plantillas</HeaderLink>
@@ -33,6 +43,37 @@ import { SITE_TITLE } from '../consts';
 		max-width: 1100px;
 		margin: 0 auto;
 		flex-wrap: wrap;
+	}
+	.menu-toggle {
+		display: none;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 5px;
+		width: 40px;
+		height: 40px;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+	}
+	.menu-toggle span {
+		display: block;
+		width: 22px;
+		height: 2px;
+		background: var(--sky);
+		transition:
+			transform 0.2s ease,
+			opacity 0.2s ease;
+	}
+	.menu-toggle[aria-expanded='true'] span:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+	.menu-toggle[aria-expanded='true'] span:nth-child(2) {
+		opacity: 0;
+	}
+	.menu-toggle[aria-expanded='true'] span:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
 	}
 	.brand {
 		display: flex;
@@ -88,4 +129,45 @@ import { SITE_TITLE } from '../consts';
 		background: var(--brass);
 		transform: scaleX(1);
 	}
+
+	@media (max-width: 720px) {
+		.menu-toggle {
+			display: flex;
+		}
+		.internal-links {
+			/* width:100% + el flex-wrap:wrap que ya tiene nav (regla de arriba)
+			   es lo que hace que este bloque baje a su propia línea, debajo de
+			   la marca y el botón, en vez de apretarse al lado. */
+			display: none;
+			flex-direction: column;
+			align-items: stretch;
+			width: 100%;
+			gap: 0;
+			padding-bottom: 0.6em;
+		}
+		.internal-links.open {
+			display: flex;
+		}
+		.internal-links :global(a) {
+			width: 100%;
+			padding: 0.9em 0.3em;
+		}
+		.internal-links :global(a)::after {
+			display: none;
+		}
+		.internal-links :global(a.active) {
+			color: var(--brass-bright);
+		}
+	}
 </style>
+
+<script>
+	const boton = document.getElementById('menu-toggle');
+	const menu = document.getElementById('menu-principal');
+
+	boton?.addEventListener('click', () => {
+		const abierto = menu?.classList.toggle('open') ?? false;
+		boton.setAttribute('aria-expanded', String(abierto));
+		boton.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+	});
+</script>

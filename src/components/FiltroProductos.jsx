@@ -148,6 +148,7 @@ export default function FiltroProductos({ productos, siteTitle }) {
         .filtro-barra {
           display: flex;
           align-items: center;
+          flex-wrap: wrap;
           gap: 0.6rem;
           margin-bottom: 1.5rem;
           font-size: 0.92rem;
@@ -169,6 +170,13 @@ export default function FiltroProductos({ productos, siteTitle }) {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
           gap: 1.15rem;
+        }
+        @media (max-width: 480px) {
+          /* Sin esto, el mínimo de 270px no entra en pantallas muy angostas
+             (~320px) una vez descontado el padding del contenedor. */
+          .grilla-productos {
+            grid-template-columns: 1fr;
+          }
         }
         .producto-card {
           display: flex;

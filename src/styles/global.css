@@ -30,6 +30,14 @@
 	--radius-md: 6px;
 	--radius-lg: 10px;
 }
+/* Sin esto, cualquier elemento con width:100% + padding se pasa del ancho
+   del contenedor por el padding — es lo que rompía el layout en tablet
+   (main.wide) y el formulario de comentarios en mobile. */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
 @media (prefers-reduced-motion: no-preference) {
 	html {
 		scroll-behavior: smooth;
