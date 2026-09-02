@@ -93,6 +93,10 @@ export default function Comentarios({ productoId }) {
           onChange={(e) => setTexto(e.target.value)}
         />
         {error && <p className="comentarios-error">{error}</p>}
+        <p className="comentarios-aviso">
+          Tu nombre y tu comentario se van a mostrar públicamente en esta página. Más info en{" "}
+          <a href="/privacidad">privacidad</a>.
+        </p>
         <button type="submit" disabled={enviando}>
           {enviando ? "Publicando..." : "Publicar comentario"}
         </button>
@@ -174,6 +178,15 @@ export default function Comentarios({ productoId }) {
           color: #b3261e;
           font-size: 0.85rem;
           margin: 0;
+        }
+        .comentarios-aviso {
+          font-size: 0.75rem;
+          color: #857c63;
+          margin: -0.2rem 0 0;
+        }
+        .comentarios-aviso a {
+          color: inherit;
+          text-decoration: underline;
         }
         .comentarios-lista {
           display: flex;

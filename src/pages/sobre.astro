@@ -1,36 +1,98 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_TITLE } from '../consts';
+import { SECTOR_LABELS } from '../lib/productos';
+
+const CONTACTO = 'administraciondigitalia@gmail.com';
+
+const descripcionSector: Record<string, string> = {
+	cursos: 'formación paga en marketing digital, programación y tecnología.',
+	plantillas: 'plantillas listas para usar en Notion, Canva y presentaciones.',
+	software: 'herramientas de IA, automatización y plugins para tu sitio.',
+	ebooks: 'guías descargables de finanzas y desarrollo personal.',
+};
+const sectores = Object.entries(SECTOR_LABELS);
 ---
 
 <BaseLayout
 	title={`Sobre ${SITE_TITLE}`}
-	description={`Quién arma ${SITE_TITLE} y cómo elegimos qué recomendar.`}
+	description={`Quién arma ${SITE_TITLE}, cómo elegimos qué recomendar y de dónde salen las reseñas y comentarios de cada producto.`}
 >
 	<article class="sobre">
 		<h1>Sobre <span class="wordmark-inline">{SITE_TITLE}<span class="dot">.</span></span></h1>
 
-		<p>
-			Arranqué este sitio para juntar en un solo lugar los productos digitales que valen la pena:
-			cursos, plantillas, software y ebooks, comprados en plataformas como Hotmart, Envato, Udemy o
-			Gumroad. Hay tanta oferta dando vueltas que separar lo bueno de lo que es solo humo de
-			vendedor lleva tiempo — la idea es hacer ese trabajo una vez y compartirlo.
+		<p class="lead">
+			{SITE_TITLE} junta en un solo lugar los productos digitales que valen la pena: cursos,
+			plantillas, software y ebooks, vendidos en plataformas como Hotmart, Envato, Udemy o Gumroad.
+			Hay tanta oferta dando vueltas que separar lo bueno de lo que es solo humo de vendedor lleva
+			tiempo — la idea de este sitio es hacer ese trabajo una vez, con criterio, y compartirlo.
 		</p>
+
+		<h2>Qué vas a encontrar acá</h2>
+		<p>
+			El catálogo está organizado en cuatro categorías. Cada una tiene sus propias notas
+			comparativas, y cada producto tiene su propia ficha con precio, plataforma, nuestra reseña y
+			los comentarios de otros visitantes:
+		</p>
+		<ul class="sectores">
+			{
+				sectores.map(([slug, label]) => (
+					<li>
+						<a href={`/${slug}`}>{label}</a>
+						{descripcionSector[slug] && <span> — {descripcionSector[slug]}</span>}
+					</li>
+				))
+			}
+		</ul>
 
 		<h2>¿Cómo elijo qué publicar?</h2>
 		<p>
 			Miro la cantidad y calidad de las reseñas de compradores reales en cada plataforma, si el
 			contenido está actualizado (no algo abandonado hace años) y si el precio tiene sentido para
 			lo que ofrece. No cobro por aparecer acá: todo lo que ves en el sitio lo elegí porque lo
-			recomendaría igual sin la comisión de por medio.
+			recomendaría igual sin la comisión de por medio. Si algo no me convence, directamente no lo
+			publico.
+		</p>
+
+		<h2>Reseñas propias y comentarios de la comunidad</h2>
+		<p>
+			Cada producto tiene su ficha individual (le llegás tocando "Ver reseña" desde cualquier
+			categoría), y ahí conviven dos cosas distintas:
+		</p>
+		<ul class="lista">
+			<li>
+				<strong>La reseña</strong>, que escribo yo después de mirar el producto en detalle — es mi
+				opinión, con lo bueno y lo flojo de cada uno.
+			</li>
+			<li>
+				<strong>Los comentarios</strong>, al pie de la misma ficha, donde cualquier visitante puede
+				contar su propia experiencia con ese producto puntual. Son de acceso libre: no hace falta
+				registrarse, alcanza con poner un nombre y el comentario.
+			</li>
+		</ul>
+		<p>
+			La idea es que un visitante nuevo no dependa solo de mi palabra: si ya compraste alguno de
+			estos productos, tu comentario le sirve a la próxima persona que esté dudando — para eso está
+			el espacio. Ojo con dos cosas: no verificamos que quien comenta haya comprado realmente el
+			producto (es autodeclarado, como en la mayoría de los sitios de reseñas), y la moderación es
+			manual — filtramos spam obvio, pero no revisamos cada comentario antes de que se publique. Si
+			ves algo que te parece spam, falso o de mala fe, escribinos a {CONTACTO} y lo revisamos.
 		</p>
 
 		<h2>¿De dónde sale la plata?</h2>
 		<p>
 			Los links de afiliado son la forma en la que esto se sostiene: si comprás algo desde un link
 			de {SITE_TITLE}, me llega una comisión de la plataforma (Hotmart, Envato, Udemy, Gumroad,
-			etc.), sin que a vos te cueste nada de más. Eso no cambia lo que recomiendo — si algo no me
-			convence, directamente no lo publico.
+			etc.), sin que a vos te cueste nada de más — el precio que ves es el mismo que pagarías yendo
+			directo. La comisión varía según el producto y la plataforma, pero nunca es lo que decide qué
+			se publica: eso lo define el criterio de la sección de arriba, no cuánto paga cada uno.
+		</p>
+
+		<h2>Contacto</h2>
+		<p>
+			¿Encontraste un link roto, un precio desactualizado, un comentario que te parece spam, o
+			simplemente querés sugerir un producto? Escribime a
+			<a href={`mailto:${CONTACTO}`}>{CONTACTO}</a>.
 		</p>
 	</article>
 </BaseLayout>
@@ -54,7 +116,31 @@ import { SITE_TITLE } from '../consts';
 		font-size: 1.25em;
 		margin-top: 1.8em;
 	}
-	.sobre p {
+	.sobre p,
+	.sobre li {
 		color: var(--slate);
+	}
+	.lead {
+		font-size: 1.05em;
+	}
+	.sectores,
+	.lista {
+		padding-left: 1.3em;
+		margin: 0.8em 0;
+	}
+	.sectores li,
+	.lista li {
+		margin-bottom: 0.5em;
+		line-height: 1.5;
+	}
+	.sectores a {
+		font-weight: 600;
+		color: var(--navy-900);
+	}
+	.sectores a:hover {
+		color: var(--software);
+	}
+	.sobre a {
+		color: var(--software);
 	}
 </style>

@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_TITLE } from '../consts';
+
+const CONTACTO = 'administraciondigitalia@gmail.com';
 ---
 
 <BaseLayout
 	title={`Política de privacidad — ${SITE_TITLE}`}
-	description={`Qué datos se recogen en ${SITE_TITLE}, para qué se usan y cómo funcionan los links de afiliado.`}
+	description={`Qué datos se recogen en ${SITE_TITLE} (incluidos los comentarios de producto), para qué se usan y cómo funcionan los links de afiliado.`}
 >
 	<article class="legal">
 		<h1>Política de privacidad</h1>
@@ -18,6 +20,23 @@ import { SITE_TITLE } from '../consts';
 			pagás ni influye en qué productos recomendamos.
 		</p>
 
+		<h2>Comentarios en las fichas de producto</h2>
+		<p>
+			Cada producto tiene una ficha propia con una sección de comentarios donde cualquier visitante
+			puede compartir su opinión. Para comentar solo pedimos un nombre (el que vos quieras escribir
+			— no lo verificamos ni te pedimos ningún documento) y el texto del comentario. No hace falta
+			crear una cuenta ni dar mail o contraseña.
+		</p>
+		<p>
+			Ese nombre y ese texto se guardan en nuestra base de datos y se muestran de forma pública en
+			la ficha del producto correspondiente, visibles para cualquiera que entre al sitio — no son
+			privados. Por eso te recomendamos no poner tu nombre completo ni ningún dato que no quieras
+			que quede visible públicamente; con un apodo alcanza. Los comentarios quedan publicados hasta
+			que los pidas borrar o los bajemos nosotros por moderación (spam, contenido ofensivo, etc.):
+			si querés que se elimine uno tuyo, escribinos a <a href={`mailto:${CONTACTO}`}>{CONTACTO}</a
+			>.
+		</p>
+
 		<h2>Cookies y analítica</h2>
 		<p>
 			Usamos Google Analytics para saber cuánta gente visita el sitio y qué secciones les
@@ -26,19 +45,23 @@ import { SITE_TITLE } from '../consts';
 			cookies desde la configuración de tu navegador sin que el sitio deje de funcionar.
 		</p>
 
-		<h2>Qué datos NO recogemos</h2>
+		<h2>Qué datos recogemos (y qué no)</h2>
 		<p>
-			{SITE_TITLE} no tiene registro de usuarios, no pide datos personales ni de pago, y no vende
-			ni comparte información con terceros más allá de lo que Google Analytics recoge de forma
-			estándar y anónima. La compra en sí (pago, entrega del producto digital) la maneja siempre la
-			plataforma de afiliados (Hotmart, Envato, Udemy, Gumroad), no nosotros.
+			{SITE_TITLE} no tiene registro de usuarios ni pide mail, contraseña o datos de pago para
+			navegar el sitio. Los únicos datos personales que guardamos son los que vos elegís escribir
+			voluntariamente al dejar un comentario (nombre y texto, ver arriba) más lo que Google
+			Analytics recoge de forma estándar y anónima. No vendemos ni compartimos esa información con
+			terceros más allá de eso. La compra en sí (pago, entrega del producto digital) la maneja
+			siempre la plataforma de afiliados (Hotmart, Envato, Udemy, Gumroad), no nosotros — ahí sí
+			vas a completar tus datos de pago, bajo la política de privacidad de esa plataforma, no la
+			nuestra.
 		</p>
 
 		<h2>Contacto</h2>
 		<p>
-			Si tenés alguna duda sobre esta política, podés escribirnos desde la página <a href="/sobre"
-				>Sobre</a
-			>.
+			Si tenés alguna duda sobre esta política, querés pedir que se baje un comentario, o cualquier
+			otro tema relacionado con tus datos, escribinos a
+			<a href={`mailto:${CONTACTO}`}>{CONTACTO}</a>.
 		</p>
 	</article>
 </BaseLayout>
@@ -57,5 +80,8 @@ import { SITE_TITLE } from '../consts';
 	}
 	.legal p {
 		color: var(--slate);
+	}
+	.legal a {
+		color: var(--software);
 	}
 </style>
