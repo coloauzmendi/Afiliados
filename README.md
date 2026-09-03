@@ -17,6 +17,18 @@ texto libre — el catálogo de ejemplo usa Hotmart y Envato Elements, pero no h
 esas dos. Cada producto además tiene su propia ficha (foto, precio, reseña y un espacio para
 comentarios) con el botón al link de afiliado real.
 
+## Stack
+
+- **[Astro](https://astro.build)** — genera todo el sitio como HTML estático en el build.
+- **TypeScript** — el catálogo (`src/lib/catalogo.ts`) y los helpers de formato están tipados.
+- **React** — solo para la sección de comentarios (`Comentarios.jsx`), la única parte del sitio que
+  necesita interactividad del lado del cliente; se carga como "isla" (`client:load`), el resto de
+  las páginas no manda nada de React al navegador.
+- **[marked](https://github.com/markedjs/marked)** — convierte a HTML el markdown de las reseñas y
+  del contenido de las subcategorías.
+- **[@astrojs/sitemap](https://docs.astro.build/en/guides/integrations-guide/sitemap/)** — genera el
+  `sitemap-index.xml` automáticamente en cada build.
+
 ## Setup local
 
 ```sh
