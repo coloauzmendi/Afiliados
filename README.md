@@ -1,5 +1,12 @@
 # Digitalia
 
+> **Plantilla de sitio de marketing de afiliados.** Este repo es un ejemplo completo y funcional (marca,
+> catálogo y contenido reales de "Digitalia") pensado para clonarlo y adaptarlo a otro nicho o marca:
+> cambiás `SITE_TITLE`/`SITE_DESCRIPTION` en `src/consts.ts`, cargás tu propio catálogo en la base
+> (`db/seed.sql` como referencia) y reemplazás las páginas de contenido (`sobre.astro`, `privacidad.astro`)
+> por las tuyas. El resto — esquema de MySQL, fichas de producto, comentarios de visitantes, deploy en
+> Vercel — queda tal cual, listo para usar.
+
 Sitio de afiliados hecho con [Astro](https://astro.build). Arma páginas de comparación de productos
 digitales (cursos, plantillas, software y ebooks, vendidos en plataformas como Hotmart, Envato, Udemy
 o Gumroad) organizadas por sector/subcategoría, leyendo el contenido de una base de datos MySQL en el
