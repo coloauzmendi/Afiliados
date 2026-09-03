@@ -8,9 +8,11 @@
 > Vercel — queda tal cual, listo para usar.
 
 Sitio de afiliados hecho con [Astro](https://astro.build). Arma páginas de comparación de productos
-digitales (cursos, plantillas, software y ebooks, vendidos en plataformas como Hotmart, Envato, Udemy
-o Gumroad) organizadas por sector/subcategoría, leyendo el contenido de una base de datos MySQL en el
-momento de compilar el sitio. Cada producto además tiene su propia ficha (foto, precio, reseña y
+digitales (cursos, plantillas, software y ebooks) organizadas por sector/subcategoría, leyendo el
+contenido de una base de datos MySQL en el momento de compilar el sitio. La plataforma de cada
+producto (Hotmart, Envato, Udemy, Gumroad o la que sea) es un campo de texto libre en la base — el
+catálogo de ejemplo de este repo usa Hotmart y Envato Elements, pero no hay nada hardcodeado a esas
+dos. Cada producto además tiene su propia ficha (foto, precio, reseña y
 comentarios de visitantes) con el botón al link de afiliado real. Casi todo el sitio sigue siendo
 estático (se genera en el build); lo único que corre en cada visita es el endpoint que guarda/lee los
 comentarios (`/api/comentarios`), por eso el deploy usa el adaptador de Vercel en vez de un export
@@ -27,6 +29,8 @@ puramente estático.
 2. Copiar `.env.example` a `.env` y completar con los datos de conexión de la base MySQL (Aiven u
    otro proveedor). `PUBLIC_GA_ID` es opcional: si se completa con el ID de medición de Google
    Analytics (`G-XXXXXXXXXX`), el sitio carga el script de analítica; si se deja vacío, no carga nada.
+   `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` también son opcionales — solo hacen falta si vas a usar
+   `npm run publicar-telegram` (ver más abajo), no los usa el sitio en sí.
 
    ```sh
    cp .env.example .env
@@ -96,6 +100,10 @@ URL, ej. `cursos/mi-slug`) y sus productos correspondientes en `productos`. Si e
 │   └── pages/
 │       ├── [sector]/[slug]/[producto].astro # Ficha individual de cada producto
 │       └── api/comentarios.ts               # Único endpoint server-side (GET/POST comentarios)
+├── scripts/
+│   └── publicar-telegram.js # Publica una oferta en tu canal de Telegram desde la consola
+├── publicar-telegram.html   # Lo mismo, pero como página HTML standalone (sin consola)
+├── SOCIAL.md                 # Plantillas de texto para publicar en X y Telegram
 ├── astro.config.mjs
 └── package.json
 ```
@@ -114,6 +122,21 @@ build estático. El resto del sitio sigue con el `output: 'static'` de siempre (
 moderación automática: si algún comentario es spam u ofensivo, se borra a mano con un `DELETE` en la
 tabla `comentarios` (ver arriba).
 
+## Publicar en redes
+
+Para avisar en Telegram cuando sumás un producto nuevo, sin necesidad de meterte a la base ni al
+código, hay dos formas — las dos piden `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` (instrucciones de
+cómo conseguirlos adentro de `scripts/publicar-telegram.js`):
+
+- **Desde la consola**: `npm run publicar-telegram` (usa el `.env` local), te pregunta nombre, precio,
+  destacado, link e imagen, y publica en el canal.
+- **Sin consola**: abrí `publicar-telegram.html` directo en el navegador (es un archivo suelto, no hace
+  falta levantar el sitio) — mismo formulario, pero pegás el token/chat id ahí una vez y quedan
+  guardados en el navegador (`localStorage`) para la próxima.
+
+`SOCIAL.md` tiene las plantillas de texto para copiar/pegar en X (Twitter), donde no hay API gratuita
+como la de Telegram.
+
 ## Comandos
 
 | Comando           | Acción                                        |
@@ -121,4 +144,5 @@ tabla `comentarios` (ver arriba).
 | `npm install`       | Instala dependencias                           |
 | `npm run dev`       | Levanta el server de desarrollo en `localhost:4321` |
 | `npm run build`     | Genera el sitio de producción en `./dist/`     |
+| `npm run publicar-telegram` | Publica una oferta en tu canal de Telegram desde la consola |
 | `npm run preview`   | Previsualiza el build de producción            |
