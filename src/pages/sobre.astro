@@ -32,7 +32,7 @@ const sectores = Object.entries(SECTOR_LABELS);
 		<p>
 			El catálogo está organizado en cuatro categorías. Cada una tiene sus propias notas
 			comparativas, y cada producto tiene su propia ficha con precio, plataforma, nuestra reseña y
-			los comentarios de otros visitantes:
+			un espacio para dejar tu propio comentario:
 		</p>
 		<ul class="sectores">
 			{
@@ -54,7 +54,7 @@ const sectores = Object.entries(SECTOR_LABELS);
 			publico.
 		</p>
 
-		<h2>Reseñas propias y comentarios de la comunidad</h2>
+		<h2>Reseñas propias y tu propio comentario</h2>
 		<p>
 			Cada producto tiene su ficha individual (le llegás tocando "Ver reseña" desde cualquier
 			categoría), y ahí conviven dos cosas distintas:
@@ -65,18 +65,18 @@ const sectores = Object.entries(SECTOR_LABELS);
 				opinión, con lo bueno y lo flojo de cada uno.
 			</li>
 			<li>
-				<strong>Los comentarios</strong>, al pie de la misma ficha, donde cualquier visitante puede
-				contar su propia experiencia con ese producto puntual. Son de acceso libre: no hace falta
-				registrarse, alcanza con poner un nombre y el comentario.
+				<strong>Un espacio para tu comentario</strong>, al pie de la misma ficha. Tal como está
+				armado el sitio hoy, es una demo sin servidor: lo que escribís queda guardado solo en tu
+				navegador, no es público ni lo ve otro visitante — pensalo más como una libreta personal
+				para anotar tu opinión de cada producto que como un foro compartido.
 			</li>
 		</ul>
 		<p>
-			La idea es que un visitante nuevo no dependa solo de mi palabra: si ya compraste alguno de
-			estos productos, tu comentario le sirve a la próxima persona que esté dudando — para eso está
-			el espacio. Ojo con dos cosas: no verificamos que quien comenta haya comprado realmente el
-			producto (es autodeclarado, como en la mayoría de los sitios de reseñas), y la moderación es
-			manual — filtramos spam obvio, pero no revisamos cada comentario antes de que se publique. Si
-			ves algo que te parece spam, falso o de mala fe, escribinos a <a href={`mailto:${CONTACTO}`}>{CONTACTO}</a> y lo revisamos.
+			Si en algún momento conectamos esto a un backend real, los comentarios sí van a mostrarse
+			compartidos entre visitantes, y ahí sí van a valer las salvedades de siempre: no se puede
+			verificar que quien comenta haya comprado el producto (es autodeclarado, como en la mayoría
+			de los sitios de reseñas), y la moderación sería manual. Por ahora, mientras el comentario
+			quede solo en tu navegador, no hace falta nada de eso.
 		</p>
 
 		<h2>¿De dónde sale la plata?</h2>

@@ -22,19 +22,14 @@ const CONTACTO = 'administraciondigitalia@gmail.com';
 
 		<h2>Comentarios en las fichas de producto</h2>
 		<p>
-			Cada producto tiene una ficha propia con una sección de comentarios donde cualquier visitante
-			puede compartir su opinión. Para comentar solo pedimos un nombre (el que vos quieras escribir
-			— no lo verificamos ni te pedimos ningún documento) y el texto del comentario. No hace falta
-			crear una cuenta ni dar mail o contraseña.
-		</p>
-		<p>
-			Ese nombre y ese texto se guardan en nuestra base de datos y se muestran de forma pública en
-			la ficha del producto correspondiente, visibles para cualquiera que entre al sitio — no son
-			privados. Por eso te recomendamos no poner tu nombre completo ni ningún dato que no quieras
-			que quede visible públicamente; con un apodo alcanza. Los comentarios quedan publicados hasta
-			que los pidas borrar o los bajemos nosotros por moderación (spam, contenido ofensivo, etc.):
-			si querés que se elimine uno tuyo, escribinos a <a href={`mailto:${CONTACTO}`}>{CONTACTO}</a
-			>.
+			Cada producto tiene una ficha propia con una sección de comentarios. Tal como está armado el
+			sitio hoy, es una demo sin servidor: lo que escribís (nombre y comentario) se guarda
+			únicamente en tu propio navegador (localStorage), no en una base de datos nuestra ni en
+			ningún servidor — no lo vemos nosotros, no lo ve ningún otro visitante, y no se comparte con
+			nadie. Si cambiás de navegador, de dispositivo, o borrás los datos de este sitio, esos
+			comentarios se pierden. Si en algún momento pasamos esto a un backend real para que los
+			comentarios sean compartidos entre visitantes, vamos a actualizar esta política para
+			reflejarlo antes de que eso pase.
 		</p>
 
 		<h2>Cookies y analítica</h2>
@@ -47,20 +42,19 @@ const CONTACTO = 'administraciondigitalia@gmail.com';
 
 		<h2>Qué datos recogemos (y qué no)</h2>
 		<p>
-			{SITE_TITLE} no tiene registro de usuarios ni pide mail, contraseña o datos de pago para
-			navegar el sitio. Los únicos datos personales que guardamos son los que vos elegís escribir
-			voluntariamente al dejar un comentario (nombre y texto, ver arriba) más lo que Google
-			Analytics recoge de forma estándar y anónima. No vendemos ni compartimos esa información con
-			terceros más allá de eso. La compra en sí (pago, entrega del producto digital) la maneja
-			siempre la plataforma de afiliados (Hotmart o Envato), no nosotros — ahí sí
-			vas a completar tus datos de pago, bajo la política de privacidad de esa plataforma, no la
-			nuestra.
+			{SITE_TITLE} no tiene registro de usuarios, no pide mail, contraseña o datos de pago para
+			navegar el sitio, y no guarda en ningún servidor nada de lo que escribís en los comentarios
+			(ver arriba — eso queda solo en tu navegador). Lo único que sí recogemos es lo que Google
+			Analytics junta de forma estándar y anónima. No vendemos ni compartimos información con
+			terceros. La compra en sí (pago, entrega del producto digital) la maneja siempre la
+			plataforma de afiliados (Hotmart o Envato), no nosotros — ahí sí vas a completar tus datos de
+			pago, bajo la política de privacidad de esa plataforma, no la nuestra.
 		</p>
 
 		<h2>Contacto</h2>
 		<p>
-			Si tenés alguna duda sobre esta política, querés pedir que se baje un comentario, o cualquier
-			otro tema relacionado con tus datos, escribinos a <a href={`mailto:${CONTACTO}`}>{CONTACTO}</a>.
+			Si tenés alguna duda sobre esta política o cualquier otro tema relacionado con tus datos,
+			escribinos a <a href={`mailto:${CONTACTO}`}>{CONTACTO}</a>.
 		</p>
 	</article>
 </BaseLayout>

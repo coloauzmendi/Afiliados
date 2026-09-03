@@ -3,12 +3,12 @@ import { marked } from 'marked';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Comentarios from '../../../components/Comentarios.jsx';
 import { SITE_TITLE } from '../../../consts';
-import { getSubcategorias, getTodosLosProductos } from '../../../lib/db';
+import { getSubcategorias, getTodosLosProductos } from '../../../lib/catalogo';
 import { formatPrecio, sectorLabel } from '../../../lib/productos';
 
-// Página estática de siempre (se genera en el build). Solo la sección de
-// comentarios (más abajo, componente React) pega en tiempo real contra
-// /api/comentarios, que es la única ruta on-demand del sitio.
+// Página estática (se genera en el build). La sección de comentarios (más
+// abajo, componente React) guarda/lee en localStorage — sin fetch a ningún
+// endpoint, ver src/components/Comentarios.jsx.
 export async function getStaticPaths() {
 	const [subcategorias, todosProductos] = await Promise.all([
 		getSubcategorias(),

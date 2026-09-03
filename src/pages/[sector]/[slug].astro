@@ -3,7 +3,7 @@ import { marked } from 'marked';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FiltroProductos from '../../components/FiltroProductos.jsx';
 import { SITE_TITLE } from '../../consts';
-import { getSubcategorias, getTodosLosProductos } from '../../lib/db';
+import { getSubcategorias, getTodosLosProductos } from '../../lib/catalogo';
 import { formatFecha, sectorLabel } from '../../lib/productos';
 
 export async function getStaticPaths() {

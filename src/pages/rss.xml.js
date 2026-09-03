@@ -1,6 +1,6 @@
 import rss from '@astrojs/rss';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getSubcategorias } from '../lib/db';
+import { getSubcategorias } from '../lib/catalogo';
 
 export async function GET(context) {
 	const subcategorias = await getSubcategorias();

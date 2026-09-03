@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getSubcategoriasConDesde, getTodosLosProductos } from '../lib/db';
+import { getSubcategoriasConDesde, getTodosLosProductos } from '../lib/catalogo';
 import { formatFecha, formatPrecio, nombreCorto, sectorLabel, SECTOR_LABELS } from '../lib/productos';
 
 const [subcategorias, productos] = await Promise.all([getSubcategoriasConDesde(), getTodosLosProductos()]);

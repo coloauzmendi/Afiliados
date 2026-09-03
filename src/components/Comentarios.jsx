@@ -1,5 +1,31 @@
 import { useEffect, useState } from "react";
 
+// Demo sin backend: los comentarios se guardan en localStorage, en el propio
+// navegador de quien comenta — no hay servidor ni base de datos de por
+// medio, así que no los ve nadie más que vos en esa misma compu/navegador.
+// Es la forma más simple de mostrar la interacción sin depender de nada para
+// correr la plantilla. Si querés comentarios compartidos de verdad entre
+// visitantes, esto hay que reemplazarlo por un endpoint + base de datos real
+// (ver la nota en el README).
+const CLAVE_PREFIJO = "digitalia:comentarios:";
+
+function leerComentarios(productoId) {
+  try {
+    const guardado = localStorage.getItem(`${CLAVE_PREFIJO}${productoId}`);
+    return guardado ? JSON.parse(guardado) : [];
+  } catch {
+    return []; // localStorage no disponible (modo privado, etc.)
+  }
+}
+
+function guardarComentarios(productoId, comentarios) {
+  try {
+    localStorage.setItem(`${CLAVE_PREFIJO}${productoId}`, JSON.stringify(comentarios));
+  } catch {
+    // No se pudo guardar (localStorage lleno o no disponible) — no pasa nada, se pierde al recargar.
+  }
+}
+
 function formatearFecha(iso) {
   return new Date(iso).toLocaleDateString("es-AR", {
     day: "numeric",
@@ -9,29 +35,16 @@ function formatearFecha(iso) {
 }
 
 export default function Comentarios({ productoId }) {
-  const [comentarios, setComentarios] = useState(null); // null = todavía cargando
+  const [comentarios, setComentarios] = useState(null); // null = todavía no leyó localStorage
   const [nombre, setNombre] = useState("");
   const [texto, setTexto] = useState("");
-  const [empresa, setEmpresa] = useState(""); // honeypot, siempre vacío para una persona
-  const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    let cancelado = false;
-    fetch(`/api/comentarios?productoId=${productoId}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (!cancelado) setComentarios(data.comentarios ?? []);
-      })
-      .catch(() => {
-        if (!cancelado) setComentarios([]);
-      });
-    return () => {
-      cancelado = true;
-    };
+    setComentarios(leerComentarios(productoId));
   }, [productoId]);
 
-  async function enviar(e) {
+  function enviar(e) {
     e.preventDefault();
     setError("");
 
@@ -40,26 +53,17 @@ export default function Comentarios({ productoId }) {
       return;
     }
 
-    setEnviando(true);
-    try {
-      const res = await fetch("/api/comentarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productoId, nombre, comentario: texto, empresa }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "No se pudo publicar el comentario.");
-
-      if (data.comentario) {
-        setComentarios((prev) => [data.comentario, ...(prev ?? [])]);
-      }
-      setNombre("");
-      setTexto("");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setEnviando(false);
-    }
+    const nuevo = {
+      id: Date.now(),
+      nombre: nombre.trim().slice(0, 80),
+      comentario: texto.trim().slice(0, 1000),
+      creadoEn: new Date().toISOString(),
+    };
+    const actualizados = [nuevo, ...(comentarios ?? [])];
+    setComentarios(actualizados);
+    guardarComentarios(productoId, actualizados);
+    setNombre("");
+    setTexto("");
   }
 
   return (
@@ -67,17 +71,6 @@ export default function Comentarios({ productoId }) {
       <h2>¿Qué te pareció? Dejá tu comentario</h2>
 
       <form onSubmit={enviar} className="comentarios-form">
-        {/* Honeypot: invisible para una persona, pero un bot que completa todos los campos cae acá. */}
-        <input
-          type="text"
-          name="empresa"
-          value={empresa}
-          onChange={(e) => setEmpresa(e.target.value)}
-          className="hp"
-          tabIndex={-1}
-          autoComplete="off"
-          aria-hidden="true"
-        />
         <input
           type="text"
           placeholder="Tu nombre"
@@ -94,12 +87,11 @@ export default function Comentarios({ productoId }) {
         />
         {error && <p className="comentarios-error">{error}</p>}
         <p className="comentarios-aviso">
-          Tu nombre y tu comentario se van a mostrar públicamente en esta página. Más info en{" "}
-          <a href="/privacidad">privacidad</a>.
+          Demo sin backend: esto queda guardado solo en este navegador (no es público, no lo ven
+          otros visitantes). Para comentarios compartidos de verdad hace falta un backend real — ver
+          el README.
         </p>
-        <button type="submit" disabled={enviando}>
-          {enviando ? "Publicando..." : "Publicar comentario"}
-        </button>
+        <button type="submit">Publicar comentario</button>
       </form>
 
       <div className="comentarios-lista">
@@ -136,13 +128,6 @@ export default function Comentarios({ productoId }) {
           max-width: 480px;
           margin-bottom: 2em;
         }
-        .hp {
-          position: absolute;
-          left: -9999px;
-          width: 1px;
-          height: 1px;
-          opacity: 0;
-        }
         .comentarios-form input[type="text"],
         .comentarios-form textarea {
           padding: 0.65rem 0.8rem;
@@ -166,13 +151,9 @@ export default function Comentarios({ productoId }) {
           cursor: pointer;
           transition: background 0.15s ease;
         }
-        .comentarios-form button:hover:not(:disabled) {
+        .comentarios-form button:hover {
           background: var(--brass);
           color: var(--navy-900);
-        }
-        .comentarios-form button:disabled {
-          opacity: 0.6;
-          cursor: default;
         }
         .comentarios-error {
           color: #b3261e;
@@ -183,10 +164,6 @@ export default function Comentarios({ productoId }) {
           font-size: 0.75rem;
           color: #857c63;
           margin: -0.2rem 0 0;
-        }
-        .comentarios-aviso a {
-          color: inherit;
-          text-decoration: underline;
         }
         .comentarios-lista {
           display: flex;
